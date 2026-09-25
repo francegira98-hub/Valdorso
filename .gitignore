@@ -73,3 +73,10 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Asset di terze parti: non ridistribuibili, si riscaricano dall'account
+/[Aa]ssets/NatureManufacture Assets/
+/[Aa]ssets/NatureManufacture Assets.meta
+/[Aa]ssets/UMA/
+/[Aa]ssets/UMA.meta
+/[Aa]ssets/_Valdorso/Art/Animazioni/**/*.fbx
