@@ -16,6 +16,7 @@ namespace Valdorso.Creatures
     public class Creature : NetworkBehaviour
     {
         static readonly List<Creature> all = new List<Creature>();
+        static int playerCounter;
         /// <summary>Tutte le creature attive sul server.</summary>
         public static IReadOnlyList<Creature> All => all;
 
@@ -43,7 +44,7 @@ namespace Valdorso.Creatures
         {
             all.Add(this);
             if (string.IsNullOrEmpty(displayName))
-                displayName = connectionToClient != null ? $"Giocatore {connectionToClient.connectionId}" : defaultName;
+                displayName = connectionToClient != null ? $"Giocatore {++playerCounter}" : defaultName;
         }
 
         public override void OnStopServer()
@@ -105,6 +106,10 @@ namespace Valdorso.Creatures
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void ResetStatics() => all.Clear();
+        static void ResetStatics()
+        {
+            all.Clear();
+            playerCounter = 0;
+        }
     }
 }

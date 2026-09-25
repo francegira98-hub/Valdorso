@@ -78,9 +78,6 @@ PrefabInstance:
       addedObject: {fileID: 5461353002225154291}
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7276882701934816364}
-    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8699979291163961645}
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
@@ -88,6 +85,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5497773303199295432}
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7443277071061910292}
   m_SourcePrefab: {fileID: 100100000, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
 --- !u!95 &2364554713107878050 stripped
 Animator:
@@ -193,23 +193,6 @@ MonoBehaviour:
   staminaRegen: 15
   manaRegen: 1
   staminaRegenDelay: 1.2
---- !u!114 &7276882701934816364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9041936691745050722}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32059c4a80ebcc941a82514369fa411a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Creatures.Creature
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  defaultName: Viandante
-  faction: {fileID: 0}
 --- !u!114 &8699979291163961645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,6 +247,23 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &7443277071061910292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9041936691745050722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef60ecf01de87440b72008a901440f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Creatures.Creature
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  defaultName: Viandante
+  faction: {fileID: 0}
 --- !u!114 &9041936691745050729 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4416926081852918490, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
