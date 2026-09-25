@@ -32,8 +32,12 @@ namespace Valdorso.Creatures
         public bool IsDead => isDead;
         public CreatureStats Stats { get; private set; }
 
-        /// <summary>Scatta alla morte, sia sul server sia sui client.</summary>
+        /// <summary>Scatta alla morte, sul server e su tutti i client.</summary>
         public event Action Died;
+        /// <summary>Scatta alla rianimazione, sul server e su tutti i client.</summary>
+        public event Action Revived;
+        /// <summary>Scatta sui client quando la creatura subisce un colpo (danno effettivo).</summary>
+        public event Action<float> Damaged;
 
         void Awake()
         {
@@ -71,7 +75,14 @@ namespace Valdorso.Creatures
             WorldEventLog.Record(WorldEventType.Damage, attacker, this, $"{dealt:0.#} danno {info.type} ({info.source})");
 
             if (Stats.IsDepleted) Die(info, attacker);
+            else RpcDamaged(dealt);
             return dealt;
+        }
+
+        [ClientRpc]
+        void RpcDamaged(float dealt)
+        {
+            Damaged?.Invoke(dealt);
         }
 
         [Server]
@@ -89,12 +100,15 @@ namespace Valdorso.Creatures
             isDead = false;
             Stats.RestoreFull();
             WorldEventLog.Record(WorldEventType.Revive, null, this, string.Empty);
+            Revived?.Invoke();
         }
 
         void OnDeadSync(bool wasDead, bool nowDead)
         {
-            // Sul server l'evento è già scattato in Die(); qui avvisiamo i client puri.
-            if (nowDead && !isServer) Died?.Invoke();
+            // Sul server gli eventi sono già scattati in Die() e Revive(); qui avvisiamo i client puri.
+            if (isServer) return;
+            if (nowDead && !wasDead) Died?.Invoke();
+            else if (!nowDead && wasDead) Revived?.Invoke();
         }
 
         public static Creature FromNetId(uint id)

@@ -1,11 +1,13 @@
 using Mirror;
 using UnityEngine;
+using Valdorso.Creatures;
 
 namespace Valdorso.Network
 {
     /// <summary>
     /// Ogni PC vede tutti i personaggi, ma ne controlla uno solo.
-    /// Questo componente accende input, controller e telecamera soltanto sul personaggio di chi gioca.
+    /// Questo componente accende input, controller e telecamera soltanto sul personaggio di chi gioca,
+    /// e blocca i comandi quando il personaggio è morto.
     /// </summary>
     public class LocalPlayerSetup : NetworkBehaviour
     {
@@ -18,14 +20,27 @@ namespace Valdorso.Network
         [Tooltip("Stacca questi oggetti dal personaggio all'avvio, così la telecamera non ne eredita i movimenti")]
         [SerializeField] bool detachObjectsOnStart = true;
 
+        Creature creature;
+
         void Awake()
         {
-            SetLocalControl(false);
+            creature = GetComponent<Creature>();
+            SetBehaviours(false);
+            SetObjects(false);
         }
 
         public override void OnStartLocalPlayer()
         {
-            SetLocalControl(true);
+            SetBehaviours(true);
+            SetObjects(true);
+
+            if (creature != null)
+            {
+                creature.Died += OnLocalDied;
+                creature.Revived += OnLocalRevived;
+                if (creature.IsDead) SetBehaviours(false);
+            }
+
             if (!detachObjectsOnStart) return;
             foreach (GameObject obj in localOnlyObjects)
                 if (obj != null) obj.transform.SetParent(null, true);
@@ -33,18 +48,31 @@ namespace Valdorso.Network
 
         void OnDestroy()
         {
+            if (creature != null)
+            {
+                creature.Died -= OnLocalDied;
+                creature.Revived -= OnLocalRevived;
+            }
+
             // Se gli oggetti erano stati staccati, vanno eliminati insieme al personaggio.
             if (!detachObjectsOnStart) return;
             foreach (GameObject obj in localOnlyObjects)
                 if (obj != null && obj.transform.parent == null) Destroy(obj);
         }
 
-        void SetLocalControl(bool isLocal)
+        void OnLocalDied() => SetBehaviours(false);
+        void OnLocalRevived() => SetBehaviours(true);
+
+        void SetBehaviours(bool enabled)
         {
             foreach (Behaviour b in localOnlyBehaviours)
-                if (b != null) b.enabled = isLocal;
+                if (b != null) b.enabled = enabled;
+        }
+
+        void SetObjects(bool active)
+        {
             foreach (GameObject obj in localOnlyObjects)
-                if (obj != null) obj.SetActive(isLocal);
+                if (obj != null) obj.SetActive(active);
         }
     }
 }
