@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: LandingAudioClip
       value: 
       objectReference: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+    - target: {fileID: 6982812146204527121, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 8eafde05fca534f4eacb7be1aebda362, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -88,6 +92,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7443277071061910292}
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7678403214386135250}
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9192955588302668863}
+    - targetCorrespondingSourceObject: {fileID: 4416926081852918481, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7477410222261831878}
   m_SourcePrefab: {fileID: 100100000, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
 --- !u!95 &2364554713107878050 stripped
 Animator:
@@ -264,6 +277,64 @@ MonoBehaviour:
   syncInterval: 0
   defaultName: Viandante
   faction: {fileID: 0}
+--- !u!114 &7678403214386135250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9041936691745050722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a08d4c4d6cce754fae3523d186807ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Creatures.CreatureAnimator
+  animator: {fileID: 0}
+--- !u!114 &9192955588302668863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9041936691745050722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6600f4ba0bc9ae748bcf47cd649af6dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Combat.MeleeCombat
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  weaponName: Pugni
+  damage: 20
+  damageType: 0
+  staminaCost: 15
+  cooldown: 0.9
+  hitDelay: 0.4
+  reach: 1.2
+  radius: 0.9
+  hitHeight: 1
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &7477410222261831878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9041936691745050722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5671901ac25ea43488c8f8b0bf84abd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Combat.SprintStamina
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  drainPerSecond: 12
+  staminaToRecover: 25
+  input: {fileID: 0}
 --- !u!114 &9041936691745050729 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4416926081852918490, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
