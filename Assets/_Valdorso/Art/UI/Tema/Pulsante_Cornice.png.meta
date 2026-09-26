@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 746255a35e145d04e97144882b699b0b
+guid: 94832b61e15d24340bd224723f65a4e3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8428063948282239041
-    second: Sfondo_Vignetta_0
+      213: 3231679059592017329
+    second: Pulsante_Cornice_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +52,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteBorder: {x: 12, y: 12, z: 12, w: 12}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sfondo_Vignetta_0
+      name: Pulsante_Cornice_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 512
-        height: 512
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 14893a5d18f76f470800000000000000
-      internalID: 8428063948282239041
+      spriteID: 1b5fc078bfa39dc20800000000000000
+      internalID: 3231679059592017329
       vertices: []
       indices: 
       edges: []

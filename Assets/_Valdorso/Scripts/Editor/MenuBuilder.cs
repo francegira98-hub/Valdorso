@@ -1,4 +1,3 @@
-using System.IO;
 using Mirror;
 using TMPro;
 using UnityEditor;
@@ -13,27 +12,15 @@ using Valdorso.UI;
 namespace Valdorso.EditorTools
 {
     /// <summary>
-    /// Costruisce con un clic la schermata del menu principale nella scena Menu
+    /// Costruisce con un clic la schermata del menu principale nella scena Menu, nello stile "Oro e brace"
     /// (menu di Unity: Valdorso → Crea schermata del menu principale).
-    /// Se la schermata esiste già, la ricrea da capo: per cambiare lo stile si modifica questo script.
-    /// Funziona solo nell'editor, non entra nel gioco.
+    /// Colori, caratteri e immagini vengono dal Tema UI (Art/UI/Tema/TemaValdorso).
+    /// Se la schermata esiste già, la ricrea da capo. Funziona solo nell'editor, non entra nel gioco.
     /// </summary>
     public static class MenuBuilder
     {
-        const string FontFolder = "Assets/_Valdorso/Art/UI/Font/";
-        const string VignettePath = "Assets/_Valdorso/Art/UI/Sfondo_Vignetta.png";
-        const string GlowPath = "Assets/_Valdorso/Art/UI/Sfondo_Bagliore.png";
+        const string ThemePath = "Assets/_Valdorso/Art/UI/Tema/TemaValdorso.asset";
         const string RootName = "MenuCanvas";
-
-        // Colori dello stile fantasy
-        static readonly Color Gold = new Color32(0xD4, 0xAF, 0x37, 0xFF);
-        static readonly Color Parchment = new Color32(0xE8, 0xD9, 0xB5, 0xFF);
-        static readonly Color SoftText = new Color32(0xC9, 0xB9, 0x9A, 0xFF);
-        static readonly Color Background = new Color32(0x0E, 0x0B, 0x09, 0xFF);
-        static readonly Color ButtonNormal = new Color32(0x1C, 0x16, 0x12, 0xF0);
-        static readonly Color ButtonHover = new Color32(0x3A, 0x2C, 0x1F, 0xFF);
-        static readonly Color ButtonPressed = new Color32(0x5A, 0x44, 0x30, 0xFF);
-        static readonly Color ButtonDisabled = new Color32(0x1C, 0x16, 0x12, 0x80);
 
         [MenuItem("Valdorso/Crea schermata del menu principale")]
         static void Build()
@@ -45,32 +32,25 @@ namespace Valdorso.EditorTools
                 return;
             }
 
-            TMP_FontAsset titleFont = LoadFont("Cinzel-Bold SDF");
-            TMP_FontAsset buttonFont = LoadFont("Cinzel-Regular SDF");
-            TMP_FontAsset textFont = LoadFont("EBGaramond-Regular SDF");
-            TMP_FontAsset italicFont = LoadFont("EBGaramond-Italic SDF");
-            if (titleFont == null || buttonFont == null || textFont == null || italicFont == null)
+            var theme = AssetDatabase.LoadAssetAtPath<ValdorsoTheme>(ThemePath);
+            if (theme == null || theme.titleFont == null || theme.buttonFrame == null)
             {
-                EditorUtility.DisplayDialog("Valdorso", "Mancano uno o più Font Asset in " + FontFolder + " (controlla la Console).", "OK");
+                EditorUtility.DisplayDialog("Valdorso", "Manca il Tema UI: usa prima Valdorso → Genera tema e immagini UI.", "OK");
                 return;
             }
 
-            // Se la schermata esiste già, la tolgo per ricrearla.
             GameObject old = GameObject.Find(RootName);
             if (old != null) Undo.DestroyObjectImmediate(old);
 
-            // I pulsantini grigi di Mirror non servono più: c'è il nostro menu.
             NetworkManagerHUD hud = Object.FindFirstObjectByType<NetworkManagerHUD>();
             if (hud != null) Undo.DestroyObjectImmediate(hud);
 
-            // Senza EventSystem i pulsanti non ricevono i clic.
             if (Object.FindFirstObjectByType<EventSystem>() == null)
             {
                 var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
                 Undo.RegisterCreatedObjectUndo(eventSystem, "Crea EventSystem");
             }
 
-            // Tela che copre lo schermo, pensata per 1920x1080 e adattata alle altre risoluzioni.
             var root = new GameObject(RootName, typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             Undo.RegisterCreatedObjectUndo(root, "Crea menu principale");
             root.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
@@ -80,18 +60,28 @@ namespace Valdorso.EditorTools
             scaler.matchWidthOrHeight = 0.5f;
             Transform canvas = root.transform;
 
-            // Sfondo: colore scuro, bordi sfumati nel nero, bagliore dorato dietro il titolo.
-            Stretch(AddImage(canvas, "Sfondo", Background, null));
-            Stretch(AddImage(canvas, "Vignetta", new Color(0f, 0f, 0f, 0.9f), RadialSprite(VignettePath, 0f, 1f, 0.3f, 1f)));
-            RectTransform glow = AddImage(canvas, "Bagliore", new Color(Gold.r, Gold.g, Gold.b, 0.10f), RadialSprite(GlowPath, 1f, 0f, 0f, 0.7f));
-            Place(glow, new Vector2(0.5f, 1f), new Vector2(0f, -250f), new Vector2(1500f, 700f));
+            // Sfondo: colore scuro, bagliore dorato dietro il titolo, braci, bordi sfumati nel nero.
+            Stretch(AddImage(canvas, "Sfondo", theme.background, null, false));
+            RectTransform glow = AddImage(canvas, "Bagliore", WithAlpha(Color.Lerp(theme.gold, theme.ember, 0.35f), 0.11f), theme.glow, false);
+            Place(glow, new Vector2(0.5f, 1f), new Vector2(0f, -260f), new Vector2(1500f, 760f));
+            RectTransform embersArea = CreateUI("Braci", canvas);
+            Stretch(embersArea);
+            UIEmbers embers = embersArea.gameObject.AddComponent<UIEmbers>();
+            SetField(embers, "theme", theme);
+            Stretch(AddImage(canvas, "Vignetta", new Color(0f, 0f, 0f, 0.9f), theme.vignette, false));
 
-            // Titolo e riga decorativa.
-            TextMeshProUGUI title = AddText(canvas, "Titolo", "VALDORSO", titleFont, 130f, Gold, TextAlignmentOptions.Center);
-            title.characterSpacing = 18f;
-            Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -230f), new Vector2(1400f, 200f));
-            RectTransform line = AddImage(canvas, "Riga", new Color(Gold.r, Gold.g, Gold.b, 0.7f), null);
-            Place(line, new Vector2(0.5f, 1f), new Vector2(0f, -335f), new Vector2(520f, 2f));
+            // Titolo: ombra sotto, poi il titolo con la sfumatura dall'oro chiaro all'oro scuro.
+            TextMeshProUGUI shadow = AddText(canvas, "TitoloOmbra", "VALDORSO", theme.titleFont, 140f, new Color(0f, 0f, 0f, 0.7f), TextAlignmentOptions.Center);
+            shadow.characterSpacing = 20f;
+            Place(shadow.rectTransform, new Vector2(0.5f, 1f), new Vector2(4f, -236f), new Vector2(1500f, 210f));
+            TextMeshProUGUI title = AddText(canvas, "Titolo", "VALDORSO", theme.titleFont, 140f, Color.white, TextAlignmentOptions.Center);
+            title.characterSpacing = 20f;
+            title.enableVertexGradient = true;
+            title.colorGradient = new VertexGradient(theme.goldLight, theme.goldLight, theme.goldDark, theme.goldDark);
+            Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -230f), new Vector2(1500f, 210f));
+
+            RectTransform divider = AddImage(canvas, "Separatore", WithAlpha(theme.gold, 0.9f), theme.divider, false);
+            Place(divider, new Vector2(0.5f, 1f), new Vector2(0f, -350f), new Vector2(620f, 38f));
 
             // Colonna dei pulsanti.
             RectTransform column = CreateUI("Pulsanti", canvas);
@@ -100,7 +90,7 @@ namespace Valdorso.EditorTools
             column.anchoredPosition = new Vector2(0f, 60f);
             column.sizeDelta = new Vector2(560f, 0f);
             var layout = column.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 22f;
+            layout.spacing = 24f;
             layout.childAlignment = TextAnchor.UpperCenter;
             layout.childControlWidth = true;
             layout.childControlHeight = true;
@@ -108,22 +98,19 @@ namespace Valdorso.EditorTools
             layout.childForceExpandHeight = false;
             column.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            Button enter = AddButton(column, "Entra", "Entra nel mondo", buttonFont);
-            Button host = AddButton(column, "AvviaServer", "Avvia server (sviluppo)", buttonFont);
-            Button settings = AddButton(column, "Impostazioni", "Impostazioni", buttonFont);
-            Button quit = AddButton(column, "Esci", "Esci", buttonFont);
+            Button enter = AddButton(column, "Entra", "Entra nel mondo", theme);
+            Button host = AddButton(column, "AvviaServer", "Avvia server (sviluppo)", theme);
+            Button settings = AddButton(column, "Impostazioni", "Impostazioni", theme);
+            Button quit = AddButton(column, "Esci", "Esci", theme);
 
-            // Messaggi (connessione, errori) e versione del gioco.
-            TextMeshProUGUI status = AddText(canvas, "Stato", string.Empty, textFont, 28f, SoftText, TextAlignmentOptions.Center);
+            TextMeshProUGUI status = AddText(canvas, "Stato", string.Empty, theme.textFont, 28f, theme.textSoft, TextAlignmentOptions.Center);
             Place(status.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 110f), new Vector2(1200f, 120f));
-            TextMeshProUGUI version = AddText(canvas, "Versione", "v0.1", italicFont, 24f, new Color(SoftText.r, SoftText.g, SoftText.b, 0.6f), TextAlignmentOptions.BottomRight);
+            TextMeshProUGUI version = AddText(canvas, "Versione", "v0.1", theme.italicFont, 24f, WithAlpha(theme.textSoft, 0.6f), TextAlignmentOptions.BottomRight);
             version.rectTransform.pivot = new Vector2(1f, 0f);
             Place(version.rectTransform, new Vector2(1f, 0f), new Vector2(-30f, 24f), new Vector2(400f, 40f));
 
-            // Pannello delle impostazioni (per ora solo la cornice: si riempie al passo delle impostazioni).
-            GameObject settingsPanel = BuildSettingsPanel(canvas, titleFont, buttonFont, textFont);
+            GameObject settingsPanel = BuildSettingsPanel(canvas, theme);
 
-            // Collegamento dei campi del componente MainMenu.
             MainMenu menu = root.AddComponent<MainMenu>();
             var so = new SerializedObject(menu);
             so.FindProperty("enterButton").objectReferenceValue = enter;
@@ -137,28 +124,32 @@ namespace Valdorso.EditorTools
 
             EditorSceneManager.MarkSceneDirty(scene);
             Selection.activeGameObject = root;
-            Debug.Log("[Valdorso] Schermata del menu principale creata. Salva la scena con Ctrl+S.");
+            Debug.Log("[Valdorso] Schermata del menu principale creata nello stile \"Oro e brace\". Salva la scena con Ctrl+S.");
         }
 
-        static GameObject BuildSettingsPanel(Transform canvas, TMP_FontAsset titleFont, TMP_FontAsset buttonFont, TMP_FontAsset textFont)
+        static GameObject BuildSettingsPanel(Transform canvas, ValdorsoTheme theme)
         {
-            // Velo scuro su tutto lo schermo, così il resto del menu passa in secondo piano.
-            RectTransform veil = AddImage(canvas, "PannelloImpostazioni", new Color(0f, 0f, 0f, 0.65f), null);
+            RectTransform veil = AddImage(canvas, "PannelloImpostazioni", new Color(0f, 0f, 0f, 0.7f), null, true);
             Stretch(veil);
 
-            RectTransform frame = AddImage(veil, "Cornice", new Color(Gold.r, Gold.g, Gold.b, 0.6f), null);
-            Place(frame, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 600f));
-            RectTransform inner = AddImage(frame, "Fondo", new Color32(0x15, 0x11, 0x0D, 0xFA), null);
-            Inset(inner, 2f);
+            RectTransform window = CreateUI("Finestra", veil);
+            Place(window, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 600f));
+            RectTransform fill = AddImage(window, "Fondo", theme.panel, null, true);
+            Inset(fill, 6f);
+            RectTransform frame = AddImage(window, "Cornice", theme.gold, theme.frame, false);
+            Stretch(frame);
+            MakeSliced(frame);
 
-            TextMeshProUGUI title = AddText(inner, "Titolo", "Impostazioni", titleFont, 56f, Gold, TextAlignmentOptions.Center);
-            Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -80f), new Vector2(800f, 90f));
-            TextMeshProUGUI body = AddText(inner, "Testo", "In preparazione: grafica, audio e comandi.", textFont, 30f, SoftText, TextAlignmentOptions.Center);
-            Place(body.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 10f), new Vector2(760f, 200f));
+            TextMeshProUGUI title = AddText(window, "Titolo", "Impostazioni", theme.titleFont, 56f, theme.gold, TextAlignmentOptions.Center);
+            Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -85f), new Vector2(800f, 90f));
+            RectTransform divider = AddImage(window, "Separatore", WithAlpha(theme.gold, 0.8f), theme.divider, false);
+            Place(divider, new Vector2(0.5f, 1f), new Vector2(0f, -145f), new Vector2(420f, 26f));
+            TextMeshProUGUI body = AddText(window, "Testo", "In preparazione: grafica, audio e comandi.", theme.textFont, 30f, theme.textSoft, TextAlignmentOptions.Center);
+            Place(body.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(760f, 200f));
 
-            RectTransform closeHolder = CreateUI("Chiudi", inner);
-            Place(closeHolder, new Vector2(0.5f, 0f), new Vector2(0f, 80f), new Vector2(320f, 72f));
-            Button close = BuildButton(closeHolder, "Chiudi", buttonFont);
+            RectTransform closeHolder = CreateUI("Chiudi", window);
+            Place(closeHolder, new Vector2(0.5f, 0f), new Vector2(0f, 85f), new Vector2(320f, 72f));
+            Button close = BuildButton(closeHolder, "Chiudi", theme);
             UnityEventTools.AddBoolPersistentListener(close.onClick, veil.gameObject.SetActive, false);
 
             veil.gameObject.SetActive(false);
@@ -167,38 +158,42 @@ namespace Valdorso.EditorTools
 
         // ---------- Mattoncini ----------
 
-        static Button AddButton(Transform parent, string name, string label, TMP_FontAsset font)
+        static Button AddButton(Transform parent, string name, string label, ValdorsoTheme theme)
         {
             RectTransform holder = CreateUI(name, parent);
             var element = holder.gameObject.AddComponent<LayoutElement>();
-            element.minHeight = element.preferredHeight = 78f;
-            return BuildButton(holder, label, font);
+            element.minHeight = element.preferredHeight = 80f;
+            return BuildButton(holder, label, theme);
         }
 
-        /// <summary>Pulsante con cornice dorata: la cornice è il contenitore, il fondo scuro cambia colore col mouse.</summary>
-        static Button BuildButton(RectTransform holder, string label, TMP_FontAsset font)
+        /// <summary>Pulsante "Oro e brace": fondo sfumato che cambia col mouse, cornice a gemme, scritta in Cinzel.</summary>
+        static Button BuildButton(RectTransform holder, string label, ValdorsoTheme theme)
         {
-            Image border = holder.gameObject.AddComponent<Image>();
-            border.color = new Color(Gold.r, Gold.g, Gold.b, 0.55f);
-
-            RectTransform fill = AddImage(holder, "Fondo", Color.white, null);
-            Inset(fill, 2f);
-            Image fillImage = fill.GetComponent<Image>();
+            RectTransform fill = AddImage(holder, "Fondo", Color.white, theme.buttonFill, true);
+            Inset(fill, 3f);
+            RectTransform frame = AddImage(holder, "Cornice", WithAlpha(theme.gold, 0.55f), theme.buttonFrame, false);
+            Stretch(frame);
+            MakeSliced(frame);
 
             Button button = holder.gameObject.AddComponent<Button>();
-            button.targetGraphic = fillImage;
+            button.targetGraphic = fill.GetComponent<Image>();
             ColorBlock colors = button.colors;
-            colors.normalColor = ButtonNormal;
-            colors.highlightedColor = ButtonHover;
-            colors.pressedColor = ButtonPressed;
-            colors.selectedColor = ButtonNormal;
-            colors.disabledColor = ButtonDisabled;
+            colors.normalColor = theme.button;
+            colors.highlightedColor = theme.buttonHover;
+            colors.pressedColor = theme.buttonPressed;
+            colors.selectedColor = theme.button;
+            colors.disabledColor = theme.buttonDisabled;
             colors.colorMultiplier = 1f;
-            colors.fadeDuration = 0.12f;
+            colors.fadeDuration = theme.fadeDuration;
             button.colors = colors;
 
-            TextMeshProUGUI text = AddText(fill, "Testo", label, font, 34f, Parchment, TextAlignmentOptions.Center);
+            TextMeshProUGUI text = AddText(holder, "Testo", label, theme.buttonFont, 34f, theme.text, TextAlignmentOptions.Center);
             Stretch(text.rectTransform);
+
+            MenuButtonFx fx = holder.gameObject.AddComponent<MenuButtonFx>();
+            SetField(fx, "theme", theme);
+            SetField(fx, "label", text);
+            SetField(fx, "frame", frame.GetComponent<Image>());
             return button;
         }
 
@@ -211,14 +206,21 @@ namespace Valdorso.EditorTools
             return rt;
         }
 
-        static RectTransform AddImage(Transform parent, string name, Color color, Sprite sprite)
+        static RectTransform AddImage(Transform parent, string name, Color color, Sprite sprite, bool catchesClicks)
         {
             RectTransform rt = CreateUI(name, parent);
             Image image = rt.gameObject.AddComponent<Image>();
             image.color = color;
             image.sprite = sprite;
-            image.raycastTarget = name != "Vignetta" && name != "Bagliore" && name != "Riga";
+            image.raycastTarget = catchesClicks;
             return rt;
+        }
+
+        static void MakeSliced(RectTransform rt)
+        {
+            Image image = rt.GetComponent<Image>();
+            image.type = Image.Type.Sliced;
+            image.fillCenter = false;
         }
 
         static TextMeshProUGUI AddText(Transform parent, string name, string content, TMP_FontAsset font, float size, Color color, TextAlignmentOptions alignment)
@@ -233,6 +235,19 @@ namespace Valdorso.EditorTools
             text.raycastTarget = false;
             text.text = content;
             return text;
+        }
+
+        static void SetField(Object target, string field, Object value)
+        {
+            var so = new SerializedObject(target);
+            so.FindProperty(field).objectReferenceValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        static Color WithAlpha(Color c, float alpha)
+        {
+            c.a = alpha;
+            return c;
         }
 
         static void Stretch(RectTransform rt)
@@ -255,51 +270,6 @@ namespace Valdorso.EditorTools
             rt.anchorMin = rt.anchorMax = anchor;
             rt.anchoredPosition = position;
             rt.sizeDelta = size;
-        }
-
-        static TMP_FontAsset LoadFont(string name)
-        {
-            var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontFolder + name + ".asset");
-            if (font == null) Debug.LogError($"[Valdorso] Font Asset non trovato: {FontFolder}{name}.asset");
-            return font;
-        }
-
-        /// <summary>
-        /// Crea (una volta sola) un'immagine circolare sfumata e la salva nel progetto.
-        /// L'opacità va da innerAlpha al centro a outerAlpha ai bordi, tra le distanze start ed end (0 = centro, 1 = angolo).
-        /// </summary>
-        static Sprite RadialSprite(string assetPath, float innerAlpha, float outerAlpha, float start, float end)
-        {
-            Sprite existing = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
-            if (existing != null) return existing;
-
-            const int size = 512;
-            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    float dx = (x + 0.5f) / size * 2f - 1f;
-                    float dy = (y + 0.5f) / size * 2f - 1f;
-                    float distance = Mathf.Sqrt(dx * dx + dy * dy) / 1.41421f;
-                    float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(start, end, distance));
-                    texture.SetPixel(x, y, new Color(1f, 1f, 1f, Mathf.Lerp(innerAlpha, outerAlpha, t)));
-                }
-            }
-            texture.Apply();
-
-            string fullPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, assetPath);
-            File.WriteAllBytes(fullPath, texture.EncodeToPNG());
-            Object.DestroyImmediate(texture);
-
-            AssetDatabase.ImportAsset(assetPath);
-            var importer = (TextureImporter)AssetImporter.GetAtPath(assetPath);
-            importer.textureType = TextureImporterType.Sprite;
-            importer.spriteImportMode = SpriteImportMode.Single;
-            importer.alphaIsTransparency = true;
-            importer.mipmapEnabled = false;
-            importer.SaveAndReimport();
-            return AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
         }
     }
 }
