@@ -104,12 +104,13 @@ namespace Valdorso.UI
 
             loginPanel.Open((username, password, create) =>
             {
-                if (asHost) StartDevServer(username, password, create);
-                else EnterWorld(username, password, create);
+                string inviteCode = loginPanel.InviteCode;
+                if (asHost) StartDevServer(username, password, create, inviteCode);
+                else EnterWorld(username, password, create, inviteCode);
             }, error);
         }
 
-        void EnterWorld(string username, string password, bool create)
+        void EnterWorld(string username, string password, bool create, string inviteCode)
         {
             if (NetworkClient.active || NetworkServer.active) return;
             NetworkManager manager = GetManager();
@@ -117,7 +118,7 @@ namespace Valdorso.UI
 
             ServerConfig config = ServerConfig.Current;
             ApplyConfig(manager, config);
-            ValdorsoAuthenticator.SetCredentials(username, password, create);
+            ValdorsoAuthenticator.SetCredentials(username, password, create, inviteCode);
 
             connecting = true;
             fadingOut = false;
@@ -126,7 +127,7 @@ namespace Valdorso.UI
             manager.StartClient();
         }
 
-        void StartDevServer(string username, string password, bool create)
+        void StartDevServer(string username, string password, bool create, string inviteCode)
         {
             if (NetworkClient.active || NetworkServer.active) return;
             NetworkManager manager = GetManager();
@@ -134,7 +135,7 @@ namespace Valdorso.UI
 
             // Il server è questo PC: l'account si controlla subito, prima di avviare il mondo.
             bool ok = create
-                ? AccountStore.TryCreate(username, password, out _, out string error)
+                ? AccountStore.TryCreate(username, password, inviteCode, out _, out string error)
                 : AccountStore.TryLogin(username, password, out _, out error);
             if (!ok)
             {

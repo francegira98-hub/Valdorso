@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace Valdorso.UI
 {
     /// <summary>
-    /// Finestra di accesso: nome utente e password, oppure creazione di un nuovo account.
+    /// Finestra di accesso: nome utente e password, oppure creazione di un nuovo account con il codice d'invito.
     /// Invio conferma, Tab passa al campo successivo, Esc chiude.
     /// Ricorda sul PC solo il nome utente, mai la password.
     /// </summary>
@@ -20,6 +20,7 @@ namespace Valdorso.UI
         [SerializeField] TMP_InputField usernameField;
         [SerializeField] TMP_InputField passwordField;
         [SerializeField] TMP_InputField confirmField;
+        [SerializeField] TMP_InputField inviteField;
         [SerializeField] GameObject confirmGroup;
         [SerializeField] TMP_Text errorText;
         [SerializeField] Button submitButton;
@@ -32,6 +33,9 @@ namespace Valdorso.UI
         bool listenersAdded;
         Action<string, string, bool> onSubmit;
 
+        /// <summary>Il codice d'invito scritto all'ultima conferma (solo in creazione account).</summary>
+        public string InviteCode { get; private set; }
+
         /// <summary>Apre la finestra; submit riceve nome utente, password e "crea account".</summary>
         public void Open(Action<string, string, bool> submit, string error = null)
         {
@@ -43,6 +47,7 @@ namespace Valdorso.UI
                 usernameField.text = PlayerPrefs.GetString(LastUsernameKey, string.Empty);
             passwordField.text = string.Empty;
             confirmField.text = string.Empty;
+            InviteCode = null;
 
             SetMode(createMode);
             ShowError(error);
@@ -107,6 +112,7 @@ namespace Valdorso.UI
             PlayerPrefs.SetString(LastUsernameKey, username);
             PlayerPrefs.Save();
 
+            InviteCode = createMode && inviteField != null ? inviteField.text.Trim() : null;
             Action<string, string, bool> callback = onSubmit;
             bool create = createMode;
             Close();
@@ -126,7 +132,11 @@ namespace Valdorso.UI
         void SelectNext(bool backwards)
         {
             var fields = new List<TMP_InputField> { usernameField, passwordField };
-            if (createMode) fields.Add(confirmField);
+            if (createMode)
+            {
+                fields.Add(confirmField);
+                if (inviteField != null) fields.Add(inviteField);
+            }
             int current = fields.FindIndex(f => f.isFocused);
             int next = current < 0 ? 0 : (current + (backwards ? fields.Count - 1 : 1)) % fields.Count;
             Select(fields[next]);

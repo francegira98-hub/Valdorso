@@ -11,6 +11,7 @@ namespace Valdorso.Network
         public string username;
         public string password;
         public bool createAccount;
+        public string inviteCode;
         public string gameVersion;
     }
 
@@ -32,12 +33,12 @@ namespace Valdorso.Network
 
     /// <summary>
     /// Il portiere del server: prima di far entrare un giocatore nel mondo controlla
-    /// versione del gioco, nome utente e password (o crea l'account), e rifiuta i doppi accessi.
-    /// Va nel campo Authenticator del NetworkManager.
+    /// versione del gioco, nome utente e password (o crea l'account con il codice d'invito),
+    /// e rifiuta i doppi accessi. Va nel campo Authenticator del NetworkManager.
     /// </summary>
     public class ValdorsoAuthenticator : NetworkAuthenticator
     {
-        [Header("Solo per le prove nell'editor (da togliere con la schermata di login)")]
+        [Header("Solo per le prove nell'editor (da togliere al passo 2.7)")]
         [SerializeField] string testUsername = "prova_archivio";
         [SerializeField] string testPassword = "passwordProva1";
 
@@ -47,18 +48,20 @@ namespace Valdorso.Network
         static string pendingUsername;
         static string pendingPassword;
         static bool pendingCreate;
+        static string pendingInviteCode;
 
         /// <summary>Motivo dell'ultimo accesso rifiutato, da mostrare nel menu.</summary>
         public static string LastError { get; private set; }
         public static string LoggedInUsername { get; private set; }
         public static bool IsAdmin { get; private set; }
 
-        /// <summary>La schermata di login li imposta prima di collegarsi.</summary>
-        public static void SetCredentials(string username, string password, bool createAccount)
+        /// <summary>La finestra di accesso li imposta prima di collegarsi.</summary>
+        public static void SetCredentials(string username, string password, bool createAccount, string inviteCode = null)
         {
             pendingUsername = username;
             pendingPassword = password;
             pendingCreate = createAccount;
+            pendingInviteCode = inviteCode;
         }
 
         // ---------- Server ----------
@@ -93,7 +96,7 @@ namespace Valdorso.Network
             }
             else if (msg.createAccount)
             {
-                ok = AccountStore.TryCreate(msg.username, msg.password, out account, out error);
+                ok = AccountStore.TryCreate(msg.username, msg.password, msg.inviteCode, out account, out error);
             }
             else
             {
@@ -111,7 +114,7 @@ namespace Valdorso.Network
                     username = account.username,
                     isAdmin = admin
                 });
-                Debug.Log($"[Valdorso] Accesso: {account.username}{(admin ? " (Amministratore)" : "")} da {conn.address}");
+                Debug.Log($"[Valdorso] Accesso: {account.username}{(admin ? " (Amministratore)" : "")}{(msg.createAccount ? ", account nuovo" : "")} da {conn.address}");
                 ServerAccept(conn);
             }
             else
@@ -156,12 +159,14 @@ namespace Valdorso.Network
             string username = pendingUsername;
             string password = pendingPassword;
             bool create = pendingCreate;
+            string inviteCode = pendingInviteCode;
 
             if (string.IsNullOrEmpty(username) && Application.isEditor)
             {
                 username = testUsername;
                 password = testPassword;
                 create = false;
+                inviteCode = null;
                 Debug.Log("[Valdorso] Nessun login inserito: uso l'account di prova dell'editor.");
             }
 
@@ -170,6 +175,7 @@ namespace Valdorso.Network
                 username = username ?? string.Empty,
                 password = password ?? string.Empty,
                 createAccount = create,
+                inviteCode = inviteCode ?? string.Empty,
                 gameVersion = Application.version
             });
 

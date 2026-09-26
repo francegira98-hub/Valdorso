@@ -84,10 +84,11 @@ namespace Valdorso.Server
             return true;
         }
 
-        public static bool TryCreate(string username, string password, out AccountRecord account, out string error)
+        public static bool TryCreate(string username, string password, string inviteCode, out AccountRecord account, out string error)
         {
             account = null;
-            if (!ServerSettings.Current.allowNewAccounts)
+            ServerSettings settings = ServerSettings.Current;
+            if (!settings.allowNewAccounts)
             {
                 error = "La creazione di nuovi account è chiusa.";
                 return false;
@@ -99,6 +100,10 @@ namespace Valdorso.Server
                 error = "Questo nome utente è già in uso.";
                 return false;
             }
+
+            // Gli Amministratori elencati nelle regole del server non hanno bisogno del codice.
+            bool needsCode = settings.requireInviteCode && !settings.IsAdmin(username);
+            if (needsCode && !InviteCodeStore.IsAvailable(inviteCode, out error)) return false;
 
             byte[] salt = new byte[SaltBytes];
             using (var random = RandomNumberGenerator.Create()) random.GetBytes(salt);
@@ -114,6 +119,7 @@ namespace Valdorso.Server
                 lastLoginAt = now
             };
             Save(account);
+            if (needsCode) InviteCodeStore.MarkUsed(inviteCode, account.username);
             error = null;
             return true;
         }

@@ -171,7 +171,7 @@ namespace Valdorso.EditorTools
 
         static LoginPanel BuildLoginPanel(Transform canvas, ValdorsoTheme theme)
         {
-            RectTransform window = BuildWindow(canvas, "PannelloAccesso", new Vector2(780f, 880f), theme, out RectTransform veil);
+            RectTransform window = BuildWindow(canvas, "PannelloAccesso", new Vector2(780f, 1000f), theme, out RectTransform veil);
 
             RectTransform content = CreateUI("Contenuto", window);
             Stretch(content);
@@ -196,6 +196,7 @@ namespace Valdorso.EditorTools
             AddLabel(content, "EtichettaPassword", "Password", theme);
             TMP_InputField password = AddInputField(content, "Password", "La tua password", true, theme);
 
+            // Campi che compaiono solo in "Crea un account".
             RectTransform confirmGroup = CreateUI("Conferma", content);
             var groupLayout = confirmGroup.gameObject.AddComponent<VerticalLayoutGroup>();
             groupLayout.spacing = 12f;
@@ -205,6 +206,8 @@ namespace Valdorso.EditorTools
             groupLayout.childForceExpandHeight = false;
             AddLabel(confirmGroup, "EtichettaConferma", "Ripeti la password", theme);
             TMP_InputField confirm = AddInputField(confirmGroup, "ConfermaPassword", "Di nuovo la password", true, theme);
+            AddLabel(confirmGroup, "EtichettaInvito", "Codice d'invito", theme);
+            TMP_InputField invite = AddInputField(confirmGroup, "CodiceInvito", "Es. VALD-ABCD-EFGH", false, theme);
 
             TextMeshProUGUI error = AddText(content, "Errore", string.Empty, theme.textFont, 26f, Color.Lerp(theme.blood, theme.text, 0.35f), TextAlignmentOptions.Center);
             Height(error.rectTransform, 64f);
@@ -229,6 +232,7 @@ namespace Valdorso.EditorTools
             SetField(panel, "usernameField", username);
             SetField(panel, "passwordField", password);
             SetField(panel, "confirmField", confirm);
+            SetField(panel, "inviteField", invite);
             SetField(panel, "confirmGroup", confirmGroup.gameObject);
             SetField(panel, "errorText", error);
             SetField(panel, "submitButton", submit);

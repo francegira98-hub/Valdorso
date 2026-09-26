@@ -16,6 +16,9 @@ namespace Valdorso.Server
         public string[] adminAccounts = new string[0];
         public int maxCharactersPerAccount = 3;
         public bool allowNewAccounts = true;
+
+        [Tooltip("Per creare un account serve un codice d'invito (gli Amministratori ne sono esenti)")]
+        public bool requireInviteCode = true;
         public int minPasswordLength = 8;
 
         const string FileName = "valdorso_server.json";
