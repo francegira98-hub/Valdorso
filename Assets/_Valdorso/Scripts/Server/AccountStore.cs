@@ -144,6 +144,15 @@ namespace Valdorso.Server
             return true;
         }
 
+        /// <summary>Legge un account senza controllare la password (solo per il server).</summary>
+        public static bool TryLoad(string username, out AccountRecord account)
+        {
+            account = null;
+            if (!IsValidUsername(username, out _)) return false;
+            if (!ServerStorage.TryReadJson(RelativePath(username), out account)) return false;
+            Migrate(account);
+            return true;
+        }
         public static void Save(AccountRecord account) => ServerStorage.WriteJson(RelativePath(account.username), account);
 
         /// <summary>Solo per le prove: cancella un account e le sue copie.</summary>

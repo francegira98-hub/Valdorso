@@ -4490,7 +4490,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 998197129}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
+  m_Script: {fileID: 11500000, guid: 72affe402a35468428e82988a464ccba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkManager
   dontDestroyOnLoad: 1
@@ -4526,6 +4526,8 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  autosaveInterval: 60
+  revivedHealthFraction: 0.25
 --- !u!4 &998197133
 Transform:
   m_ObjectHideFlags: 0

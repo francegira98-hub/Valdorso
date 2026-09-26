@@ -129,6 +129,18 @@ namespace Valdorso.Stats
             return false;
         }
 
+        /// <summary>
+        /// Imposta salute, stamina e mana, per esempio da un salvataggio.
+        /// Un valore negativo vuol dire "pieno". La salute non scende sotto 1 (si rientra vivi).
+        /// </summary>
+        [Server]
+        public void SetVitals(float newHealth, float newStamina, float newMana)
+        {
+            health = newHealth < 0f ? maxHealth : Mathf.Clamp(newHealth, 1f, maxHealth);
+            stamina = newStamina < 0f ? maxStamina : Mathf.Clamp(newStamina, 0f, maxStamina);
+            mana = newMana < 0f ? maxMana : Mathf.Clamp(newMana, 0f, maxMana);
+        }
+
         [Server]
         public void RestoreFull()
         {
