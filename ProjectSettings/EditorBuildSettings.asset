@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/_Valdorso/Scenes/Menu.unity
+    guid: f716ff35f94931748abdb6d7cbe969e5
+  - enabled: 1
     path: Assets/_Valdorso/Scenes/TestRete.unity
     guid: 3b8b873476c43024d82dfa24d1894911
   m_configObjects:
