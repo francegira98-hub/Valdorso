@@ -1,3 +1,4 @@
+using System.Collections;
 using Mirror;
 using UnityEngine;
 using Valdorso.Creatures;
@@ -7,7 +8,8 @@ namespace Valdorso.Network
     /// <summary>
     /// Ogni PC vede tutti i personaggi, ma ne controlla uno solo.
     /// Questo componente accende input, controller e telecamera soltanto sul personaggio di chi gioca,
-    /// e blocca i comandi quando il personaggio è morto.
+    /// blocca i comandi quando il personaggio è morto e li restituisce solo quando,
+    /// dopo la rianimazione, ha finito di rialzarsi.
     /// </summary>
     public class LocalPlayerSetup : NetworkBehaviour
     {
@@ -20,7 +22,19 @@ namespace Valdorso.Network
         [Tooltip("Stacca questi oggetti dal personaggio all'avvio, così la telecamera non ne eredita i movimenti")]
         [SerializeField] bool detachObjectsOnStart = true;
 
+        [Tooltip("Azioni bloccate da morti e mentre ci si rialza: MeleeCombat, DodgeRoll, ObstacleTraversal")]
+        [SerializeField] Behaviour[] lockedWhileDown;
+
+        [Tooltip("Secondi dopo la rianimazione prima di ridare i comandi: durata della clip Rialzati diviso la sua Speed")]
+        [SerializeField] float getUpDuration = 3f;
+
         Creature creature;
+        Coroutine getUpRoutine;
+
+        /// <summary>
+        /// Vero mentre il personaggio è a terra o si sta rialzando.
+        /// </summary>
+        public bool IsDown { get; private set; }
 
         void Awake()
         {
@@ -38,7 +52,7 @@ namespace Valdorso.Network
             {
                 creature.Died += OnLocalDied;
                 creature.Revived += OnLocalRevived;
-                if (creature.IsDead) SetBehaviours(false);
+                if (creature.IsDead) OnLocalDied();
             }
 
             if (!detachObjectsOnStart) return;
@@ -60,12 +74,49 @@ namespace Valdorso.Network
                 if (obj != null && obj.transform.parent == null) Destroy(obj);
         }
 
-        void OnLocalDied() => SetBehaviours(false);
-        void OnLocalRevived() => SetBehaviours(true);
+        void OnLocalDied()
+        {
+            // Se muore di nuovo mentre si rialza, l'attesa precedente non vale più.
+            if (getUpRoutine != null)
+            {
+                StopCoroutine(getUpRoutine);
+                getUpRoutine = null;
+            }
+
+            IsDown = true;
+            SetBehaviours(false);
+            SetLocked(false);
+        }
+
+        void OnLocalRevived()
+        {
+            if (getUpRoutine != null) StopCoroutine(getUpRoutine);
+            getUpRoutine = StartCoroutine(GetUp());
+        }
+
+        /// <summary>
+        /// Aspetta la fine dell'animazione per rialzarsi, poi restituisce i comandi.
+        /// </summary>
+        IEnumerator GetUp()
+        {
+            yield return new WaitForSeconds(getUpDuration);
+            getUpRoutine = null;
+            if (creature != null && creature.IsDead) yield break;
+
+            IsDown = false;
+            SetBehaviours(true);
+            SetLocked(true);
+        }
 
         void SetBehaviours(bool enabled)
         {
             foreach (Behaviour b in localOnlyBehaviours)
+                if (b != null) b.enabled = enabled;
+        }
+
+        void SetLocked(bool enabled)
+        {
+            foreach (Behaviour b in lockedWhileDown)
                 if (b != null) b.enabled = enabled;
         }
 

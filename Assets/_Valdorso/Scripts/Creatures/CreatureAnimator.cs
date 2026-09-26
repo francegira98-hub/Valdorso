@@ -4,8 +4,11 @@ namespace Valdorso.Creatures
 {
     /// <summary>
     /// Traduce ciò che accade alla creatura (colpi, morte, attacchi, schivate, ostacoli) in animazioni.
-    /// Il livello "Combattimento" viene acceso solo mentre serve, così a riposo
-    /// restano intatte le animazioni di movimento del livello base.
+    /// Usa due livelli dell'Animator, accesi solo mentre servono:
+    /// - "Parte superiore" (con Avatar Mask): Attacco e Colpito, così le gambe continuano a camminare;
+    /// - "Combattimento" (corpo intero): Schivata, Scavalca, Sale e Morte.
+    /// Combattimento sta sopra Parte superiore nella lista dei livelli, quindi quando è acceso vince lui.
+    /// A riposo entrambi restano spenti e si vede solo il livello base.
     /// L'Animator deve avere i parametri: Attack, Hit, Dodge, Vault, Climb (Trigger), Dead (Bool).
     /// </summary>
     [RequireComponent(typeof(Creature))]
@@ -19,19 +22,24 @@ namespace Valdorso.Creatures
         static readonly int DeadHash = Animator.StringToHash("Dead");
 
         [SerializeField] Animator animator;
+        [Tooltip("Livello a corpo intero: schivata, scavalcata, salita, morte")]
         [SerializeField] string combatLayerName = "Combattimento";
+        [Tooltip("Livello con la maschera della parte superiore: attacco e colpo subito")]
+        [SerializeField] string upperLayerName = "Parte superiore";
+        [Tooltip("Nome dello stato di riposo, uguale in entrambi i livelli")]
         [SerializeField] string idleStateName = "Nessuna";
-        [Tooltip("Velocità con cui il livello di combattimento si accende e si spegne")]
+        [Tooltip("Velocità con cui i livelli si accendono e si spengono")]
         [SerializeField] float layerBlendSpeed = 12f;
 
         Creature creature;
         int combatLayer = -1;
+        int upperLayer = -1;
 
         void Awake()
         {
             creature = GetComponent<Creature>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
-            if (animator != null) combatLayer = animator.GetLayerIndex(combatLayerName);
+            FindLayers();
         }
 
         void OnEnable()
@@ -53,19 +61,38 @@ namespace Valdorso.Creatures
             if (animator == null) return;
             animator.SetBool(DeadHash, creature.IsDead);
             if (combatLayer >= 0) animator.SetLayerWeight(combatLayer, creature.IsDead ? 1f : 0f);
+            if (upperLayer >= 0) animator.SetLayerWeight(upperLayer, 0f);
         }
 
         void Update()
         {
-            if (animator == null || combatLayer < 0) return;
+            if (animator == null) return;
 
-            bool idle = animator.GetCurrentAnimatorStateInfo(combatLayer).IsName(idleStateName)
-                        && !animator.IsInTransition(combatLayer);
-            bool active = !idle || creature.IsDead;
+            // Il livello a corpo intero resta acceso anche da morti (posa a terra).
+            UpdateLayerWeight(combatLayer, creature.IsDead);
+            UpdateLayerWeight(upperLayer, false);
+        }
 
-            float current = animator.GetLayerWeight(combatLayer);
+        /// <summary>
+        /// Accende il livello se non è nello stato di riposo (o se forceOn è vero), altrimenti lo spegne piano.
+        /// </summary>
+        void UpdateLayerWeight(int layer, bool forceOn)
+        {
+            if (layer < 0) return;
+
+            bool idle = animator.GetCurrentAnimatorStateInfo(layer).IsName(idleStateName)
+                        && !animator.IsInTransition(layer);
+            bool active = !idle || forceOn;
+
+            float current = animator.GetLayerWeight(layer);
             float target = active ? 1f : 0f;
-            animator.SetLayerWeight(combatLayer, Mathf.MoveTowards(current, target, layerBlendSpeed * Time.deltaTime));
+            animator.SetLayerWeight(layer, Mathf.MoveTowards(current, target, layerBlendSpeed * Time.deltaTime));
+        }
+
+        void FindLayers()
+        {
+            combatLayer = animator != null ? animator.GetLayerIndex(combatLayerName) : -1;
+            upperLayer = animator != null ? animator.GetLayerIndex(upperLayerName) : -1;
         }
 
         /// <summary>
@@ -74,7 +101,7 @@ namespace Valdorso.Creatures
         public void SetAnimator(Animator newAnimator)
         {
             animator = newAnimator;
-            combatLayer = animator != null ? animator.GetLayerIndex(combatLayerName) : -1;
+            FindLayers();
             if (animator != null && creature != null) animator.SetBool(DeadHash, creature.IsDead);
         }
 
