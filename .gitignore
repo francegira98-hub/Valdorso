@@ -80,3 +80,6 @@ crashlytics-build.properties
 /[Aa]ssets/UMA/
 /[Aa]ssets/UMA.meta
 /[Aa]ssets/_Valdorso/Art/Animazioni/**/*.fbx
+
+   # File di Visual Studio (formato nuovo), rigenerato da Unity
+   *.slnx
