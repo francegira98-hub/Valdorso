@@ -19,6 +19,9 @@ namespace Valdorso.Creatures
         {
             networkAnimator = GetComponent<NetworkAnimator>();
             creatureAnimator = GetComponent<CreatureAnimator>();
+            // Collega subito l'Animator, prima che gli altri componenti lo cerchino:
+            // così funziona anche se nel prefab il collegamento si è rotto.
+            Rebind();
         }
 
         void FixedUpdate() => Rebind();
