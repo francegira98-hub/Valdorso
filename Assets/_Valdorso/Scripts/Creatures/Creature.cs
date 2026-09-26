@@ -26,11 +26,17 @@ namespace Valdorso.Creatures
         [SyncVar] string displayName;
         [SyncVar(hook = nameof(OnDeadSync))] bool isDead;
 
+        // NUOVO: fino a quando (sul server) la creatura non subisce danni, per esempio durante una schivata.
+        double invulnerableUntil;
+
         public string DisplayName => string.IsNullOrEmpty(displayName) ? defaultName : displayName;
         public FactionDefinition Faction => faction;
         public string FactionId => faction != null ? faction.Id : "neutrale";
         public bool IsDead => isDead;
         public CreatureStats Stats { get; private set; }
+
+        // NUOVO: vero mentre la creatura è intoccabile.
+        public bool IsInvulnerable => Time.timeAsDouble < invulnerableUntil;
 
         /// <summary>Scatta alla morte, sul server e su tutti i client.</summary>
         public event Action Died;
@@ -62,11 +68,19 @@ namespace Valdorso.Creatures
             if (!string.IsNullOrWhiteSpace(newName)) displayName = newName.Trim();
         }
 
+        /// <summary>NUOVO: per qualche istante la creatura non subisce danni (schivata, benedizioni...).</summary>
+        [Server]
+        public void SetInvulnerable(float seconds)
+        {
+            double until = Time.timeAsDouble + seconds;
+            if (until > invulnerableUntil) invulnerableUntil = until;
+        }
+
         /// <summary>Applica un colpo. Restituisce il danno effettivo.</summary>
         [Server]
         public float ReceiveDamage(DamageInfo info)
         {
-            if (isDead) return 0f;
+            if (isDead || IsInvulnerable) return 0f;
 
             float dealt = Stats.ApplyDamage(info.amount);
             if (dealt <= 0f) return 0f;

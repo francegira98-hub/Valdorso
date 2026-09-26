@@ -12,6 +12,7 @@ namespace Valdorso.Combat
     /// Attacco corpo a corpo. Il giocatore chiede di attaccare (clic sinistro),
     /// il server controlla stamina e tempi, fa partire l'animazione per tutti
     /// e decide chi viene colpito. Nessun client può inventarsi un colpo.
+    /// Durante una schivata non si attacca.
     /// </summary>
     [RequireComponent(typeof(Creature))]
     public class MeleeCombat : NetworkBehaviour
@@ -36,6 +37,7 @@ namespace Valdorso.Combat
 
         Creature creature;
         CreatureAnimator creatureAnimator;
+        DodgeRoll dodge; // NUOVO: per non attaccare durante la capriola
         double serverNextAttack;
         double localNextAttack;
         readonly Collider[] hitBuffer = new Collider[16];
@@ -45,11 +47,13 @@ namespace Valdorso.Combat
         {
             creature = GetComponent<Creature>();
             creatureAnimator = GetComponent<CreatureAnimator>();
+            dodge = GetComponent<DodgeRoll>(); // NUOVO
         }
 
         void Update()
         {
             if (!isLocalPlayer || creature.IsDead) return;
+            if (dodge != null && dodge.IsDodging) return; // NUOVO: niente attacchi mentre si rotola
             Mouse mouse = Mouse.current;
             if (mouse == null || !mouse.leftButton.wasPressedThisFrame) return;
             if (Time.timeAsDouble < localNextAttack) return;
@@ -63,6 +67,7 @@ namespace Valdorso.Combat
         {
             double now = Time.timeAsDouble;
             if (creature.IsDead || now < serverNextAttack - 0.05) return;
+            if (dodge != null && dodge.IsDodgingOnServer) return; // NUOVO: anche il server rifiuta
             if (!creature.Stats.TrySpend(VitalType.Stamina, staminaCost))
             {
                 TargetNotEnoughStamina();
