@@ -108,7 +108,9 @@ namespace Valdorso.EditorTools
             Button quit = AddButton(column, "Esci", "Esci", theme);
 
             TextMeshProUGUI status = AddText(canvas, "Stato", string.Empty, theme.textFont, 28f, theme.textSoft, TextAlignmentOptions.Center);
-            Place(status.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 110f), new Vector2(1200f, 120f));
+            Place(status.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 95f), new Vector2(1200f, 120f));
+            TextMeshProUGUI serverStatus = AddText(canvas, "StatoServer", "Server di Valdorso: verifica in corso...", theme.italicFont, 26f, theme.textSoft, TextAlignmentOptions.Center);
+            Place(serverStatus.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, 175f), new Vector2(1200f, 40f));
             TextMeshProUGUI version = AddText(canvas, "Versione", "v0.1", theme.italicFont, 24f, WithAlpha(theme.textSoft, 0.6f), TextAlignmentOptions.BottomRight);
             version.rectTransform.pivot = new Vector2(1f, 0f);
             Place(version.rectTransform, new Vector2(1f, 0f), new Vector2(-30f, 24f), new Vector2(400f, 40f));
@@ -126,6 +128,8 @@ namespace Valdorso.EditorTools
             so.FindProperty("versionText").objectReferenceValue = version;
             so.FindProperty("settingsPanel").objectReferenceValue = settingsPanel;
             so.FindProperty("loginPanel").objectReferenceValue = loginPanel;
+            so.FindProperty("serverStatusText").objectReferenceValue = serverStatus;
+            so.FindProperty("theme").objectReferenceValue = theme;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);

@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Threading.Tasks;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -9,7 +11,7 @@ using Valdorso.Server;
 namespace Valdorso.UI
 {
     /// <summary>
-    /// Menu principale: entrare nel mondo (dopo la finestra di accesso), impostazioni, uscita.
+    /// Menu principale: stato del server, entrare nel mondo (dopo la finestra di accesso), impostazioni, uscita.
     /// Il pulsante "Avvia server (sviluppo)" compare solo nell'editor e nelle build di sviluppo:
     /// nel gioco pubblicato esiste un solo server, quello ufficiale.
     /// Avviando il gioco con l'opzione -server, parte direttamente come server.
@@ -24,16 +26,21 @@ namespace Valdorso.UI
 
         [Header("Testi e pannelli")]
         [SerializeField] TMP_Text statusText;
+        [SerializeField] TMP_Text serverStatusText;
         [SerializeField] TMP_Text versionText;
         [SerializeField] GameObject settingsPanel;
         [SerializeField] LoginPanel loginPanel;
+        [SerializeField] ValdorsoTheme theme;
 
-        [Header("Dissolvenza")]
+        [Header("Tempi")]
         [Tooltip("Secondi per sfumare nel nero prima di entrare nel mondo")]
         [SerializeField] float fadeOutDuration = 0.4f;
+        [Tooltip("Ogni quanti secondi chiedere lo stato del server")]
+        [SerializeField] float serverStatusInterval = 5f;
 
         bool connecting;
         bool fadingOut;
+        bool querying;
 
         void Start()
         {
@@ -52,7 +59,12 @@ namespace Valdorso.UI
             if (loginPanel != null) loginPanel.Close();
             SetStatus(string.Empty);
 
-            if (HasCommandLineArg("-server")) StartDedicatedServer();
+            if (HasCommandLineArg("-server"))
+            {
+                StartDedicatedServer();
+                return;
+            }
+            StartCoroutine(PollServerStatus());
         }
 
         void Update()
@@ -92,6 +104,47 @@ namespace Valdorso.UI
                 }
             }
         }
+
+        // ---------- Stato del server ----------
+
+        IEnumerator PollServerStatus()
+        {
+            if (serverStatusText != null) serverStatusText.text = "Server di Valdorso: verifica in corso...";
+            var wait = new WaitForSecondsRealtime(serverStatusInterval);
+            while (true)
+            {
+                if (!connecting && !NetworkClient.active && !NetworkServer.active) _ = RefreshServerStatus();
+                yield return wait;
+            }
+        }
+
+        async Task RefreshServerStatus()
+        {
+            if (querying || serverStatusText == null) return;
+            querying = true;
+            ServerConfig config = ServerConfig.Current;
+            ServerStatusInfo info = await ServerStatusProbe.QueryAsync(config.serverAddress, config.statusPort);
+            querying = false;
+            if (this == null || serverStatusText == null) return; // il menu è stato chiuso nel frattempo
+
+            if (info == null)
+                ShowServerStatus("Server di Valdorso: chiuso", theme != null ? theme.blood : Color.red);
+            else if (info.version != Application.version)
+                ShowServerStatus($"Server di Valdorso: aperto, ma con la versione {info.version}. Aggiorna il gioco.", theme != null ? theme.ember : Color.yellow);
+            else
+                ShowServerStatus($"Server di Valdorso: aperto · {Adventurers(info.players)} nella valle", theme != null ? theme.life : Color.green);
+        }
+
+        void ShowServerStatus(string message, Color color)
+        {
+            serverStatusText.text = message;
+            serverStatusText.color = Color.Lerp(color, Color.white, 0.25f);
+        }
+
+        static string Adventurers(int count) =>
+            count == 0 ? "nessun avventuriero" : count == 1 ? "1 avventuriero" : $"{count} avventurieri";
+
+        // ---------- Accesso ----------
 
         void OpenLogin(bool asHost, string error)
         {

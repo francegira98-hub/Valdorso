@@ -16,6 +16,9 @@ namespace Valdorso.Network
         public string serverAddress = "localhost";
         public int port = 7777;
 
+        [UnityEngine.Tooltip("Porta per chiedere lo stato del server dal menu (UDP)")]
+        public int statusPort = 7778;
+
         const string FileName = "valdorso_config.json";
         static ServerConfig current;
 

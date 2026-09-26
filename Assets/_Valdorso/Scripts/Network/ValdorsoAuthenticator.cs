@@ -38,9 +38,6 @@ namespace Valdorso.Network
     /// </summary>
     public class ValdorsoAuthenticator : NetworkAuthenticator
     {
-        [Header("Solo per le prove nell'editor (da togliere al passo 2.7)")]
-        [SerializeField] string testUsername = "prova_archivio";
-        [SerializeField] string testPassword = "passwordProva1";
 
         [Tooltip("Secondi di attesa prima di chiudere la porta a un accesso sbagliato")]
         [SerializeField] float rejectDelay = 1f;
@@ -161,14 +158,6 @@ namespace Valdorso.Network
             bool create = pendingCreate;
             string inviteCode = pendingInviteCode;
 
-            if (string.IsNullOrEmpty(username) && Application.isEditor)
-            {
-                username = testUsername;
-                password = testPassword;
-                create = false;
-                inviteCode = null;
-                Debug.Log("[Valdorso] Nessun login inserito: uso l'account di prova dell'editor.");
-            }
 
             NetworkClient.Send(new LoginRequestMessage
             {
