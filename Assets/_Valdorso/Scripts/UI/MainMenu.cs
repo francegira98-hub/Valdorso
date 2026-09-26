@@ -4,11 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Valdorso.Network;
+using Valdorso.Server;
 
 namespace Valdorso.UI
 {
     /// <summary>
-    /// Menu principale: entrare nel mondo, impostazioni, uscita.
+    /// Menu principale: entrare nel mondo (dopo la finestra di accesso), impostazioni, uscita.
     /// Il pulsante "Avvia server (sviluppo)" compare solo nell'editor e nelle build di sviluppo:
     /// nel gioco pubblicato esiste un solo server, quello ufficiale.
     /// Avviando il gioco con l'opzione -server, parte direttamente come server.
@@ -25,6 +26,7 @@ namespace Valdorso.UI
         [SerializeField] TMP_Text statusText;
         [SerializeField] TMP_Text versionText;
         [SerializeField] GameObject settingsPanel;
+        [SerializeField] LoginPanel loginPanel;
 
         [Header("Dissolvenza")]
         [Tooltip("Secondi per sfumare nel nero prima di entrare nel mondo")]
@@ -39,14 +41,15 @@ namespace Valdorso.UI
             if (hostButton != null)
             {
                 hostButton.gameObject.SetActive(devTools);
-                hostButton.onClick.AddListener(StartDevServer);
+                hostButton.onClick.AddListener(() => OpenLogin(true, null));
             }
-            if (enterButton != null) enterButton.onClick.AddListener(EnterWorld);
+            if (enterButton != null) enterButton.onClick.AddListener(() => OpenLogin(false, null));
             if (settingsButton != null) settingsButton.onClick.AddListener(ToggleSettings);
             if (quitButton != null) quitButton.onClick.AddListener(Quit);
 
             if (versionText != null) versionText.text = $"v{Application.version}";
             if (settingsPanel != null) settingsPanel.SetActive(false);
+            if (loginPanel != null) loginPanel.Close();
             SetStatus(string.Empty);
 
             if (HasCommandLineArg("-server")) StartDedicatedServer();
@@ -78,12 +81,35 @@ namespace Valdorso.UI
                 fadingOut = false;
 
                 string reason = ValdorsoAuthenticator.LastError;
-                SetStatus(!string.IsNullOrEmpty(reason) ? reason :
-                    "Impossibile raggiungere il server.\nControlla l'indirizzo nel file valdorso_config.json e che il server sia acceso.");
+                if (!string.IsNullOrEmpty(reason))
+                {
+                    SetStatus(string.Empty);
+                    OpenLogin(false, reason); // la finestra si riapre con il motivo
+                }
+                else
+                {
+                    SetStatus("Impossibile raggiungere il server.\nControlla l'indirizzo nel file valdorso_config.json e che il server sia acceso.");
+                }
             }
         }
 
-        void EnterWorld()
+        void OpenLogin(bool asHost, string error)
+        {
+            if (NetworkClient.active || NetworkServer.active) return;
+            if (loginPanel == null)
+            {
+                SetStatus("Errore: manca la finestra di accesso nel menu.");
+                return;
+            }
+
+            loginPanel.Open((username, password, create) =>
+            {
+                if (asHost) StartDevServer(username, password, create);
+                else EnterWorld(username, password, create);
+            }, error);
+        }
+
+        void EnterWorld(string username, string password, bool create)
         {
             if (NetworkClient.active || NetworkServer.active) return;
             NetworkManager manager = GetManager();
@@ -91,6 +117,7 @@ namespace Valdorso.UI
 
             ServerConfig config = ServerConfig.Current;
             ApplyConfig(manager, config);
+            ValdorsoAuthenticator.SetCredentials(username, password, create);
 
             connecting = true;
             fadingOut = false;
@@ -99,11 +126,22 @@ namespace Valdorso.UI
             manager.StartClient();
         }
 
-        void StartDevServer()
+        void StartDevServer(string username, string password, bool create)
         {
             if (NetworkClient.active || NetworkServer.active) return;
             NetworkManager manager = GetManager();
             if (manager == null) return;
+
+            // Il server è questo PC: l'account si controlla subito, prima di avviare il mondo.
+            bool ok = create
+                ? AccountStore.TryCreate(username, password, out _, out string error)
+                : AccountStore.TryLogin(username, password, out _, out error);
+            if (!ok)
+            {
+                OpenLogin(true, error);
+                return;
+            }
+            ValdorsoAuthenticator.SetCredentials(username, password, false);
 
             ApplyConfig(manager, ServerConfig.Current);
             SetButtons(false);
@@ -113,7 +151,6 @@ namespace Valdorso.UI
             // Il server parte subito; il sipario si chiude mentre il mondo si carica.
             if (ScreenFader.Instance != null) ScreenFader.Instance.FadeOut(fadeOutDuration);
             manager.StartHost();
-            Debug.Log($"[Valdorso] Server avviato: {NetworkServer.active}, caricamento del mondo in corso.");
         }
 
         void StartDedicatedServer()

@@ -13,7 +13,8 @@ namespace Valdorso.EditorTools
 {
     /// <summary>
     /// Costruisce con un clic la schermata del menu principale nella scena Menu, nello stile "Oro e brace"
-    /// (menu di Unity: Valdorso → Crea schermata del menu principale).
+    /// (menu di Unity: Valdorso → Crea schermata del menu principale): titolo, motto, pulsanti,
+    /// finestra di accesso e pannello delle impostazioni.
     /// Colori, caratteri e immagini vengono dal Tema UI (Art/UI/Tema/TemaValdorso).
     /// Se la schermata esiste già, la ricrea da capo. Funziona solo nell'editor, non entra nel gioco.
     /// </summary>
@@ -21,6 +22,7 @@ namespace Valdorso.EditorTools
     {
         const string ThemePath = "Assets/_Valdorso/Art/UI/Tema/TemaValdorso.asset";
         const string RootName = "MenuCanvas";
+        const string Motto = "Ogni gesto lascia un segno, scegli chi diventare.";
 
         [MenuItem("Valdorso/Crea schermata del menu principale")]
         static void Build()
@@ -60,7 +62,7 @@ namespace Valdorso.EditorTools
             scaler.matchWidthOrHeight = 0.5f;
             Transform canvas = root.transform;
 
-            // Sfondo: colore scuro, bagliore dorato dietro il titolo, braci, bordi sfumati nel nero.
+            // Sfondo: colore scuro, bagliore caldo dietro il titolo, braci, bordi sfumati nel nero.
             Stretch(AddImage(canvas, "Sfondo", theme.background, null, false));
             RectTransform glow = AddImage(canvas, "Bagliore", WithAlpha(Color.Lerp(theme.gold, theme.ember, 0.35f), 0.11f), theme.glow, false);
             Place(glow, new Vector2(0.5f, 1f), new Vector2(0f, -260f), new Vector2(1500f, 760f));
@@ -70,7 +72,7 @@ namespace Valdorso.EditorTools
             SetField(embers, "theme", theme);
             Stretch(AddImage(canvas, "Vignetta", new Color(0f, 0f, 0f, 0.9f), theme.vignette, false));
 
-            // Titolo: ombra sotto, poi il titolo con la sfumatura dall'oro chiaro all'oro scuro.
+            // Titolo con ombra e sfumatura dorata, separatore, motto.
             TextMeshProUGUI shadow = AddText(canvas, "TitoloOmbra", "VALDORSO", theme.titleFont, 140f, new Color(0f, 0f, 0f, 0.7f), TextAlignmentOptions.Center);
             shadow.characterSpacing = 20f;
             Place(shadow.rectTransform, new Vector2(0.5f, 1f), new Vector2(4f, -236f), new Vector2(1500f, 210f));
@@ -82,7 +84,7 @@ namespace Valdorso.EditorTools
 
             RectTransform divider = AddImage(canvas, "Separatore", WithAlpha(theme.gold, 0.9f), theme.divider, false);
             Place(divider, new Vector2(0.5f, 1f), new Vector2(0f, -350f), new Vector2(620f, 38f));
-            TextMeshProUGUI motto = AddText(canvas, "Motto", "Ogni gesto lascia un segno, scegli chi diventare.", theme.italicFont, 30f, WithAlpha(theme.text, 0.8f), TextAlignmentOptions.Center);
+            TextMeshProUGUI motto = AddText(canvas, "Motto", Motto, theme.italicFont, 30f, WithAlpha(theme.text, 0.8f), TextAlignmentOptions.Center);
             Place(motto.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -400f), new Vector2(1200f, 50f));
 
             // Colonna dei pulsanti.
@@ -112,6 +114,7 @@ namespace Valdorso.EditorTools
             Place(version.rectTransform, new Vector2(1f, 0f), new Vector2(-30f, 24f), new Vector2(400f, 40f));
 
             GameObject settingsPanel = BuildSettingsPanel(canvas, theme);
+            LoginPanel loginPanel = BuildLoginPanel(canvas, theme);
 
             MainMenu menu = root.AddComponent<MainMenu>();
             var so = new SerializedObject(menu);
@@ -122,6 +125,7 @@ namespace Valdorso.EditorTools
             so.FindProperty("statusText").objectReferenceValue = status;
             so.FindProperty("versionText").objectReferenceValue = version;
             so.FindProperty("settingsPanel").objectReferenceValue = settingsPanel;
+            so.FindProperty("loginPanel").objectReferenceValue = loginPanel;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.MarkSceneDirty(scene);
@@ -129,18 +133,25 @@ namespace Valdorso.EditorTools
             Debug.Log("[Valdorso] Schermata del menu principale creata nello stile \"Oro e brace\". Salva la scena con Ctrl+S.");
         }
 
-        static GameObject BuildSettingsPanel(Transform canvas, ValdorsoTheme theme)
-        {
-            RectTransform veil = AddImage(canvas, "PannelloImpostazioni", new Color(0f, 0f, 0f, 0.7f), null, true);
-            Stretch(veil);
+        // ---------- Finestre ----------
 
+        static RectTransform BuildWindow(Transform canvas, string name, Vector2 size, ValdorsoTheme theme, out RectTransform veil)
+        {
+            veil = AddImage(canvas, name, new Color(0f, 0f, 0f, 0.75f), null, true);
+            Stretch(veil);
             RectTransform window = CreateUI("Finestra", veil);
-            Place(window, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 600f));
-            RectTransform fill = AddImage(window, "Fondo", theme.panel, null, true);
+            Place(window, new Vector2(0.5f, 0.5f), Vector2.zero, size);
+            RectTransform fill = AddImage(window, "Fondo", WithAlpha(theme.panel, 1f), null, true);
             Inset(fill, 6f);
             RectTransform frame = AddImage(window, "Cornice", theme.gold, theme.frame, false);
             Stretch(frame);
             MakeSliced(frame);
+            return window;
+        }
+
+        static GameObject BuildSettingsPanel(Transform canvas, ValdorsoTheme theme)
+        {
+            RectTransform window = BuildWindow(canvas, "PannelloImpostazioni", new Vector2(900f, 600f), theme, out RectTransform veil);
 
             TextMeshProUGUI title = AddText(window, "Titolo", "Impostazioni", theme.titleFont, 56f, theme.gold, TextAlignmentOptions.Center);
             Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -85f), new Vector2(800f, 90f));
@@ -158,13 +169,84 @@ namespace Valdorso.EditorTools
             return veil.gameObject;
         }
 
+        static LoginPanel BuildLoginPanel(Transform canvas, ValdorsoTheme theme)
+        {
+            RectTransform window = BuildWindow(canvas, "PannelloAccesso", new Vector2(780f, 880f), theme, out RectTransform veil);
+
+            RectTransform content = CreateUI("Contenuto", window);
+            Stretch(content);
+            var layout = content.gameObject.AddComponent<VerticalLayoutGroup>();
+            layout.padding = new RectOffset(70, 70, 50, 45);
+            layout.spacing = 12f;
+            layout.childAlignment = TextAnchor.UpperCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = false;
+
+            TextMeshProUGUI title = AddText(content, "Titolo", "Accedi", theme.titleFont, 52f, theme.gold, TextAlignmentOptions.Center);
+            Height(title.rectTransform, 76f);
+            RectTransform divider = AddImage(content, "Separatore", WithAlpha(theme.gold, 0.8f), theme.divider, false);
+            divider.GetComponent<Image>().preserveAspect = true;
+            Height(divider, 26f);
+            Height(CreateUI("Spazio", content), 6f);
+
+            AddLabel(content, "EtichettaNome", "Nome utente", theme);
+            TMP_InputField username = AddInputField(content, "NomeUtente", "Il tuo nome utente", false, theme);
+            AddLabel(content, "EtichettaPassword", "Password", theme);
+            TMP_InputField password = AddInputField(content, "Password", "La tua password", true, theme);
+
+            RectTransform confirmGroup = CreateUI("Conferma", content);
+            var groupLayout = confirmGroup.gameObject.AddComponent<VerticalLayoutGroup>();
+            groupLayout.spacing = 12f;
+            groupLayout.childControlWidth = true;
+            groupLayout.childControlHeight = true;
+            groupLayout.childForceExpandWidth = true;
+            groupLayout.childForceExpandHeight = false;
+            AddLabel(confirmGroup, "EtichettaConferma", "Ripeti la password", theme);
+            TMP_InputField confirm = AddInputField(confirmGroup, "ConfermaPassword", "Di nuovo la password", true, theme);
+
+            TextMeshProUGUI error = AddText(content, "Errore", string.Empty, theme.textFont, 26f, Color.Lerp(theme.blood, theme.text, 0.35f), TextAlignmentOptions.Center);
+            Height(error.rectTransform, 64f);
+
+            Button switchMode = AddTextButton(content, "CambiaModo", "Non hai un account? Creane uno", theme, out TextMeshProUGUI switchLabel);
+
+            RectTransform row = CreateUI("PulsantiFinestra", content);
+            Height(row, 76f);
+            var rowLayout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
+            rowLayout.spacing = 24f;
+            rowLayout.childControlWidth = true;
+            rowLayout.childControlHeight = true;
+            rowLayout.childForceExpandWidth = true;
+            rowLayout.childForceExpandHeight = true;
+            Button back = BuildButton(CreateUI("Indietro", row), "Indietro", theme);
+            RectTransform submitHolder = CreateUI("Conferma", row);
+            Button submit = BuildButton(submitHolder, "Entra", theme);
+            TMP_Text submitLabel = submitHolder.Find("Testo").GetComponent<TMP_Text>();
+
+            LoginPanel panel = veil.gameObject.AddComponent<LoginPanel>();
+            SetField(panel, "titleText", title);
+            SetField(panel, "usernameField", username);
+            SetField(panel, "passwordField", password);
+            SetField(panel, "confirmField", confirm);
+            SetField(panel, "confirmGroup", confirmGroup.gameObject);
+            SetField(panel, "errorText", error);
+            SetField(panel, "submitButton", submit);
+            SetField(panel, "submitLabel", submitLabel);
+            SetField(panel, "backButton", back);
+            SetField(panel, "switchModeButton", switchMode);
+            SetField(panel, "switchModeLabel", switchLabel);
+
+            veil.gameObject.SetActive(false);
+            return panel;
+        }
+
         // ---------- Mattoncini ----------
 
         static Button AddButton(Transform parent, string name, string label, ValdorsoTheme theme)
         {
             RectTransform holder = CreateUI(name, parent);
-            var element = holder.gameObject.AddComponent<LayoutElement>();
-            element.minHeight = element.preferredHeight = 80f;
+            Height(holder, 80f);
             return BuildButton(holder, label, theme);
         }
 
@@ -197,6 +279,78 @@ namespace Valdorso.EditorTools
             SetField(fx, "label", text);
             SetField(fx, "frame", frame.GetComponent<Image>());
             return button;
+        }
+
+        /// <summary>Pulsante fatto solo di testo, per i collegamenti come "Creane uno".</summary>
+        static Button AddTextButton(Transform parent, string name, string label, ValdorsoTheme theme, out TextMeshProUGUI text)
+        {
+            RectTransform holder = CreateUI(name, parent);
+            Height(holder, 44f);
+            Image hitArea = holder.gameObject.AddComponent<Image>();
+            hitArea.color = new Color(0f, 0f, 0f, 0f);
+
+            text = AddText(holder, "Testo", label, theme.italicFont, 26f, Color.white, TextAlignmentOptions.Center);
+            Stretch(text.rectTransform);
+
+            Button button = holder.gameObject.AddComponent<Button>();
+            button.targetGraphic = text;
+            ColorBlock colors = button.colors;
+            colors.normalColor = theme.textSoft;
+            colors.highlightedColor = theme.goldLight;
+            colors.pressedColor = theme.gold;
+            colors.selectedColor = theme.textSoft;
+            colors.disabledColor = WithAlpha(theme.textSoft, 0.4f);
+            colors.colorMultiplier = 1f;
+            colors.fadeDuration = theme.fadeDuration;
+            button.colors = colors;
+            return button;
+        }
+
+        static void AddLabel(Transform parent, string name, string label, ValdorsoTheme theme)
+        {
+            TextMeshProUGUI text = AddText(parent, name, label, theme.buttonFont, 22f, WithAlpha(theme.gold, 0.9f), TextAlignmentOptions.MidlineLeft);
+            Height(text.rectTransform, 30f);
+        }
+
+        /// <summary>Campo di testo "Oro e brace": fondo scuro, cornice dorata leggera, cursore oro.</summary>
+        static TMP_InputField AddInputField(Transform parent, string name, string placeholder, bool password, ValdorsoTheme theme)
+        {
+            RectTransform holder = CreateUI(name, parent);
+            Height(holder, 64f);
+            RectTransform fill = AddImage(holder, "Fondo", new Color(0f, 0f, 0f, 0.45f), null, true);
+            Stretch(fill);
+            RectTransform frame = AddImage(holder, "Cornice", WithAlpha(theme.gold, 0.4f), theme.buttonFrame, false);
+            Stretch(frame);
+            MakeSliced(frame);
+
+            RectTransform area = CreateUI("AreaTesto", holder);
+            area.anchorMin = Vector2.zero;
+            area.anchorMax = Vector2.one;
+            area.offsetMin = new Vector2(18f, 6f);
+            area.offsetMax = new Vector2(-18f, -6f);
+            area.gameObject.AddComponent<RectMask2D>();
+
+            TextMeshProUGUI hint = AddText(area, "Segnaposto", placeholder, theme.italicFont, 28f, WithAlpha(theme.textSoft, 0.5f), TextAlignmentOptions.MidlineLeft);
+            hint.textWrappingMode = TextWrappingModes.NoWrap;
+            Stretch(hint.rectTransform);
+            TextMeshProUGUI text = AddText(area, "Testo", string.Empty, theme.textFont, 30f, theme.text, TextAlignmentOptions.MidlineLeft);
+            text.textWrappingMode = TextWrappingModes.NoWrap;
+            Stretch(text.rectTransform);
+
+            var input = holder.gameObject.AddComponent<TMP_InputField>();
+            input.textViewport = area;
+            input.textComponent = text;
+            input.placeholder = hint;
+            input.targetGraphic = fill.GetComponent<Image>();
+            input.lineType = TMP_InputField.LineType.SingleLine;
+            input.contentType = password ? TMP_InputField.ContentType.Password : TMP_InputField.ContentType.Standard;
+            input.characterLimit = password ? 128 : 20;
+            input.richText = false;
+            input.customCaretColor = true;
+            input.caretColor = theme.goldLight;
+            input.caretWidth = 2;
+            input.selectionColor = WithAlpha(theme.gold, 0.35f);
+            return input;
         }
 
         static RectTransform CreateUI(string name, Transform parent)
@@ -237,6 +391,14 @@ namespace Valdorso.EditorTools
             text.raycastTarget = false;
             text.text = content;
             return text;
+        }
+
+        static void Height(RectTransform rt, float height)
+        {
+            LayoutElement element = rt.GetComponent<LayoutElement>();
+            if (element == null) element = rt.gameObject.AddComponent<LayoutElement>();
+            element.minHeight = element.preferredHeight = height;
+            element.flexibleHeight = 0f; // non si allarga per riempire lo spazio avanzato
         }
 
         static void SetField(Object target, string field, Object value)
