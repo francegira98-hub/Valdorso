@@ -3,10 +3,10 @@ using UnityEngine;
 namespace Valdorso.Creatures
 {
     /// <summary>
-    /// Traduce ciò che accade alla creatura (colpi, morte, attacchi, schivate) in animazioni.
+    /// Traduce ciò che accade alla creatura (colpi, morte, attacchi, schivate, ostacoli) in animazioni.
     /// Il livello "Combattimento" viene acceso solo mentre serve, così a riposo
     /// restano intatte le animazioni di movimento del livello base.
-    /// L'Animator deve avere i parametri: Attack (Trigger), Hit (Trigger), Dodge (Trigger), Dead (Bool).
+    /// L'Animator deve avere i parametri: Attack, Hit, Dodge, Vault, Climb (Trigger), Dead (Bool).
     /// </summary>
     [RequireComponent(typeof(Creature))]
     public class CreatureAnimator : MonoBehaviour
@@ -14,6 +14,8 @@ namespace Valdorso.Creatures
         static readonly int AttackHash = Animator.StringToHash("Attack");
         static readonly int HitHash = Animator.StringToHash("Hit");
         static readonly int DodgeHash = Animator.StringToHash("Dodge");
+        static readonly int VaultHash = Animator.StringToHash("Vault");
+        static readonly int ClimbHash = Animator.StringToHash("Climb");
         static readonly int DeadHash = Animator.StringToHash("Dead");
 
         [SerializeField] Animator animator;
@@ -76,20 +78,17 @@ namespace Valdorso.Creatures
             if (animator != null && creature != null) animator.SetBool(DeadHash, creature.IsDead);
         }
 
-        public void PlayAttack()
+        public void PlayAttack() => Trigger(AttackHash);
+        public void PlayDodge() => Trigger(DodgeHash);
+        public void PlayVault() => Trigger(VaultHash);
+        public void PlayClimb() => Trigger(ClimbHash);
+
+        void Trigger(int hash)
         {
-            if (animator != null && !creature.IsDead) animator.SetTrigger(AttackHash);
+            if (animator != null && !creature.IsDead) animator.SetTrigger(hash);
         }
 
-        public void PlayDodge()
-        {
-            if (animator != null && !creature.IsDead) animator.SetTrigger(DodgeHash);
-        }
-
-        void OnDamaged(float amount)
-        {
-            if (animator != null && !creature.IsDead) animator.SetTrigger(HitHash);
-        }
+        void OnDamaged(float amount) => Trigger(HitHash);
 
         void OnDied()
         {
@@ -97,6 +96,8 @@ namespace Valdorso.Creatures
             animator.ResetTrigger(AttackHash);
             animator.ResetTrigger(HitHash);
             animator.ResetTrigger(DodgeHash);
+            animator.ResetTrigger(VaultHash);
+            animator.ResetTrigger(ClimbHash);
             animator.SetBool(DeadHash, true);
         }
 

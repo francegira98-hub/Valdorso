@@ -83,3 +83,6 @@ crashlytics-build.properties
 
 # File di Visual Studio (formato nuovo), rigenerato da Unity
 *.slnx
+
+# File creati dal pacchetto Performance Testing durante le build
+/[Aa]ssets/Resources/PerformanceTestRun*
