@@ -65,6 +65,12 @@ namespace Valdorso.UI
             if (mode == LoadSceneMode.Single) Fade(1f, 0f, FadeInDuration, null);
         }
 
+        /// <summary>Riapre il sipario (per esempio se l'ingresso nel mondo è fallito).</summary>
+        public void FadeIn(float duration = FadeInDuration)
+        {
+            Fade(veil.color.a, 0f, duration, null);
+        }
+
         /// <summary>Sfuma verso il nero, poi (se indicata) esegue un'azione.</summary>
         public void FadeOut(float duration, Action then = null)
         {

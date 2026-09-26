@@ -4,6 +4,7 @@ using Mirror;
 using UnityEngine;
 using Valdorso.Stats;
 using Valdorso.WorldEvents;
+using Valdorso.Network;
 
 namespace Valdorso.Creatures
 {
@@ -54,7 +55,12 @@ namespace Valdorso.Creatures
         {
             all.Add(this);
             if (string.IsNullOrEmpty(displayName))
-                displayName = connectionToClient != null ? $"Giocatore {++playerCounter}" : defaultName;
+            {
+                if (connectionToClient?.authenticationData is AccountSession session)
+                    displayName = session.username;
+                else
+                    displayName = connectionToClient != null ? $"Giocatore {++playerCounter}" : defaultName;
+            }
         }
 
         public override void OnStopServer()

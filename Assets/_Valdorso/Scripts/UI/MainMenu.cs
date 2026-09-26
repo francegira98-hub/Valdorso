@@ -58,8 +58,10 @@ namespace Valdorso.UI
 
             if (NetworkClient.isConnected)
             {
-                SetStatus("Ingresso nel mondo...");
-                if (!fadingOut && ScreenFader.Instance != null)
+                // La connessione è aperta, ma si entra solo dopo il via libera del portiere.
+                bool authenticated = NetworkClient.connection != null && NetworkClient.connection.isAuthenticated;
+                SetStatus(authenticated ? "Ingresso nel mondo..." : "Accesso in corso...");
+                if (authenticated && !fadingOut && ScreenFader.Instance != null)
                 {
                     fadingOut = true;
                     ScreenFader.Instance.FadeOut(fadeOutDuration);
@@ -67,12 +69,17 @@ namespace Valdorso.UI
                 return;
             }
 
-            // Il tentativo è finito senza connessione: il server non ha risposto.
+            // Il tentativo è finito senza entrare: server irraggiungibile o accesso rifiutato.
             if (!NetworkClient.active)
             {
                 connecting = false;
                 SetButtons(true);
-                SetStatus("Impossibile raggiungere il server.\nControlla l'indirizzo nel file valdorso_config.json e che il server sia acceso.");
+                if (fadingOut && ScreenFader.Instance != null) ScreenFader.Instance.FadeIn();
+                fadingOut = false;
+
+                string reason = ValdorsoAuthenticator.LastError;
+                SetStatus(!string.IsNullOrEmpty(reason) ? reason :
+                    "Impossibile raggiungere il server.\nControlla l'indirizzo nel file valdorso_config.json e che il server sia acceso.");
             }
         }
 

@@ -1857,6 +1857,7 @@ GameObject:
   - component: {fileID: 998197132}
   - component: {fileID: 998197130}
   - component: {fileID: 998197134}
+  - component: {fileID: 998197135}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -1918,7 +1919,7 @@ MonoBehaviour:
   maxConnections: 100
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
-  authenticator: {fileID: 0}
+  authenticator: {fileID: 998197135}
   playerPrefab: {fileID: 4707411985274906169, guid: 7a7f19bf5fc3bf34ab435afc5b06e77b, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
@@ -1970,6 +1971,27 @@ MonoBehaviour:
   ClientTrustedPubKeySignatures: []
   ServerLoadKeyPairFromFile: 0
   ServerKeypairPath: ./server-keys.json
+--- !u!114 &998197135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998197129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0714cb99ac82866439077911d8feb48d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Network.ValdorsoAuthenticator
+  OnServerAuthenticated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClientAuthenticated:
+    m_PersistentCalls:
+      m_Calls: []
+  testUsername: prova_archivio
+  testPassword: passwordProva1
+  rejectDelay: 1
 --- !u!1 &1045729258
 GameObject:
   m_ObjectHideFlags: 0

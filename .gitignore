@@ -90,3 +90,6 @@ crashlytics-build.properties
 /valdorso_config.json
 
 /server-keys.json
+
+/Salvataggi/
+/valdorso_server.json
