@@ -65,7 +65,18 @@ namespace Valdorso.Creatures
             animator.SetLayerWeight(combatLayer, Mathf.MoveTowards(current, target, layerBlendSpeed * Time.deltaTime));
         }
 
+        /// <summary>
+        /// Usa un nuovo Animator (per esempio quello ricreato da UMA).
+        /// </summary>
+        public void SetAnimator(Animator newAnimator)
+        {
+            animator = newAnimator;
+            combatLayer = animator != null ? animator.GetLayerIndex(combatLayerName) : -1;
+            if (animator != null && creature != null) animator.SetBool(DeadHash, creature.IsDead);
+        }
+
         public void PlayAttack()
+                    
         {
             if (animator != null && !creature.IsDead) animator.SetTrigger(AttackHash);
         }
