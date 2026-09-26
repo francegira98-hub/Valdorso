@@ -26,7 +26,12 @@ namespace Valdorso.UI
         [SerializeField] TMP_Text versionText;
         [SerializeField] GameObject settingsPanel;
 
+        [Header("Dissolvenza")]
+        [Tooltip("Secondi per sfumare nel nero prima di entrare nel mondo")]
+        [SerializeField] float fadeOutDuration = 0.4f;
+
         bool connecting;
+        bool fadingOut;
 
         void Start()
         {
@@ -54,6 +59,11 @@ namespace Valdorso.UI
             if (NetworkClient.isConnected)
             {
                 SetStatus("Ingresso nel mondo...");
+                if (!fadingOut && ScreenFader.Instance != null)
+                {
+                    fadingOut = true;
+                    ScreenFader.Instance.FadeOut(fadeOutDuration);
+                }
                 return;
             }
 
@@ -76,6 +86,7 @@ namespace Valdorso.UI
             ApplyConfig(manager, config);
 
             connecting = true;
+            fadingOut = false;
             SetButtons(false);
             SetStatus($"Connessione a {config.serverAddress}...");
             manager.StartClient();
@@ -88,8 +99,14 @@ namespace Valdorso.UI
             if (manager == null) return;
 
             ApplyConfig(manager, ServerConfig.Current);
+            SetButtons(false);
             SetStatus("Avvio del server...");
+            Debug.Log($"[Valdorso] Avvio del server di sviluppo sulla porta {ServerConfig.Current.port}.");
+
+            // Il server parte subito; il sipario si chiude mentre il mondo si carica.
+            if (ScreenFader.Instance != null) ScreenFader.Instance.FadeOut(fadeOutDuration);
             manager.StartHost();
+            Debug.Log($"[Valdorso] Server avviato: {NetworkServer.active}, caricamento del mondo in corso.");
         }
 
         void StartDedicatedServer()

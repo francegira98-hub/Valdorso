@@ -82,6 +82,8 @@ namespace Valdorso.EditorTools
 
             RectTransform divider = AddImage(canvas, "Separatore", WithAlpha(theme.gold, 0.9f), theme.divider, false);
             Place(divider, new Vector2(0.5f, 1f), new Vector2(0f, -350f), new Vector2(620f, 38f));
+            TextMeshProUGUI motto = AddText(canvas, "Motto", "Ogni gesto lascia un segno, scegli chi diventare.", theme.italicFont, 30f, WithAlpha(theme.text, 0.8f), TextAlignmentOptions.Center);
+            Place(motto.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -400f), new Vector2(1200f, 50f));
 
             // Colonna dei pulsanti.
             RectTransform column = CreateUI("Pulsanti", canvas);
