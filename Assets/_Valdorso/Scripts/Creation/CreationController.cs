@@ -108,6 +108,19 @@ namespace Valdorso.Creation
             ("Orecchie", new[] { "earsSize" })
         };
 
+        // Le fedi che un colono può dichiarare al sacerdote (la chiave va al server, che accetta solo queste).
+        // Gli dei oscuri non compaiono: nessuno li pronuncia davanti al sacerdote.
+        static readonly (string key, string label, string text)[] Faiths =
+        {
+            ("Solara", "Solara", "La prima luce: giustizia e guarigione. È la fede della corona di Aurelia; la seguono guaritori, cavalieri e inquisitori."),
+            ("Ignar", "Ignar", "Il primo fuoco, che forgia e distrugge. Lo pregano fabbri e soldati prima del lavoro e della battaglia."),
+            ("Nereia", "Nereia", "La prima acqua, che viaggia e ritorna. Pescatori, marinai e mercanti le affidano ogni partenza."),
+            ("Torvald", "Torvald", "La prima terra, paziente, che nutre e custodisce. Contadini, minatori e artigiani gli offrono il primo raccolto."),
+            ("Zefira", "Zefira", "Il primo vento, libero, che porta le voci da un capo all'altro del mondo. La amano viaggiatori, corrieri e bardi."),
+            ("Vecchi Dei", "Vecchi Dei", "Gli spiriti della foresta, più antichi di ogni nome. Il più grande era l'Orso, che morì difendendo questa valle."),
+            ("", "Nessuna fede", "Il sacerdote scrive una sola parola: nessuna. Nella valle non è un crimine, ma qualcuno lo noterà.")
+        };
+
         // I colori (nomi dei colori condivisi di UMA: Skin, Hair, Eyes). Bianco = il colore naturale della texture.
         static readonly (string label, Color color)[] SkinTones =
         {
@@ -164,6 +177,9 @@ namespace Valdorso.Creation
         GameObject beardColorRow;
         readonly List<Slider> featureSliders = new List<Slider>();
         bool dnaChecked;
+        int faithIndex = 6; // nessuna fede, finché non si sceglie
+        readonly List<Button> faithButtons = new List<Button>();
+        TMP_Text faithText;
         TMP_Text hairValue, beardValue, browValue, markValue;
         GameObject beardRow;
         readonly List<Image> skinMarks = new List<Image>(), hairColorMarks = new List<Image>(), beardColorMarks = new List<Image>(), eyeMarks = new List<Image>();
@@ -388,6 +404,7 @@ namespace Valdorso.Creation
             pages.Add(BuildBodyPage(sheet));
             pages.Add(BuildFacePage(sheet));
             pages.Add(BuildFeaturesPage(sheet));
+            pages.Add(BuildFaithPage(sheet));
             pages.Add(BuildSignPage(sheet));
 
             // In fondo: avanti, indietro e numero di pagina.
@@ -423,7 +440,7 @@ namespace Valdorso.Creation
         GameObject BuildSignPage(RectTransform sheet)
         {
             RectTransform page = Box(sheet, "Pagina_Firma", new Vector2(0f, -170f), new Vector2(700f, 640f));
-            Label(page, "V  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "VI  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
             Label(page, "La corona di Aurelia concede terra e protezione a chi ha il coraggio di restare nella valle.",
                 ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
 
@@ -518,6 +535,37 @@ namespace Valdorso.Creation
             Button reset = MakeButton(page, "VOLTO DI BASE", new Vector2(370f, y - 10f), new Vector2(270f, 48f), 20f);
             reset.onClick.AddListener(() => { foreach (Slider s in featureSliders) s.SetValueWithoutNotify(0.5f); ScheduleLook(0.05f); });
             return page.gameObject;
+        }
+
+        GameObject BuildFaithPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Fede", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "V  ·  LA FEDE", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "Ogni dio lasciò ai popoli una parte del suo potere. A chi rivolgi le tue preghiere?",
+                ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
+
+            for (int i = 0; i < Faiths.Length; i++)
+            {
+                int index = i;
+                int col = i % 2, row = i / 2;
+                Button button = MakeButton(page, Faiths[i].label.ToUpperInvariant(), new Vector2(60f + col * 300f, -160f - row * 54f), new Vector2(280f, 46f), 21f);
+                button.onClick.AddListener(() => { if (busy) return; faithIndex = index; RefreshFaith(); });
+                faithButtons.Add(button);
+            }
+
+            faithText = Label(page, string.Empty, TextFont, 24f, Ink, new Vector2(60f, -390f), new Vector2(580f, 120f), TextAlignmentOptions.TopLeft);
+            Label(page, "Nessun colono pronuncia davanti al sacerdote i nomi che non si pronunciano.",
+                ItalicFont, 21f, Fade(Ink, 0.7f), new Vector2(60f, -525f), new Vector2(580f, 60f), TextAlignmentOptions.TopLeft);
+            Label(page, "Per ora la fede non dà poteri: è ciò in cui il tuo personaggio crede.",
+                ItalicFont, 19f, Fade(Ink, 0.6f), new Vector2(60f, -585f), new Vector2(580f, 40f), TextAlignmentOptions.TopLeft);
+            RefreshFaith();
+            return page.gameObject;
+        }
+
+        void RefreshFaith()
+        {
+            for (int i = 0; i < faithButtons.Count; i++) MarkSelected(faithButtons[i], i == faithIndex);
+            if (faithText != null) faithText.text = Faiths[faithIndex].text;
         }
 
         void RandomFace()
@@ -806,7 +854,7 @@ namespace Valdorso.Creation
                 $"Capelli {(female ? FemaleHair : MaleHair)[hairIndex].label}, {HairColors[hairColorIndex].label}; occhi {EyeColors[eyeIndex].label}\n" +
                 "Origine:  Popolano\n" +
                 "Razza:  Umano\n" +
-                "Fede:  nessuna, per ora";
+                $"Fede:  {(Faiths[faithIndex].key.Length > 0 ? Faiths[faithIndex].label : "nessuna")}";
             statusText.text = string.Empty;
         }
 
@@ -821,9 +869,9 @@ namespace Valdorso.Creation
             busy = true;
             SetButtons(false);
             statusText.text = "Il sacerdote scrive il tuo nome nel registro...";
-            // L'aspetto scelto parte come ricetta UMA; la fede arriverà con la sua pagina (passo 5.5).
+            // L'aspetto scelto parte come ricetta UMA, insieme alla fede.
             string recipe = ChosenRecipe();
-            ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, string.Empty, recipe, OnCreated);
+            ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, Faiths[faithIndex].key, recipe, OnCreated);
         }
 
         void OnCreated(bool success, string message, string characterId)
@@ -847,6 +895,7 @@ namespace Valdorso.Creation
             backButton.interactable = interactable;
             nextButton.interactable = interactable;
             if (maleButton != null) maleButton.interactable = interactable;
+            foreach (Button b in faithButtons) b.interactable = interactable;
             if (femaleButton != null) femaleButton.interactable = interactable;
         }
 

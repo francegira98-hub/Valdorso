@@ -4528,6 +4528,8 @@ MonoBehaviour:
   timeInterpolationGui: 0
   autosaveInterval: 60
   revivedHealthFraction: 0.25
+  creationScene: Creazione
+  maxRecipeLength: 8000
 --- !u!4 &998197133
 Transform:
   m_ObjectHideFlags: 0

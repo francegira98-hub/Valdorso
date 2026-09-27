@@ -36,6 +36,9 @@ namespace Valdorso.Network
             public double lastSaveTime;
         }
 
+        // Le fedi che il sacerdote scrive nel registro (vuoto = nessuna). Gli dei oscuri non si dichiarano.
+        static readonly HashSet<string> AllowedFaiths = new HashSet<string> { "", "Solara", "Ignar", "Nereia", "Torvald", "Zefira", "Vecchi Dei" };
+
         readonly Dictionary<NetworkConnectionToClient, ActiveCharacter> active = new Dictionary<NetworkConnectionToClient, ActiveCharacter>();
         double nextAutosave;
 
@@ -134,7 +137,11 @@ namespace Valdorso.Network
                 return;
             }
             string faith = (msg.faith ?? string.Empty).Trim();
-            if (faith.Length > 40) faith = faith.Substring(0, 40);
+            if (!AllowedFaiths.Contains(faith))
+            {
+                RefuseCreation(conn, "Il sacerdote non conosce questa fede.");
+                return;
+            }
 
             CharacterRecord created = null;
             string error = null;
