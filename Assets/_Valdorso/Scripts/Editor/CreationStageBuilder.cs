@@ -224,6 +224,11 @@ namespace Valdorso.EditorTools
             volume.priority = 10f;
             volume.sharedProfile = BuildProfile();
 
+            // Il regista della scena: spegne il mondo, mostra il registro, fa entrare il personaggio.
+            CreationController controller = root.AddComponent<CreationController>();
+            SetFields(controller, ("theme", theme), ("stageCamera", cam), ("fogColor", NightColor),
+                ("fogDensity", 0.14f), ("ambientColor", new Color(0.05f, 0.055f, 0.07f)));
+
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildScenes();
             EditorUtility.ClearProgressBar();
