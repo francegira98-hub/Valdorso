@@ -83,6 +83,8 @@ namespace Valdorso.Network
 
             GameObject player = Instantiate(playerPrefab, position, rotation);
             player.name = $"{playerPrefab.name} [{character.name}]";
+            // L'aspetto salvato nella scheda parte insieme al personaggio, così ogni PC lo riceve subito.
+            if (player.TryGetComponent(out UmaAppearance appearance)) appearance.SetRecipeOnServer(character.appearanceRecipe);
             NetworkServer.AddPlayerForConnection(conn, player);
 
             if (player.TryGetComponent(out Creature creature)) creature.SetDisplayName(character.name);
@@ -176,6 +178,9 @@ namespace Valdorso.Network
                 c.mana = stats.Mana;
             }
             if (entry.player.TryGetComponent(out Creature creature)) c.isDead = creature.IsDead;
+            // L'aspetto (anche quello casuale appena inventato) torna nella scheda.
+            if (entry.player.TryGetComponent(out UmaAppearance appearance) && !string.IsNullOrEmpty(appearance.Recipe))
+                c.appearanceRecipe = appearance.Recipe;
 
             double now = Time.unscaledTimeAsDouble;
             c.playTimeSeconds += now - entry.lastSaveTime;
