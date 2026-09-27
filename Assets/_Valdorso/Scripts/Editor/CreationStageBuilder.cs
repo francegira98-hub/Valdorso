@@ -228,6 +228,9 @@ namespace Valdorso.EditorTools
             CreationController controller = root.AddComponent<CreationController>();
             SetFields(controller, ("theme", theme), ("stageCamera", cam), ("fogColor", NightColor),
                 ("fogDensity", 0.14f), ("ambientColor", new Color(0.05f, 0.055f, 0.07f)));
+            EditorUtility.SetDirty(controller);
+            if (new SerializedObject(controller).FindProperty("theme").objectReferenceValue == null)
+                Debug.LogWarning("[Valdorso] Il Tema UI non è entrato nel Creation Controller: trascina TemaValdorso nel campo Theme.");
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             AddToBuildScenes();
