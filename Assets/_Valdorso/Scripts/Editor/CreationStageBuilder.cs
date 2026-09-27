@@ -231,6 +231,9 @@ namespace Valdorso.EditorTools
 
             // Il regista della scena: spegne il mondo, mostra il registro, fa entrare il personaggio.
             CreationController controller = root.AddComponent<CreationController>();
+            // Il tema si ricarica qui: salvare il profilo dell'atmosfera (poco sopra) fa rileggere gli asset a Unity,
+            // e il riferimento preso all'inizio può non valere più (per questo il campo Theme restava vuoto).
+            theme = AssetDatabase.LoadAssetAtPath<ValdorsoTheme>(ThemePath);
             SetFields(controller, ("theme", theme), ("stageCamera", cam), ("fogColor", NightColor),
                 ("fogDensity", 0.14f), ("ambientColor", new Color(0.05f, 0.055f, 0.07f)));
             EditorUtility.SetDirty(controller);

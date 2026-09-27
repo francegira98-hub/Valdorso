@@ -96,6 +96,18 @@ namespace Valdorso.Creation
             ("cicatrice", "Scar3_U_Wardrobe"), ("cicatrice profonda", "Scar4_U_Wardrobe")
         };
 
+        // I lineamenti: (nome nel registro, misure del DNA di UMA che muove). Il cursore va da 0 a 1, a metà è il volto di base.
+        static readonly (string label, string[] dna)[] Features =
+        {
+            ("Forma del viso", new[] { "headWidth", "foreheadSize" }),
+            ("Naso", new[] { "noseSize", "noseWidth", "nosePronounced" }),
+            ("Zigomi", new[] { "cheekSize", "lowCheekPronounced" }),
+            ("Mascella e mento", new[] { "jawsSize", "mandibleSize", "chinPronounced" }),
+            ("Occhi", new[] { "eyeSize", "eyeSpacing" }),
+            ("Bocca", new[] { "mouthSize", "lipsSize" }),
+            ("Orecchie", new[] { "earsSize" })
+        };
+
         // I colori (nomi dei colori condivisi di UMA: Skin, Hair, Eyes). Bianco = il colore naturale della texture.
         static readonly (string label, Color color)[] SkinTones =
         {
@@ -150,6 +162,8 @@ namespace Valdorso.Creation
         int hairIndex, beardIndex, browIndex, markIndex;
         int skinIndex, hairColorIndex = 1, beardColorIndex = 1, eyeIndex;
         GameObject beardColorRow;
+        readonly List<Slider> featureSliders = new List<Slider>();
+        bool dnaChecked;
         TMP_Text hairValue, beardValue, browValue, markValue;
         GameObject beardRow;
         readonly List<Image> skinMarks = new List<Image>(), hairColorMarks = new List<Image>(), beardColorMarks = new List<Image>(), eyeMarks = new List<Image>();
@@ -373,6 +387,7 @@ namespace Valdorso.Creation
             pages.Add(BuildNamePage(sheet));
             pages.Add(BuildBodyPage(sheet));
             pages.Add(BuildFacePage(sheet));
+            pages.Add(BuildFeaturesPage(sheet));
             pages.Add(BuildSignPage(sheet));
 
             // In fondo: avanti, indietro e numero di pagina.
@@ -408,7 +423,7 @@ namespace Valdorso.Creation
         GameObject BuildSignPage(RectTransform sheet)
         {
             RectTransform page = Box(sheet, "Pagina_Firma", new Vector2(0f, -170f), new Vector2(700f, 640f));
-            Label(page, "IV  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "V  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
             Label(page, "La corona di Aurelia concede terra e protezione a chi ha il coraggio di restare nella valle.",
                 ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
 
@@ -475,6 +490,60 @@ namespace Valdorso.Creation
 
             RefreshFaceValues();
             return page.gameObject;
+        }
+
+        GameObject BuildFeaturesPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Lineamenti", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "IV  ·  I LINEAMENTI", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "Non ci sono due volti uguali nella valle: anche i gemelli, gli anziani li distinguono.",
+                ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
+
+            float y = -160f;
+            foreach (var feature in Features)
+            {
+                TMP_Text title = Label(page, feature.label, TextFont, 24f, Ink, new Vector2(60f, y - 2f), new Vector2(210f, 36f), TextAlignmentOptions.Left);
+                title.textWrappingMode = TextWrappingModes.NoWrap;
+                title.enableAutoSizing = true;
+                title.fontSizeMin = 16f;
+                title.fontSizeMax = 24f;
+                Slider slider = MakeSlider(page, new Vector2(290f, y), 350f, null, null);
+                slider.onValueChanged.AddListener(_ => ScheduleLook(0.2f));
+                featureSliders.Add(slider);
+                y -= 56f;
+            }
+
+            Button random = MakeButton(page, "UN VOLTO A CASO", new Vector2(60f, y - 10f), new Vector2(290f, 48f), 20f);
+            random.onClick.AddListener(RandomFace);
+            Button reset = MakeButton(page, "VOLTO DI BASE", new Vector2(370f, y - 10f), new Vector2(270f, 48f), 20f);
+            reset.onClick.AddListener(() => { foreach (Slider s in featureSliders) s.SetValueWithoutNotify(0.5f); ScheduleLook(0.05f); });
+            return page.gameObject;
+        }
+
+        void RandomFace()
+        {
+            if (busy) return;
+            // La media di due tiri: quasi sempre vicino al centro, ogni tanto un tratto più deciso.
+            foreach (Slider slider in featureSliders)
+                slider.SetValueWithoutNotify((Random.value + Random.value) * 0.5f);
+            ScheduleLook(0.05f);
+        }
+
+        // Una volta sola: avvisa in Console se questa versione di UMA non conosce qualcuna delle misure usate.
+        void CheckDnaNames()
+        {
+            if (dnaChecked || preview == null) return;
+            dnaChecked = true;
+            var known = preview.GetDNA();
+            var missing = new List<string>();
+            foreach (var feature in Features)
+                foreach (string name in feature.dna)
+                    if (!known.ContainsKey(name)) missing.Add(name);
+            if (missing.Count > 0)
+                Debug.LogWarning($"[Valdorso] Misure del volto che UMA non conosce per {preview.activeRace.name}: {string.Join(", ", missing)}. " +
+                                 $"Quelle che conosce: {string.Join(", ", known.Keys)}");
+            else
+                Debug.Log("[Valdorso] Tutte le misure dei lineamenti sono riconosciute da UMA.");
         }
 
         static int Step(int index, int delta, int count) => ((index + delta) % count + count) % count;
@@ -591,7 +660,7 @@ namespace Valdorso.Creation
         {
             float h = heightSlider != null ? heightSlider.value : 0.5f;
             float b = buildSlider != null ? buildSlider.value : 0.5f;
-            return new AvatarDefinition
+            var look = new AvatarDefinition
             {
                 RaceName = female ? FemaleRace : MaleRace,
                 Wardrobe = ChosenWardrobe(),
@@ -607,6 +676,13 @@ namespace Valdorso.Creation
                     new DnaDef("waist", Mathf.Lerp(0.4f, 0.6f, b))
                 }
             };
+            // I lineamenti: ogni cursore muove le sue misure intorno al valore di base (0,5).
+            var dna = new List<DnaDef>(look.Dna);
+            for (int i = 0; i < Features.Length && i < featureSliders.Count; i++)
+                foreach (string name in Features[i].dna)
+                    dna.Add(new DnaDef(name, Mathf.Lerp(0.3f, 0.7f, featureSliders[i].value)));
+            look.Dna = dna.ToArray();
+            return look;
         }
 
         string[] ChosenWardrobe()
@@ -671,7 +747,9 @@ namespace Valdorso.Creation
             if (busy) return;
             currentPage = Mathf.Clamp(index, 0, pages.Count - 1);
             for (int i = 0; i < pages.Count; i++) pages[i].SetActive(i == currentPage);
-            faceShot = pages[currentPage].name == "Pagina_Volto";
+            string pageName = pages[currentPage].name;
+            faceShot = pageName == "Pagina_Volto" || pageName == "Pagina_Lineamenti";
+            if (pageName == "Pagina_Lineamenti") CheckDnaNames();
 
             bool last = currentPage == pages.Count - 1;
             backButton.gameObject.SetActive(currentPage > 0);
@@ -910,8 +988,10 @@ namespace Valdorso.Creation
             colors.highlightedColor = new Color(1f, 0.95f, 0.8f);
             slider.colors = colors;
 
-            Label(parent, leftWord, ItalicFont, 20f, Fade(Ink, 0.7f), topLeft + new Vector2(0f, -30f), new Vector2(200f, 28f), TextAlignmentOptions.Left);
-            Label(parent, rightWord, ItalicFont, 20f, Fade(Ink, 0.7f), topLeft + new Vector2(width - 200f, -30f), new Vector2(200f, 28f), TextAlignmentOptions.Right);
+            if (leftWord != null)
+                Label(parent, leftWord, ItalicFont, 20f, Fade(Ink, 0.7f), topLeft + new Vector2(0f, -30f), new Vector2(200f, 28f), TextAlignmentOptions.Left);
+            if (rightWord != null)
+                Label(parent, rightWord, ItalicFont, 20f, Fade(Ink, 0.7f), topLeft + new Vector2(width - 200f, -30f), new Vector2(200f, 28f), TextAlignmentOptions.Right);
 
             rect.gameObject.SetActive(true);
             return slider;
