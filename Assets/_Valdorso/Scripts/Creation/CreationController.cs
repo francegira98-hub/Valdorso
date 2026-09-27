@@ -97,16 +97,25 @@ namespace Valdorso.Creation
             ("cicatrice", "Scar3_U_Wardrobe"), ("cicatrice profonda", "Scar4_U_Wardrobe")
         };
 
-        // I lineamenti: (nome nel registro, misure del DNA di UMA che muove). Il cursore va da 0 a 1, a metà è il volto di base.
-        static readonly (string label, string[] dna)[] Features =
+        // I lineamenti, divisi in schede: (scheda, nome nel registro, misura del DNA di UMA).
+        // Ogni cursore è una misura: a metà è il volto di base, agli estremi un tratto marcato.
+        static readonly string[] FeatureTabs = { "Testa", "Occhi", "Naso", "Zigomi", "Bocca", "Mento", "Orecchie" };
+        static readonly (string tab, string label, string dna)[] Features =
         {
-            ("Forma del viso", new[] { "headWidth", "foreheadSize" }),
-            ("Naso", new[] { "noseSize", "noseWidth", "nosePronounced" }),
-            ("Zigomi", new[] { "cheekSize", "lowCheekPronounced" }),
-            ("Mascella e mento", new[] { "jawsSize", "mandibleSize", "chinPronounced" }),
-            ("Occhi", new[] { "eyeSize", "eyeSpacing" }),
-            ("Bocca", new[] { "mouthSize", "lipsSize" }),
-            ("Orecchie", new[] { "earsSize" })
+            ("Testa", "Grandezza", "headSize"), ("Testa", "Larghezza", "headWidth"),
+            ("Testa", "Fronte alta", "foreheadSize"), ("Testa", "Fronte sporgente", "foreheadPosition"),
+            ("Testa", "Sopracciglia", "BrowPosition"), ("Testa", "Collo", "neckThickness"),
+            ("Occhi", "Grandezza", "eyeSize"), ("Occhi", "Distanza", "eyeSpacing"), ("Occhi", "Taglio", "eyeRotation"),
+            ("Naso", "Grandezza", "noseSize"), ("Naso", "Larghezza", "noseWidth"), ("Naso", "Profilo", "noseCurve"),
+            ("Naso", "Punta", "noseInclination"), ("Naso", "Sporgenza", "nosePronounced"), ("Naso", "Schiacciato", "noseFlatten"),
+            ("Naso", "Altezza", "nosePosition"), ("Naso", "Naso rotto", "noseBroken"),
+            ("Zigomi", "Grandezza", "cheekSize"), ("Zigomi", "Sporgenza", "cheekPronounced"), ("Zigomi", "Altezza", "cheekPosition"),
+            ("Zigomi", "Larghezza", "cheekWidth"), ("Zigomi", "Guance", "lowCheekPronounced"), ("Zigomi", "Altezza guance", "lowCheekPosition"),
+            ("Bocca", "Grandezza", "mouthSize"), ("Bocca", "Labbra", "lipsSize"),
+            ("Mento", "Mascella", "jawsSize"), ("Mento", "Mascella avanti", "jawsPosition"), ("Mento", "Mandibola", "mandibleSize"),
+            ("Mento", "Mento", "chinSize"), ("Mento", "Mento sporgente", "chinPronounced"), ("Mento", "Altezza del mento", "chinPosition"),
+            ("Orecchie", "Grandezza", "earsSize"), ("Orecchie", "Altezza", "earsPosition"), ("Orecchie", "Inclinazione", "earsRotation"),
+            ("Orecchie", "Apertura", "earsYaw"), ("Orecchie", "Pendenza", "earsPitch")
         };
 
         // Le fedi che un colono può dichiarare al sacerdote (la chiave va al server, che accetta solo queste).
@@ -176,7 +185,10 @@ namespace Valdorso.Creation
         int hairIndex, beardIndex, browIndex, markIndex;
         int skinIndex, hairColorIndex = 1, beardColorIndex = 1, eyeIndex;
         GameObject beardColorRow;
-        readonly List<Slider> featureSliders = new List<Slider>();
+        readonly List<Slider> featureSliders = new List<Slider>();          // uno per riga di Features
+        readonly Dictionary<string, GameObject> featureTabPages = new Dictionary<string, GameObject>();
+        readonly Dictionary<string, Button> featureTabButtons = new Dictionary<string, Button>();
+        string currentFeatureTab = "Testa";
         bool dnaChecked;
         int faithIndex = 6; // nessuna fede, finché non si sceglie
         readonly List<Button> faithButtons = new List<Button>();
@@ -543,27 +555,80 @@ namespace Valdorso.Creation
             RectTransform page = Box(sheet, "Pagina_Lineamenti", new Vector2(0f, -170f), new Vector2(700f, 640f));
             Label(page, "IV  ·  I LINEAMENTI", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
             Label(page, "Non ci sono due volti uguali nella valle: anche i gemelli, gli anziani li distinguono.",
-                ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
+                ItalicFont, 23f, Fade(Ink, 0.85f), new Vector2(60f, -58f), new Vector2(580f, 70f), TextAlignmentOptions.TopLeft);
 
-            float y = -160f;
-            foreach (var feature in Features)
+            // Le schede: Testa, Occhi, Naso...
+            float tabWidth = 580f / FeatureTabs.Length;
+            for (int t = 0; t < FeatureTabs.Length; t++)
             {
-                TMP_Text title = Label(page, feature.label, TextFont, 24f, Ink, new Vector2(60f, y - 2f), new Vector2(210f, 36f), TextAlignmentOptions.Left);
-                title.textWrappingMode = TextWrappingModes.NoWrap;
-                title.enableAutoSizing = true;
-                title.fontSizeMin = 16f;
-                title.fontSizeMax = 24f;
-                Slider slider = MakeSlider(page, new Vector2(290f, y), 350f, null, null);
-                slider.onValueChanged.AddListener(_ => ScheduleLook(0.2f));
-                featureSliders.Add(slider);
-                y -= 56f;
+                string tab = FeatureTabs[t];
+                Button tabButton = MakeButton(page, tab.ToUpperInvariant(), new Vector2(60f + t * tabWidth, -128f), new Vector2(tabWidth - 4f, 38f), 14f);
+                tabButton.onClick.AddListener(() => ShowFeatureTab(tab));
+                featureTabButtons[tab] = tabButton;
+
+                RectTransform tabPage = Box(page, "Scheda_" + tab, new Vector2(0f, -180f), new Vector2(700f, 400f));
+                featureTabPages[tab] = tabPage.gameObject;
             }
 
-            Button random = MakeButton(page, "UN VOLTO A CASO", new Vector2(60f, y - 10f), new Vector2(290f, 48f), 20f);
+            // Un cursore per misura, nella sua scheda.
+            var rowsPerTab = new Dictionary<string, int>();
+            foreach (var feature in Features)
+            {
+                rowsPerTab.TryGetValue(feature.tab, out int row);
+                rowsPerTab[feature.tab] = row + 1;
+                Transform tabPage = featureTabPages[feature.tab].transform;
+                float y = -row * 48f;
+                TMP_Text title = Label(tabPage, feature.label, TextFont, 23f, Ink, new Vector2(60f, y - 2f), new Vector2(210f, 36f), TextAlignmentOptions.Left);
+                title.textWrappingMode = TextWrappingModes.NoWrap;
+                title.enableAutoSizing = true;
+                title.fontSizeMin = 15f;
+                title.fontSizeMax = 23f;
+                Slider slider = MakeSlider(tabPage, new Vector2(290f, y), 350f, null, null);
+                slider.minValue = 0.1f;
+                slider.maxValue = 0.9f;
+                slider.SetValueWithoutNotify(0.5f);
+                slider.onValueChanged.AddListener(_ => ScheduleLook(0.2f));
+                featureSliders.Add(slider);
+            }
+
+            Button random = MakeButton(page, "UN VOLTO A CASO", new Vector2(60f, -590f), new Vector2(290f, 46f), 20f);
             random.onClick.AddListener(RandomFace);
-            Button reset = MakeButton(page, "VOLTO DI BASE", new Vector2(370f, y - 10f), new Vector2(270f, 48f), 20f);
+            Button reset = MakeButton(page, "VOLTO DI BASE", new Vector2(370f, -590f), new Vector2(270f, 46f), 20f);
             reset.onClick.AddListener(() => { foreach (Slider s in featureSliders) s.SetValueWithoutNotify(0.5f); ScheduleLook(0.05f); });
+
+            ShowFeatureTab(currentFeatureTab);
             return page.gameObject;
+        }
+
+        void ShowFeatureTab(string tab)
+        {
+            currentFeatureTab = tab;
+            foreach (var pair in featureTabPages) pair.Value.SetActive(pair.Key == tab);
+            foreach (var pair in featureTabButtons) MarkSelected(pair.Value, pair.Key == tab);
+        }
+
+        void RandomFace()
+        {
+            if (busy) return;
+            // La media di due tiri: quasi sempre vicino al centro, ogni tanto un tratto deciso.
+            foreach (Slider slider in featureSliders)
+                slider.SetValueWithoutNotify(Mathf.Lerp(0.15f, 0.85f, (Random.value + Random.value) * 0.5f));
+            ScheduleLook(0.05f);
+        }
+
+        // Una volta sola: avvisa in Console se questa versione di UMA non conosce qualcuna delle misure usate.
+        void CheckDnaNames()
+        {
+            if (dnaChecked || preview == null) return;
+            dnaChecked = true;
+            var known = preview.GetDNA();
+            var missing = new List<string>();
+            foreach (var feature in Features)
+                if (!known.ContainsKey(feature.dna)) missing.Add(feature.dna);
+            if (missing.Count > 0)
+                Debug.LogWarning($"[Valdorso] Misure del volto che UMA non conosce per {preview.activeRace.name}: {string.Join(", ", missing)}.");
+            else
+                Debug.Log($"[Valdorso] Tutte le {Features.Length} misure dei lineamenti sono riconosciute da UMA.");
         }
 
         GameObject BuildFaithPage(RectTransform sheet)
@@ -663,31 +728,6 @@ namespace Valdorso.Creation
             }
         }
 
-        void RandomFace()
-        {
-            if (busy) return;
-            // La media di due tiri: quasi sempre vicino al centro, ogni tanto un tratto più deciso.
-            foreach (Slider slider in featureSliders)
-                slider.SetValueWithoutNotify((Random.value + Random.value) * 0.5f);
-            ScheduleLook(0.05f);
-        }
-
-        // Una volta sola: avvisa in Console se questa versione di UMA non conosce qualcuna delle misure usate.
-        void CheckDnaNames()
-        {
-            if (dnaChecked || preview == null) return;
-            dnaChecked = true;
-            var known = preview.GetDNA();
-            var missing = new List<string>();
-            foreach (var feature in Features)
-                foreach (string name in feature.dna)
-                    if (!known.ContainsKey(name)) missing.Add(name);
-            if (missing.Count > 0)
-                Debug.LogWarning($"[Valdorso] Misure del volto che UMA non conosce per {preview.activeRace.name}: {string.Join(", ", missing)}. " +
-                                 $"Quelle che conosce: {string.Join(", ", known.Keys)}");
-            else
-                Debug.Log("[Valdorso] Tutte le misure dei lineamenti sono riconosciute da UMA.");
-        }
 
         static int Step(int index, int delta, int count) => ((index + delta) % count + count) % count;
 
@@ -822,8 +862,7 @@ namespace Valdorso.Creation
             // I lineamenti: ogni cursore muove le sue misure intorno al valore di base (0,5).
             var dna = new List<DnaDef>(look.Dna);
             for (int i = 0; i < Features.Length && i < featureSliders.Count; i++)
-                foreach (string name in Features[i].dna)
-                    dna.Add(new DnaDef(name, Mathf.Lerp(0.3f, 0.7f, featureSliders[i].value)));
+                dna.Add(new DnaDef(Features[i].dna, featureSliders[i].value));
             look.Dna = dna.ToArray();
             return look;
         }

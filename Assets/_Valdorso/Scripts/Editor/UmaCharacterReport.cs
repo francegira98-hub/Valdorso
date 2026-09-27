@@ -53,6 +53,20 @@ namespace Valdorso.EditorTools
                 }
             }
 
+            text.AppendLine("Colori del personaggio:");
+            foreach (string colorName in new[] { "Skin", "Hair", "Beard", "Eyes" })
+            {
+                OverlayColorData c = avatar.GetColor(colorName);
+                text.AppendLine($"- {colorName}: {(c != null ? ColorUtility.ToHtmlStringRGB(c.color) : "assente")}");
+            }
+            text.AppendLine($"UmaHairTint presente: {(avatar.GetComponent<Valdorso.Creatures.UmaHairTint>() != null ? "sì" : "NO")}");
+
+            text.AppendLine("Misure del DNA (nome = valore):");
+            var dna = avatar.GetDNA();
+            var names = new System.Collections.Generic.List<string>(dna.Keys);
+            names.Sort();
+            text.AppendLine(string.Join(", ", names.ConvertAll(n => $"{n}={dna[n].Value:0.00}")));
+
             text.AppendLine("Materiali sullo schermo:");
             foreach (Renderer r in avatar.GetComponentsInChildren<Renderer>())
             {
