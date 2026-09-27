@@ -28,6 +28,8 @@ namespace Valdorso.Network
         [SerializeField] string creationScene = "Creazione";
         [Tooltip("Lunghezza massima della ricetta dell'aspetto accettata alla creazione (caratteri)")]
         [SerializeField] int maxRecipeLength = 8000;
+        [Tooltip("Peso massimo del ritratto accettato alla creazione (byte)")]
+        [SerializeField] int maxPortraitBytes = 200000;
 
         class ActiveCharacter
         {
@@ -165,8 +167,37 @@ namespace Valdorso.Network
             created.faith = faith;
             created.appearanceRecipe = recipe;
             CharacterStore.Save(created);
+            SavePortrait(created, msg.portrait);
             Debug.Log($"[Valdorso] {account.username} ha scritto nel registro il personaggio {created.name}.");
             conn.Send(new CreateCharacterResponse { success = true, message = string.Empty, characterId = created.id, characterName = created.name });
+        }
+
+        // ---------- Ritratti ----------
+
+        /// <summary>Dove il server conserva il ritratto di un personaggio (Salvataggi/Ritratti/id.jpg).</summary>
+        public static string PortraitPath(string characterId) =>
+            ServerStorage.FullPath(System.IO.Path.Combine("Ritratti", characterId + ".jpg"));
+
+        void SavePortrait(CharacterRecord character, byte[] portrait)
+        {
+            if (portrait == null || portrait.Length == 0) return;
+            // Solo immagini JPG (cominciano con FF D8) e non troppo pesanti.
+            if (portrait.Length > maxPortraitBytes || portrait.Length < 4 || portrait[0] != 0xFF || portrait[1] != 0xD8)
+            {
+                Debug.LogWarning($"[Valdorso] Ritratto di {character.name} rifiutato (non è un JPG o pesa troppo: {portrait.Length} byte).");
+                return;
+            }
+            try
+            {
+                string path = PortraitPath(character.id);
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
+                System.IO.File.WriteAllBytes(path, portrait);
+                Debug.Log($"[Valdorso] Ritratto di {character.name} salvato ({portrait.Length / 1024} KB).");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Valdorso] Ritratto di {character.name} non salvato: {e.Message}");
+            }
         }
 
         static void RefuseCreation(NetworkConnectionToClient conn, string message)
@@ -376,7 +407,7 @@ namespace Valdorso.Network
         }
 
         /// <summary>Chiede al server di scrivere un personaggio nel registro; la risposta arriva nel callback (riuscito, messaggio, id).</summary>
-        public static void RequestCreateCharacter(string name, string faith, string appearanceRecipe, Action<bool, string, string> callback)
+        public static void RequestCreateCharacter(string name, string faith, string appearanceRecipe, byte[] portrait, Action<bool, string, string> callback)
         {
             if (!NetworkClient.isConnected)
             {
@@ -384,7 +415,7 @@ namespace Valdorso.Network
                 return;
             }
             pendingCreate = callback;
-            NetworkClient.Send(new CreateCharacterRequest { name = name, faith = faith, appearanceRecipe = appearanceRecipe });
+            NetworkClient.Send(new CreateCharacterRequest { name = name, faith = faith, appearanceRecipe = appearanceRecipe, portrait = portrait });
         }
 
         /// <summary>Chiede al server di entrare nel mondo con questo personaggio.</summary>

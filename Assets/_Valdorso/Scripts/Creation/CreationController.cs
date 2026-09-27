@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Valdorso.Network;
@@ -180,6 +181,13 @@ namespace Valdorso.Creation
         int faithIndex = 6; // nessuna fede, finché non si sceglie
         readonly List<Button> faithButtons = new List<Button>();
         TMP_Text faithText;
+
+        // Il ritratto: lo fa una piccola telecamera "da ritrattista" quando si arriva alla firma.
+        RawImage portraitImage;
+        Texture2D portraitTexture;
+        byte[] portraitBytes;
+        Coroutine portraitRoutine;
+        const int PortraitWidth = 320, PortraitHeight = 400;
         TMP_Text hairValue, beardValue, browValue, markValue;
         GameObject beardRow;
         readonly List<Image> skinMarks = new List<Image>(), hairColorMarks = new List<Image>(), beardColorMarks = new List<Image>(), eyeMarks = new List<Image>();
@@ -286,6 +294,7 @@ namespace Valdorso.Creation
         void OnDestroy()
         {
             RestoreWorld();
+            if (portraitTexture != null) Destroy(portraitTexture);
         }
 
         // =====================================================================
@@ -444,8 +453,28 @@ namespace Valdorso.Creation
             Label(page, "La corona di Aurelia concede terra e protezione a chi ha il coraggio di restare nella valle.",
                 ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
 
-            summaryText = Label(page, string.Empty, TextFont, 25f, Ink, new Vector2(60f, -170f), new Vector2(580f, 220f), TextAlignmentOptions.TopLeft);
+            summaryText = Label(page, string.Empty, TextFont, 22f, Ink, new Vector2(60f, -170f), new Vector2(380f, 230f), TextAlignmentOptions.TopLeft);
             summaryText.lineSpacing = 4f;
+
+            // Il ritratto del sacerdote, in una cornice d'oro accanto al riepilogo.
+            RectTransform portraitBox = Box(page, "Ritratto", new Vector2(460f, -165f), new Vector2(176f, 220f));
+            var portraitBack = portraitBox.gameObject.AddComponent<Image>();
+            portraitBack.color = Fade(Ink, 0.25f);
+            portraitBack.raycastTarget = false;
+            RectTransform picture = Box(portraitBox, "Immagine", Vector2.zero, Vector2.zero);
+            Stretch(picture, 4f, 4f, 4f, 4f);
+            portraitImage = picture.gameObject.AddComponent<RawImage>();
+            portraitImage.raycastTarget = false;
+            portraitImage.color = new Color(1f, 1f, 1f, 0f); // invisibile finché il ritratto non è pronto
+            var portraitFrameGO = new GameObject("Cornice", typeof(RectTransform), typeof(Image));
+            portraitFrameGO.transform.SetParent(portraitBox, false);
+            Stretch((RectTransform)portraitFrameGO.transform, -3f, -3f, -3f, -3f);
+            var portraitFrame = portraitFrameGO.GetComponent<Image>();
+            portraitFrame.sprite = theme != null ? theme.buttonFrame : null;
+            portraitFrame.type = Image.Type.Sliced;
+            portraitFrame.color = GoldDark;
+            portraitFrame.raycastTarget = false;
+            if (portraitFrame.sprite == null) portraitFrameGO.SetActive(false);
 
             signButton = MakeButton(page, "FIRMA IL REGISTRO", new Vector2(140f, -410f), new Vector2(420f, 64f), 26f);
             signButton.onClick.AddListener(OnSign);
@@ -566,6 +595,72 @@ namespace Valdorso.Creation
         {
             for (int i = 0; i < faithButtons.Count; i++) MarkSelected(faithButtons[i], i == faithIndex);
             if (faithText != null) faithText.text = Faiths[faithIndex].text;
+        }
+
+        // ---------- Il ritratto ----------
+
+        IEnumerator PortraitWhenReady()
+        {
+            // Si aspetta che UMA abbia finito di ricostruire il personaggio, poi un attimo perché si assesti.
+            while (rebuildAt > 0f) yield return null;
+            yield return new WaitForSecondsRealtime(0.6f);
+            TakePortrait();
+            portraitRoutine = null;
+        }
+
+        void TakePortrait()
+        {
+            if (preview == null) return;
+            RenderTexture target = RenderTexture.GetTemporary(PortraitWidth, PortraitHeight, 24, RenderTextureFormat.ARGB32);
+            var cameraGO = new GameObject("Ritrattista");
+            cameraGO.transform.SetParent(transform, false);
+            try
+            {
+                Camera painter = cameraGO.AddComponent<Camera>();
+                painter.enabled = true; // acceso solo per questo fotogramma: poi l'oggetto si distrugge
+                painter.fieldOfView = 24f;
+                painter.nearClipPlane = 0.05f;
+                painter.farClipPlane = 30f;
+                painter.clearFlags = CameraClearFlags.SolidColor;
+                painter.backgroundColor = fogColor;
+                painter.targetTexture = target;
+                UniversalAdditionalCameraData data = painter.GetUniversalAdditionalCameraData();
+                data.renderPostProcessing = true;
+                data.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
+
+                // Di fronte al viso, un poco sopra gli occhi, come il sacerdote che disegna il nuovo colono.
+                Vector3 face = HeadPosition() - Vector3.up * 0.05f;
+                Vector3 forward = preview.transform.forward;
+                painter.transform.position = face + forward * 0.9f + Vector3.up * 0.03f;
+                painter.transform.rotation = Quaternion.LookRotation(face - painter.transform.position, Vector3.up);
+
+                var request = new RenderPipeline.StandardRequest { destination = target };
+                if (RenderPipeline.SupportsRenderRequest(painter, request)) RenderPipeline.SubmitRenderRequest(painter, request);
+                else painter.Render();
+
+                RenderTexture previous = RenderTexture.active;
+                RenderTexture.active = target;
+                if (portraitTexture == null) portraitTexture = new Texture2D(PortraitWidth, PortraitHeight, TextureFormat.RGB24, false);
+                portraitTexture.ReadPixels(new Rect(0, 0, PortraitWidth, PortraitHeight), 0, 0);
+                portraitTexture.Apply();
+                RenderTexture.active = previous;
+
+                portraitBytes = portraitTexture.EncodeToJPG(85);
+                portraitImage.texture = portraitTexture;
+                portraitImage.color = Color.white;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("[Valdorso] Il ritratto non è riuscito: " + e.Message);
+                portraitBytes = null;
+            }
+            finally
+            {
+                Camera used = cameraGO.GetComponent<Camera>();
+                if (used != null) used.targetTexture = null;
+                DestroyImmediate(cameraGO); // subito, così non disegna niente sullo schermo in questo fotogramma
+                RenderTexture.ReleaseTemporary(target);
+            }
         }
 
         void RandomFace()
@@ -809,7 +904,13 @@ namespace Valdorso.Creation
                 nameField.Select();
                 nameField.ActivateInputField();
             }
-            if (last) RefreshSummary();
+            if (last)
+            {
+                RefreshSummary();
+                if (portraitRoutine != null) StopCoroutine(portraitRoutine);
+                portraitBytes = null;
+                portraitRoutine = StartCoroutine(PortraitWhenReady());
+            }
             ValidateName();
         }
 
@@ -871,7 +972,8 @@ namespace Valdorso.Creation
             statusText.text = "Il sacerdote scrive il tuo nome nel registro...";
             // L'aspetto scelto parte come ricetta UMA, insieme alla fede.
             string recipe = ChosenRecipe();
-            ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, Faiths[faithIndex].key, recipe, OnCreated);
+            if (portraitBytes == null) TakePortrait();
+            ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, Faiths[faithIndex].key, recipe, portraitBytes, OnCreated);
         }
 
         void OnCreated(bool success, string message, string characterId)

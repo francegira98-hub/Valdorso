@@ -28,6 +28,7 @@ namespace Valdorso.Network
         public string name;             // vuoto = nome provvisorio (finché non c'è la pagina del nome)
         public string faith;            // vuoto = nessuna fede
         public string appearanceRecipe; // vuoto = aspetto casuale al primo ingresso
+        public byte[] portrait;         // il ritratto del viso in JPG (può mancare)
     }
 
     /// <summary>Server → PC: com'è andata la creazione.</summary>

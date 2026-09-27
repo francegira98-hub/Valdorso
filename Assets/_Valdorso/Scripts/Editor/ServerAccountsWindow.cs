@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Valdorso.Network;
 using Valdorso.Server;
 
 namespace Valdorso.EditorTools
@@ -96,8 +97,15 @@ namespace Valdorso.EditorTools
                     $"Eliminare per sempre {c.name} (account {e.account.username})?\nIl suo nome tornerà libero.", "Elimina", "Annulla"))
                 return;
             CharacterStore.DeleteForTests(e.account, c.id);
+            DeletePortrait(c.id);
             Debug.Log($"[Valdorso] Eliminato il personaggio {c.name} dell'account {e.account.username}.");
             Reload();
+        }
+
+        static void DeletePortrait(string characterId)
+        {
+            string path = ValdorsoNetworkManager.PortraitPath(characterId);
+            if (File.Exists(path)) File.Delete(path);
         }
 
         void DeleteAccount(Entry e)
@@ -106,7 +114,11 @@ namespace Valdorso.EditorTools
             if (!EditorUtility.DisplayDialog("Elimina account",
                     $"Eliminare per sempre l'account {e.account.username} e i suoi {e.characters.Count} personaggi?{warning}", "Elimina", "Annulla"))
                 return;
-            foreach (CharacterRecord c in e.characters) CharacterStore.DeleteForTests(e.account, c.id);
+            foreach (CharacterRecord c in e.characters)
+            {
+                CharacterStore.DeleteForTests(e.account, c.id);
+                DeletePortrait(c.id);
+            }
             AccountStore.DeleteForTests(e.account.username);
             Debug.Log($"[Valdorso] Eliminato l'account {e.account.username} con i suoi personaggi.");
             Reload();

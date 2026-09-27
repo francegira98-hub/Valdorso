@@ -4530,6 +4530,7 @@ MonoBehaviour:
   revivedHealthFraction: 0.25
   creationScene: Creazione
   maxRecipeLength: 8000
+  maxPortraitBytes: 200000
 --- !u!4 &998197133
 Transform:
   m_ObjectHideFlags: 0
