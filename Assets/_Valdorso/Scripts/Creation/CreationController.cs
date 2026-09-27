@@ -29,6 +29,10 @@ namespace Valdorso.Creation
         [SerializeField] ValdorsoTheme theme;
         [SerializeField] Camera stageCamera;
 
+        [Header("Nitidezza del personaggio (vale mentre la creazione è aperta)")]
+        [Tooltip("Risoluzione delle texture che UMA disegna per il personaggio del registro (nel mondo resta quella normale)")]
+        [SerializeField] int creationAtlasResolution = 4096;
+
         [Header("Atmosfera (vale mentre la creazione è aperta)")]
         [SerializeField] Color fogColor = new Color(0.035f, 0.04f, 0.055f);
         [SerializeField] float fogDensity = 0.14f;
@@ -46,15 +50,72 @@ namespace Valdorso.Creation
         // Razze e vestiti di partenza (Popolano appena arrivato nella valle). I nomi sono quelli delle ricette UMA.
         const string MaleRace = "Human Male 3.0";
         const string FemaleRace = "Human Female 3.0";
-        static readonly string[] MaleWardrobe =
+        static readonly string[] MaleClothes =
         {
-            "bb_male_haircut_Recipe", "Eyebrows_Average_Average", "Beard_Trimmed", "male_underpants_granit_Recipe",
-            "M_ChallengerTorsoArmor_Recipe", "M_Wrapped Pants_Recipe", "M_ChallengerBoots_Recipe"
+            "male_underpants_granit_Recipe", "M_ChallengerTorsoArmor_Recipe", "M_Wrapped Pants_Recipe", "M_ChallengerBoots_Recipe"
         };
-        static readonly string[] FemaleWardrobe =
+        static readonly string[] FemaleClothes =
         {
-            "bb_female_hair_Recipe", "Eyebrows_Arched_Average", "underwear_white_granit_bottom_Recipe", "underwear_white_granit_top_Recipe",
+            "underwear_white_granit_bottom_Recipe", "underwear_white_granit_top_Recipe",
             "F_ChallengerTorsoArmor_Recipe", "F_Wrapped Pants_Recipe", "F_ChallengerBoots_Recipe"
+        };
+
+        // Le scelte del volto: (nome nel registro, ricetta UMA). Una ricetta vuota vuol dire "niente".
+        static readonly (string label, string recipe)[] MaleHair =
+        {
+            ("corti", "bb_male_haircut_Recipe"), ("rasati da soldato", "bb_Male_Military_Hair_Recipe"),
+            ("tirati indietro", "Hair_PulledBack_Recipe"), ("con la riga", "Hair_LeftPart_Recipe"),
+            ("scompigliati", "Hair_MessyRightPart_Recipe"), ("ciuffo ribelle", "Hair_MessyPomp_Recipe"),
+            ("lisci", "Hair_Straight_Recipe"), ("lunghi all'indietro", "Hair_LongSwept_Recipe"),
+            ("a punte", "Hair_Pointy_Recipe"), ("nessuno", "")
+        };
+        static readonly (string label, string recipe)[] FemaleHair =
+        {
+            ("sciolti", "bb_female_hair_Recipe"), ("lisci", "Hair_Straight_Recipe"), ("a caschetto", "Hair_Bob_Recipe"),
+            ("raccolti", "Hair_Bun_Recipe"), ("crocchia alta", "Hair_UpwardBun_Recipe"), ("coda", "HairPonytail_Recipe"),
+            ("due trecce", "HairPigtails_Recipe"), ("tirati indietro", "Hair_StraigntPulledBack_Recipe"),
+            ("lunghi all'indietro", "Hair_LongSwept_Recipe"), ("arricciati sotto", "Hair_CurveUnder_Recipe")
+        };
+        static readonly (string label, string recipe)[] Beards =
+        {
+            ("corta", "Beard_Trimmed"), ("folta", "Beard_Trimmed_Bushy"), ("pizzetto", "Beard_Goatee"),
+            ("a cerchio", "Beard_Circle"), ("da viandante", "Beard_Drifter"), ("da pistolero", "Beard_Gunslinger"),
+            ("a tenda", "Beard_Curtain"), ("sotto il mento", "Beard_Neckbeard"), ("baffi pieni", "Mustache_Full"),
+            ("baffi a ferro di cavallo", "Mustache_Horseshoe"), ("baffi a spazzola", "Mustache_Chevron"), ("rasato", "")
+        };
+        static readonly (string label, string recipe)[] Eyebrows =
+        {
+            ("normali", "Eyebrows_Average_Average"), ("arcuate", "Eyebrows_Arched_Average"), ("sottili", "Eyebrows_Thin_Average"),
+            ("folte", "Eyebrows_Bushy_Average"), ("alzate in fondo", "Eyebrows_EndArch_Average"), ("foltissime", "Eyebrows_Bushy_Bushy"),
+            ("unite", "Eyebrows_Unibrow_Average")
+        };
+        static readonly (string label, string recipe)[] FaceMarks =
+        {
+            ("nessuno", ""), ("lentiggini", "Freckled_Light_U_Wardrobe"), ("molte lentiggini", "Freckled_More_U_Wardrobe"),
+            ("rughe", "Aged_U_Wardrobe"), ("rughe profonde", "Aged_U2_Wardrobe"), ("anziano", "Senior_U_Wardrobe"),
+            ("cicatrice", "Scar3_U_Wardrobe"), ("cicatrice profonda", "Scar4_U_Wardrobe")
+        };
+
+        // I colori (nomi dei colori condivisi di UMA: Skin, Hair, Eyes). Bianco = il colore naturale della texture.
+        static readonly (string label, Color color)[] SkinTones =
+        {
+            ("naturale", Color.white), ("chiarissima", new Color(1f, 0.93f, 0.88f)), ("chiara", new Color(0.96f, 0.85f, 0.76f)),
+            ("ambrata", new Color(0.88f, 0.74f, 0.62f)), ("olivastra", new Color(0.78f, 0.66f, 0.52f)),
+            ("bruna", new Color(0.64f, 0.5f, 0.38f)), ("scura", new Color(0.46f, 0.34f, 0.25f))
+        };
+        // Più scuri e saturi di come appaiono: la texture dei capelli è chiara e la luce li schiarisce ancora.
+        static readonly (string label, Color color)[] HairColors =
+        {
+            ("neri", new Color(0.02f, 0.018f, 0.016f)), ("castano scuro", new Color(0.09f, 0.05f, 0.028f)),
+            ("castani", new Color(0.19f, 0.1f, 0.045f)), ("ramati", new Color(0.4f, 0.13f, 0.04f)),
+            ("biondo scuro", new Color(0.46f, 0.32f, 0.15f)), ("biondi", new Color(0.78f, 0.6f, 0.32f)),
+            ("grigi", new Color(0.42f, 0.41f, 0.4f)), ("bianchi", new Color(0.92f, 0.91f, 0.89f))
+        };
+        static readonly (string label, Color color)[] EyeColors =
+        {
+            ("marroni", new Color(0.35f, 0.22f, 0.12f)), ("nocciola", new Color(0.5f, 0.38f, 0.18f)),
+            ("verdi", new Color(0.3f, 0.48f, 0.3f)), ("azzurri", new Color(0.35f, 0.52f, 0.75f)),
+            ("grigi", new Color(0.55f, 0.58f, 0.62f)), ("ambra", new Color(0.7f, 0.5f, 0.15f))
         };
 
         // Com'era il mondo prima di aprire la creazione, per rimetterlo uguale.
@@ -85,6 +146,22 @@ namespace Valdorso.Creation
         Button maleButton, femaleButton;
         float rebuildAt = -1f;
 
+        // Il volto
+        int hairIndex, beardIndex, browIndex, markIndex;
+        int skinIndex, hairColorIndex = 1, beardColorIndex = 1, eyeIndex;
+        GameObject beardColorRow;
+        TMP_Text hairValue, beardValue, browValue, markValue;
+        GameObject beardRow;
+        readonly List<Image> skinMarks = new List<Image>(), hairColorMarks = new List<Image>(), beardColorMarks = new List<Image>(), eyeMarks = new List<Image>();
+
+        // La telecamera: a figura intera, oppure vicina al viso nella pagina del volto.
+        Vector3 fullShotPosition;
+        Quaternion fullShotRotation;
+        bool faceShot;
+
+        // La qualità di UMA prima della creazione, per rimetterla uguale.
+        readonly Dictionary<UMAGeneratorBase, (int atlas, int scale)> savedQuality = new Dictionary<UMAGeneratorBase, (int atlas, int scale)>();
+
         Color Ink => theme != null ? theme.ink : new Color(0.17f, 0.11f, 0.07f);
         Color Blood => theme != null ? theme.blood : new Color(0.56f, 0.17f, 0.15f);
         Color GoldDark => theme != null ? theme.goldDark : new Color(0.54f, 0.42f, 0.11f);
@@ -93,12 +170,77 @@ namespace Valdorso.Creation
         {
             if (stageCamera == null) stageCamera = GetComponentInChildren<Camera>(true);
             preview = GetComponentInChildren<DynamicCharacterAvatar>(true);
+            // Il colore dei capelli arriva sui capelli (vedi UmaHairTint).
+            if (preview != null && preview.GetComponent<Valdorso.Creatures.UmaHairTint>() == null)
+                preview.gameObject.AddComponent<Valdorso.Creatures.UmaHairTint>();
+            if (stageCamera != null)
+            {
+                fullShotPosition = stageCamera.transform.position;
+                fullShotRotation = stageCamera.transform.rotation;
+            }
             if (theme == null) Debug.LogWarning("[Valdorso] Nel Creation Controller manca il Tema UI: il registro userà colori e caratteri di riserva.");
             HideWorld();
             EnsureEventSystem();
             BuildRegister();
             ShowPage(0);
             ScheduleLook(0f);
+        }
+
+        void LateUpdate()
+        {
+            if (stageCamera == null) return;
+            Vector3 targetPosition = fullShotPosition;
+            Quaternion targetRotation = fullShotRotation;
+            if (faceShot && preview != null)
+            {
+                // Il viso a destra dello schermo, a poco più di un metro: si vedono bene lineamenti, capelli e colori.
+                Vector3 head = HeadPosition();
+                Vector3 look = head + new Vector3(0.3f, -0.03f, 0f);
+                targetPosition = look + new Vector3(0f, 0.04f, 1.2f);
+                targetRotation = Quaternion.LookRotation(look - targetPosition, Vector3.up);
+            }
+            float t = 1f - Mathf.Exp(-4f * Time.unscaledDeltaTime);
+            stageCamera.transform.SetPositionAndRotation(
+                Vector3.Lerp(stageCamera.transform.position, targetPosition, t),
+                Quaternion.Slerp(stageCamera.transform.rotation, targetRotation, t));
+        }
+
+        Vector3 HeadPosition()
+        {
+            Animator animator = preview.GetComponent<Animator>();
+            if (animator != null && animator.isHuman)
+            {
+                Transform head = animator.GetBoneTransform(HumanBodyBones.Head);
+                if (head != null) return head.position + Vector3.up * 0.06f;
+            }
+            return preview.transform.position + Vector3.up * 1.62f;
+        }
+
+        // Più nitidezza nel registro: UMA disegna le texture del personaggio a piena risoluzione.
+        void RaiseUmaQuality()
+        {
+            foreach (UMAGeneratorBase generator in FindObjectsByType<UMAGeneratorBase>(FindObjectsSortMode.None))
+            {
+                if (savedQuality.ContainsKey(generator)) continue;
+                var builtin = generator as UMAGeneratorBuiltin;
+                savedQuality[generator] = (generator.atlasResolution, builtin != null ? builtin.InitialScaleFactor : 1);
+                Debug.Log($"[Valdorso] Qualità UMA: atlante {generator.atlasResolution}" +
+                          (builtin != null ? $", riduzione iniziale {builtin.InitialScaleFactor}" : string.Empty) +
+                          $" → nel registro atlante {Mathf.Max(generator.atlasResolution, creationAtlasResolution)}, riduzione 1.");
+                generator.atlasResolution = Mathf.Max(generator.atlasResolution, creationAtlasResolution);
+                if (builtin != null) builtin.InitialScaleFactor = 1;
+            }
+        }
+
+        void RestoreUmaQuality()
+        {
+            foreach (var pair in savedQuality)
+            {
+                if (pair.Key == null) continue;
+                pair.Key.atlasResolution = pair.Value.atlas;
+                if (pair.Key is UMAGeneratorBuiltin builtin) builtin.InitialScaleFactor = pair.Value.scale;
+            }
+            savedQuality.Clear();
         }
 
         void Update()
@@ -158,6 +300,7 @@ namespace Valdorso.Creation
 
         void RestoreWorld()
         {
+            RestoreUmaQuality();
             if (!worldSaved) return;
             worldSaved = false;
             foreach (Camera c in hiddenCameras)
@@ -229,6 +372,7 @@ namespace Valdorso.Creation
             // Le pagine: ognuna è una scelta; l'ultima è la firma.
             pages.Add(BuildNamePage(sheet));
             pages.Add(BuildBodyPage(sheet));
+            pages.Add(BuildFacePage(sheet));
             pages.Add(BuildSignPage(sheet));
 
             // In fondo: avanti, indietro e numero di pagina.
@@ -264,12 +408,12 @@ namespace Valdorso.Creation
         GameObject BuildSignPage(RectTransform sheet)
         {
             RectTransform page = Box(sheet, "Pagina_Firma", new Vector2(0f, -170f), new Vector2(700f, 640f));
-            Label(page, "III  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "IV  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
             Label(page, "La corona di Aurelia concede terra e protezione a chi ha il coraggio di restare nella valle.",
                 ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
 
-            summaryText = Label(page, string.Empty, TextFont, 27f, Ink, new Vector2(60f, -180f), new Vector2(580f, 200f), TextAlignmentOptions.TopLeft);
-            summaryText.lineSpacing = 12f;
+            summaryText = Label(page, string.Empty, TextFont, 25f, Ink, new Vector2(60f, -170f), new Vector2(580f, 220f), TextAlignmentOptions.TopLeft);
+            summaryText.lineSpacing = 4f;
 
             signButton = MakeButton(page, "FIRMA IL REGISTRO", new Vector2(140f, -410f), new Vector2(420f, 64f), 26f);
             signButton.onClick.AddListener(OnSign);
@@ -303,13 +447,111 @@ namespace Valdorso.Creation
             return page.gameObject;
         }
 
+        GameObject BuildFacePage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Volto", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "III  ·  IL VOLTO", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "Gli dei plasmarono le terre e diedero vita ai popoli: ogni volto porta il segno di chi lo ha fatto.",
+                ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
+
+            float y = -165f;
+            hairValue = SelectorRow(page, "Capelli", y, d => { hairIndex = Step(hairIndex, d, (female ? FemaleHair : MaleHair).Length); });
+            y -= 58f;
+            beardValue = SelectorRow(page, "Barba", y, d => { beardIndex = Step(beardIndex, d, Beards.Length); });
+            beardRow = beardValue.transform.parent.gameObject;
+            y -= 58f;
+            browValue = SelectorRow(page, "Sopracciglia", y, d => { browIndex = Step(browIndex, d, Eyebrows.Length); });
+            y -= 58f;
+            markValue = SelectorRow(page, "Segni del viso", y, d => { markIndex = Step(markIndex, d, FaceMarks.Length); });
+            y -= 70f;
+
+            SwatchRow(page, "Carnagione", y, SkinTones, skinMarks, i => skinIndex = i);
+            y -= 56f;
+            SwatchRow(page, "Colore dei capelli", y, HairColors, hairColorMarks, i => hairColorIndex = i);
+            y -= 56f;
+            beardColorRow = SwatchRow(page, "Barba e sopracciglia", y, HairColors, beardColorMarks, i => beardColorIndex = i);
+            y -= 56f;
+            SwatchRow(page, "Occhi", y, EyeColors, eyeMarks, i => eyeIndex = i);
+
+            RefreshFaceValues();
+            return page.gameObject;
+        }
+
+        static int Step(int index, int delta, int count) => ((index + delta) % count + count) % count;
+
+        // Una riga "Nome   ‹  valore  ›": le frecce scorrono le scelte.
+        TMP_Text SelectorRow(Transform page, string title, float y, System.Action<int> change)
+        {
+            RectTransform row = Box(page, "Riga_" + title, new Vector2(60f, y), new Vector2(580f, 48f));
+            Label(row, title, TextFont, 25f, Ink, new Vector2(0f, -6f), new Vector2(200f, 40f), TextAlignmentOptions.Left);
+            Button prev = MakeButton(row, "‹", new Vector2(210f, 0f), new Vector2(48f, 44f), 26f);
+            TMP_Text value = Label(row, string.Empty, ItalicFont, 25f, Ink, new Vector2(262f, -6f), new Vector2(262f, 40f), TextAlignmentOptions.Center);
+            Button next = MakeButton(row, "›", new Vector2(528f, 0f), new Vector2(48f, 44f), 26f);
+            prev.onClick.AddListener(() => { if (busy) return; change(-1); RefreshFaceValues(); ScheduleLook(0.05f); });
+            next.onClick.AddListener(() => { if (busy) return; change(1); RefreshFaceValues(); ScheduleLook(0.05f); });
+            return value;
+        }
+
+        // Una riga di quadratini di colore; quello scelto ha la cornice d'oro.
+        GameObject SwatchRow(Transform page, string title, float y, (string label, Color color)[] palette, List<Image> marks, System.Action<int> pick)
+        {
+            RectTransform row = Box(page, "Colori_" + title, new Vector2(0f, y), new Vector2(700f, 44f));
+            TMP_Text rowTitle = Label(row, title, TextFont, 24f, Ink, new Vector2(60f, -6f), new Vector2(205f, 40f), TextAlignmentOptions.Left);
+            rowTitle.textWrappingMode = TextWrappingModes.NoWrap;
+            rowTitle.enableAutoSizing = true; // i titoli lunghi si rimpiccioliscono invece di andare a capo
+            rowTitle.fontSizeMin = 16f;
+            rowTitle.fontSizeMax = 24f;
+            for (int i = 0; i < palette.Length; i++)
+            {
+                int index = i;
+                RectTransform swatch = Box(row, "Colore_" + palette[i].label, new Vector2(270f + i * 46f, 0f), new Vector2(38f, 38f));
+                var image = swatch.gameObject.AddComponent<Image>();
+                image.color = palette[i].color == Color.white && title == "Carnagione" ? new Color(0.93f, 0.8f, 0.7f) : palette[i].color;
+                var button = swatch.gameObject.AddComponent<Button>();
+                button.targetGraphic = image;
+                button.onClick.AddListener(() => { if (busy) return; pick(index); RefreshFaceValues(); ScheduleLook(0.05f); });
+
+                var markGO = new GameObject("Scelto", typeof(RectTransform), typeof(Image));
+                markGO.transform.SetParent(swatch, false);
+                Stretch((RectTransform)markGO.transform, -5f, -5f, -5f, -5f);
+                var mark = markGO.GetComponent<Image>();
+                mark.sprite = theme != null ? theme.buttonFrame : null;
+                mark.type = Image.Type.Sliced;
+                mark.color = theme != null ? theme.gold : new Color(0.83f, 0.69f, 0.22f);
+                mark.raycastTarget = false;
+                if (mark.sprite == null) mark.color = new Color(mark.color.r, mark.color.g, mark.color.b, 0.5f);
+                marks.Add(mark);
+            }
+            return row.gameObject;
+        }
+
+        void RefreshFaceValues()
+        {
+            if (hairValue == null) return;
+            (string label, string recipe)[] hairs = female ? FemaleHair : MaleHair;
+            hairIndex %= hairs.Length;
+            hairValue.text = hairs[hairIndex].label;
+            beardValue.text = Beards[beardIndex].label;
+            browValue.text = Eyebrows[browIndex].label;
+            markValue.text = FaceMarks[markIndex].label;
+            beardRow.SetActive(!female);
+            if (beardColorRow != null) beardColorRow.SetActive(!female);
+            for (int i = 0; i < beardColorMarks.Count; i++) beardColorMarks[i].enabled = i == beardColorIndex;
+            for (int i = 0; i < skinMarks.Count; i++) skinMarks[i].enabled = i == skinIndex;
+            for (int i = 0; i < hairColorMarks.Count; i++) hairColorMarks[i].enabled = i == hairColorIndex;
+            for (int i = 0; i < eyeMarks.Count; i++) eyeMarks[i].enabled = i == eyeIndex;
+        }
+
         // ---------- Il corpo sul palco ----------
 
         void SetFemale(bool value)
         {
             if (busy || female == value) return;
             female = value;
+            hairIndex = 0;
+            if (browIndex == 0 || browIndex == 1) browIndex = female ? 1 : 0; // arcuate per lei, normali per lui
             RefreshSexButtons();
+            RefreshFaceValues();
             ScheduleLook(0f);
         }
 
@@ -329,6 +571,14 @@ namespace Valdorso.Creation
             colors.normalColor = selected ? lit : normal;
             colors.selectedColor = colors.normalColor;
             button.colors = colors;
+            // E la scritta della scelta attiva in oro chiaro, così si vede subito.
+            TMP_Text label = button.GetComponentInChildren<TMP_Text>();
+            if (label != null)
+            {
+                Color idle = theme != null ? theme.text : Color.white;
+                Color gold = theme != null ? theme.goldLight : new Color(0.95f, 0.86f, 0.54f);
+                label.color = selected ? gold : idle;
+            }
         }
 
         void ScheduleLook(float delay)
@@ -344,7 +594,7 @@ namespace Valdorso.Creation
             return new AvatarDefinition
             {
                 RaceName = female ? FemaleRace : MaleRace,
-                Wardrobe = (string[])(female ? FemaleWardrobe : MaleWardrobe).Clone(),
+                Wardrobe = ChosenWardrobe(),
                 Colors = new SharedColorDef[0],
                 Dna = new[]
                 {
@@ -359,12 +609,50 @@ namespace Valdorso.Creation
             };
         }
 
+        string[] ChosenWardrobe()
+        {
+            var list = new List<string>(female ? FemaleClothes : MaleClothes);
+            (string label, string recipe)[] hairs = female ? FemaleHair : MaleHair;
+            AddIfAny(list, hairs[hairIndex % hairs.Length].recipe);
+            if (!female) AddIfAny(list, Beards[beardIndex % Beards.Length].recipe);
+            AddIfAny(list, Eyebrows[browIndex % Eyebrows.Length].recipe);
+            AddIfAny(list, FaceMarks[markIndex % FaceMarks.Length].recipe);
+            return list.ToArray();
+        }
+
+        static void AddIfAny(List<string> list, string recipe)
+        {
+            if (!string.IsNullOrEmpty(recipe)) list.Add(recipe);
+        }
+
+        void ApplyColors()
+        {
+            preview.SetColorValue("Skin", SkinTones[skinIndex].color);
+            preview.SetColorValue("Hair", HairColors[hairColorIndex].color);
+            preview.SetColorValue("Beard", HairColors[beardColorIndex].color);
+            preview.SetColorValue("Eyes", EyeColors[eyeIndex].color);
+        }
+
+        /// <summary>La ricetta completa da mandare al server: razza, vestiti e misure del registro, più i colori scelti.</summary>
+        string ChosenRecipe()
+        {
+            AvatarDefinition look = ChosenLook();
+            if (preview != null)
+            {
+                ApplyColors();
+                look.Colors = preview.GetAvatarDefinition(false, false).Colors;
+            }
+            return look.ToCompressedString();
+        }
+
         void ApplyLook()
         {
             if (preview == null) return;
+            RaiseUmaQuality();
             try
             {
                 preview.LoadAvatarDefinition(ChosenLook());
+                ApplyColors();
                 preview.BuildCharacter(true);
             }
             catch (System.Exception e)
@@ -383,6 +671,7 @@ namespace Valdorso.Creation
             if (busy) return;
             currentPage = Mathf.Clamp(index, 0, pages.Count - 1);
             for (int i = 0; i < pages.Count; i++) pages[i].SetActive(i == currentPage);
+            faceShot = pages[currentPage].name == "Pagina_Volto";
 
             bool last = currentPage == pages.Count - 1;
             backButton.gameObject.SetActive(currentPage > 0);
@@ -436,6 +725,7 @@ namespace Valdorso.Creation
                 $"Nome:  <b>{ChosenName}</b>\n" +
                 $"{(female ? "Donna" : "Uomo")}, {Describe(heightSlider.value, "bassa statura", "statura media", "alta statura")}, " +
                 $"{Describe(buildSlider.value, "corporatura esile", "corporatura media", "corporatura robusta")}\n" +
+                $"Capelli {(female ? FemaleHair : MaleHair)[hairIndex].label}, {HairColors[hairColorIndex].label}; occhi {EyeColors[eyeIndex].label}\n" +
                 "Origine:  Popolano\n" +
                 "Razza:  Umano\n" +
                 "Fede:  nessuna, per ora";
@@ -454,7 +744,7 @@ namespace Valdorso.Creation
             SetButtons(false);
             statusText.text = "Il sacerdote scrive il tuo nome nel registro...";
             // L'aspetto scelto parte come ricetta UMA; la fede arriverà con la sua pagina (passo 5.5).
-            string recipe = ChosenLook().ToCompressedString();
+            string recipe = ChosenRecipe();
             ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, string.Empty, recipe, OnCreated);
         }
 

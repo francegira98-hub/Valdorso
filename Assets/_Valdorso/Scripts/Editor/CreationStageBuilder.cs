@@ -123,9 +123,14 @@ namespace Valdorso.EditorTools
 
             // L'altare con il frammento del Cuore del Mondo.
             // Sta dietro il personaggio, un po' a sinistra: si vede tra il registro e lui.
+            // Girato un poco verso destra (per chi guarda): non sta piatto davanti alla telecamera.
             Vector3 altar = new Vector3(0.8f, 0f, -2.3f);
-            Primitive(PrimitiveType.Cube, "Altare", r, altar + new Vector3(0f, 0.5f, 0f), Vector3.zero, new Vector3(1.2f, 1.0f, 0.6f), altarStone);
-            Primitive(PrimitiveType.Cube, "Altare_Piano", r, altar + new Vector3(0f, 1.03f, 0f), Vector3.zero, new Vector3(1.36f, 0.06f, 0.72f), altarStone);
+            var altarGroup = new GameObject("Altare_Gruppo").transform;
+            altarGroup.SetParent(r, false);
+            altarGroup.localPosition = altar;
+            altarGroup.localRotation = Quaternion.Euler(0f, -20f, 0f);
+            Primitive(PrimitiveType.Cube, "Altare", altarGroup, new Vector3(0f, 0.5f, 0f), Vector3.zero, new Vector3(1.2f, 1.0f, 0.6f), altarStone);
+            Primitive(PrimitiveType.Cube, "Altare_Piano", altarGroup, new Vector3(0f, 1.03f, 0f), Vector3.zero, new Vector3(1.36f, 0.06f, 0.72f), altarStone);
 
             var heartGO = new GameObject("Frammento_del_Cuore");
             heartGO.transform.SetParent(r, false);
@@ -143,7 +148,7 @@ namespace Valdorso.EditorTools
                 ("floating", heartGO.transform));
 
             // L'iscrizione sul fronte dell'altare, rivolta verso chi guarda.
-            Inscription(r, theme, "IL CUORE BATTE ANCORA", altar + new Vector3(0f, 0.7f, 0.305f), 0.7f);
+            Inscription(altarGroup, theme, "IL CUORE BATTE ANCORA", new Vector3(0f, 0.68f, 0.302f), 0.7f);
 
             // Due bracieri, uno per lato.
             foreach (float side in new[] { -1f, 1f })
@@ -350,9 +355,41 @@ namespace Valdorso.EditorTools
             tmp.fontSizeMin = 0.2f;
             tmp.characterSpacing = 6f;
             tmp.alignment = TextAlignmentOptions.Center;
-            tmp.color = theme.gold;
+            tmp.color = Color.white; // il colore lo dà il materiale inciso
             tmp.textWrappingMode = TextWrappingModes.NoWrap;
             ((RectTransform)go.transform).sizeDelta = new Vector2(1.1f, 0.2f);
+            tmp.fontSharedMaterial = EngravedMaterial(theme);
+        }
+
+        // Lettere incise nella pietra: oro spento dentro il solco, un'ombra che le fa sembrare scavate,
+        // e un bordo scuro come il fondo dell'incisione.
+        static Material EngravedMaterial(ValdorsoTheme theme)
+        {
+            string path = $"{ArtFolder}/Iscrizione_Incisa.mat";
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(theme.titleFont.material);
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            else
+            {
+                mat.shader = theme.titleFont.material.shader;
+                mat.CopyPropertiesFromMaterial(theme.titleFont.material);
+            }
+            mat.SetColor("_FaceColor", new Color(0.62f, 0.47f, 0.2f, 1f));
+            mat.SetColor("_OutlineColor", new Color(0.08f, 0.06f, 0.04f, 1f));
+            mat.SetFloat("_OutlineWidth", 0.12f);
+            mat.SetFloat("_FaceDilate", 0.05f);
+            mat.EnableKeyword("UNDERLAY_INNER");
+            mat.DisableKeyword("UNDERLAY_ON");
+            mat.SetColor("_UnderlayColor", new Color(0f, 0f, 0f, 0.85f));
+            mat.SetFloat("_UnderlayOffsetX", 0.35f);
+            mat.SetFloat("_UnderlayOffsetY", -0.35f);
+            mat.SetFloat("_UnderlayDilate", 0.1f);
+            mat.SetFloat("_UnderlaySoftness", 0.35f);
+            EditorUtility.SetDirty(mat);
+            return mat;
         }
 
         // ---------- Atmosfera (post-processing) ----------
