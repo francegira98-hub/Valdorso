@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using TMPro;
+using UMA;
+using UMA.CharacterSystem;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
@@ -17,7 +19,8 @@ namespace Valdorso.Creation
     /// <summary>
     /// Il regista della scena di creazione: il Registro di Val d'Orso.
     /// Quando la scena si apre sopra il mondo, spegne telecamere e sole del mondo e mette l'atmosfera della notte.
-    /// A sinistra c'è la pergamena del registro, a pagine: ogni pagina è una scelta (per ora il nome), l'ultima è la firma.
+    /// A sinistra c'è la pergamena del registro, a pagine: ogni pagina è una scelta (nome, corpo), l'ultima è la firma.
+    /// Il personaggio sul palco cambia mentre si sceglie; alla firma il suo aspetto parte per il server come ricetta UMA.
     /// Dopo la firma riaccende il mondo, chiede di entrare e chiude la scena.
     /// Le pagine si costruiscono da codice con i colori e i caratteri del Tema UI "Oro e brace".
     /// </summary>
@@ -38,6 +41,20 @@ namespace Valdorso.Creation
             "Rinaldo", "Tancredi", "Ugolino", "Vanni", "Baldo", "Cecco", "Nuccio", "Gherardo",
             "Ada", "Bice", "Costanza", "Fiora", "Gemma", "Ilaria", "Lucia", "Mira", "Nives",
             "Selvaggia", "Tessa", "Viola", "Agnese", "Brunilde", "Oderisia", "Lapa"
+        };
+
+        // Razze e vestiti di partenza (Popolano appena arrivato nella valle). I nomi sono quelli delle ricette UMA.
+        const string MaleRace = "Human Male 3.0";
+        const string FemaleRace = "Human Female 3.0";
+        static readonly string[] MaleWardrobe =
+        {
+            "bb_male_haircut_Recipe", "Eyebrows_Average_Average", "Beard_Trimmed", "male_underpants_granit_Recipe",
+            "M_ChallengerTorsoArmor_Recipe", "M_Wrapped Pants_Recipe", "M_ChallengerBoots_Recipe"
+        };
+        static readonly string[] FemaleWardrobe =
+        {
+            "bb_female_hair_Recipe", "Eyebrows_Arched_Average", "underwear_white_granit_bottom_Recipe", "underwear_white_granit_top_Recipe",
+            "F_ChallengerTorsoArmor_Recipe", "F_Wrapped Pants_Recipe", "F_ChallengerBoots_Recipe"
         };
 
         // Com'era il mondo prima di aprire la creazione, per rimetterlo uguale.
@@ -61,6 +78,13 @@ namespace Valdorso.Creation
         TMP_Text nameError, summaryText, statusText;
         bool busy;
 
+        // Il corpo
+        DynamicCharacterAvatar preview;
+        bool female;
+        Slider heightSlider, buildSlider;
+        Button maleButton, femaleButton;
+        float rebuildAt = -1f;
+
         Color Ink => theme != null ? theme.ink : new Color(0.17f, 0.11f, 0.07f);
         Color Blood => theme != null ? theme.blood : new Color(0.56f, 0.17f, 0.15f);
         Color GoldDark => theme != null ? theme.goldDark : new Color(0.54f, 0.42f, 0.11f);
@@ -68,11 +92,23 @@ namespace Valdorso.Creation
         void Start()
         {
             if (stageCamera == null) stageCamera = GetComponentInChildren<Camera>(true);
+            preview = GetComponentInChildren<DynamicCharacterAvatar>(true);
             if (theme == null) Debug.LogWarning("[Valdorso] Nel Creation Controller manca il Tema UI: il registro userà colori e caratteri di riserva.");
             HideWorld();
             EnsureEventSystem();
             BuildRegister();
             ShowPage(0);
+            ScheduleLook(0f);
+        }
+
+        void Update()
+        {
+            // Il personaggio si ricostruisce poco dopo l'ultima modifica, non a ogni scatto del cursore.
+            if (rebuildAt > 0f && Time.unscaledTime >= rebuildAt)
+            {
+                rebuildAt = -1f;
+                ApplyLook();
+            }
         }
 
         void OnDestroy()
@@ -192,6 +228,7 @@ namespace Valdorso.Creation
 
             // Le pagine: ognuna è una scelta; l'ultima è la firma.
             pages.Add(BuildNamePage(sheet));
+            pages.Add(BuildBodyPage(sheet));
             pages.Add(BuildSignPage(sheet));
 
             // In fondo: avanti, indietro e numero di pagina.
@@ -219,14 +256,15 @@ namespace Valdorso.Creation
 
             Label(page, "Da 2 a 24 lettere; spazi, apostrofi e trattini sono ammessi. Nella valle non ci sono due persone con lo stesso nome.",
                 ItalicFont, 21f, Fade(Ink, 0.7f), new Vector2(60f, -392f), new Vector2(580f, 70f), TextAlignmentOptions.TopLeft);
-            nameError = Label(page, string.Empty, ItalicFont, 23f, Blood, new Vector2(60f, -470f), new Vector2(580f, 70f), TextAlignmentOptions.TopLeft);
+            nameError = Label(page, string.Empty, TextFont, 24f, Blood, new Vector2(60f, -470f), new Vector2(580f, 70f), TextAlignmentOptions.TopLeft);
+            nameError.fontStyle = FontStyles.Bold; // un errore deve farsi notare anche sulla pergamena
             return page.gameObject;
         }
 
         GameObject BuildSignPage(RectTransform sheet)
         {
             RectTransform page = Box(sheet, "Pagina_Firma", new Vector2(0f, -170f), new Vector2(700f, 640f));
-            Label(page, "II  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "III  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
             Label(page, "La corona di Aurelia concede terra e protezione a chi ha il coraggio di restare nella valle.",
                 ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
 
@@ -238,6 +276,105 @@ namespace Valdorso.Creation
             statusText = Label(page, string.Empty, ItalicFont, 23f, Fade(Ink, 0.85f), new Vector2(60f, -500f), new Vector2(580f, 110f), TextAlignmentOptions.Top);
             return page.gameObject;
         }
+
+        GameObject BuildBodyPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Corpo", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "II  ·  IL CORPO", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "Per ultimi vennero gli uomini, fragili e brevi, ma gli unici capaci di scegliere chi diventare.",
+                ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
+
+            Label(page, "Chi si presenta al sacerdote?", TextFont, 27f, Ink, new Vector2(60f, -180f), new Vector2(580f, 40f), TextAlignmentOptions.Left);
+            maleButton = MakeButton(page, "UOMO", new Vector2(60f, -230f), new Vector2(280f, 56f), 24f);
+            maleButton.onClick.AddListener(() => SetFemale(false));
+            femaleButton = MakeButton(page, "DONNA", new Vector2(360f, -230f), new Vector2(280f, 56f), 24f);
+            femaleButton.onClick.AddListener(() => SetFemale(true));
+
+            Label(page, "Altezza", TextFont, 27f, Ink, new Vector2(60f, -326f), new Vector2(580f, 40f), TextAlignmentOptions.Left);
+            heightSlider = MakeSlider(page, new Vector2(60f, -372f), 580f, "bassa", "alta");
+            Label(page, "Corporatura", TextFont, 27f, Ink, new Vector2(60f, -446f), new Vector2(580f, 40f), TextAlignmentOptions.Left);
+            buildSlider = MakeSlider(page, new Vector2(60f, -492f), 580f, "esile", "robusta");
+            heightSlider.onValueChanged.AddListener(_ => ScheduleLook(0.2f));
+            buildSlider.onValueChanged.AddListener(_ => ScheduleLook(0.2f));
+
+            Label(page, "Trascina il personaggio con il mouse per girarlo.", ItalicFont, 21f, Fade(Ink, 0.7f),
+                new Vector2(60f, -570f), new Vector2(580f, 40f), TextAlignmentOptions.TopLeft);
+            RefreshSexButtons();
+            return page.gameObject;
+        }
+
+        // ---------- Il corpo sul palco ----------
+
+        void SetFemale(bool value)
+        {
+            if (busy || female == value) return;
+            female = value;
+            RefreshSexButtons();
+            ScheduleLook(0f);
+        }
+
+        void RefreshSexButtons()
+        {
+            // La scelta attiva ha il fondo acceso, come un pulsante sotto il mouse.
+            MarkSelected(maleButton, !female);
+            MarkSelected(femaleButton, female);
+        }
+
+        void MarkSelected(Button button, bool selected)
+        {
+            if (button == null) return;
+            ColorBlock colors = button.colors;
+            Color normal = theme != null ? theme.button : new Color(0.11f, 0.09f, 0.07f);
+            Color lit = theme != null ? theme.buttonPressed : new Color(0.35f, 0.27f, 0.19f);
+            colors.normalColor = selected ? lit : normal;
+            colors.selectedColor = colors.normalColor;
+            button.colors = colors;
+        }
+
+        void ScheduleLook(float delay)
+        {
+            rebuildAt = Time.unscaledTime + Mathf.Max(0.01f, delay);
+        }
+
+        /// <summary>L'aspetto scelto nel registro, nella forma che UMA sa caricare e il server sa conservare.</summary>
+        AvatarDefinition ChosenLook()
+        {
+            float h = heightSlider != null ? heightSlider.value : 0.5f;
+            float b = buildSlider != null ? buildSlider.value : 0.5f;
+            return new AvatarDefinition
+            {
+                RaceName = female ? FemaleRace : MaleRace,
+                Wardrobe = (string[])(female ? FemaleWardrobe : MaleWardrobe).Clone(),
+                Colors = new SharedColorDef[0],
+                Dna = new[]
+                {
+                    new DnaDef("height", Mathf.Lerp(0.36f, 0.64f, h)),
+                    new DnaDef("upperWeight", Mathf.Lerp(0.3f, 0.7f, b)),
+                    new DnaDef("lowerWeight", Mathf.Lerp(0.3f, 0.7f, b)),
+                    new DnaDef("upperMuscle", Mathf.Lerp(0.38f, 0.66f, b)),
+                    new DnaDef("lowerMuscle", Mathf.Lerp(0.38f, 0.62f, b)),
+                    new DnaDef("belly", Mathf.Lerp(0.35f, 0.6f, b)),
+                    new DnaDef("waist", Mathf.Lerp(0.4f, 0.6f, b))
+                }
+            };
+        }
+
+        void ApplyLook()
+        {
+            if (preview == null) return;
+            try
+            {
+                preview.LoadAvatarDefinition(ChosenLook());
+                preview.BuildCharacter(true);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("[Valdorso] Il personaggio del registro non si è ricostruito: " + e.Message);
+            }
+        }
+
+        static string Describe(float value, string low, string mid, string high) =>
+            value < 0.34f ? low : value > 0.66f ? high : mid;
 
         // ---------- Navigazione ----------
 
@@ -297,6 +434,8 @@ namespace Valdorso.Creation
         {
             summaryText.text =
                 $"Nome:  <b>{ChosenName}</b>\n" +
+                $"{(female ? "Donna" : "Uomo")}, {Describe(heightSlider.value, "bassa statura", "statura media", "alta statura")}, " +
+                $"{Describe(buildSlider.value, "corporatura esile", "corporatura media", "corporatura robusta")}\n" +
                 "Origine:  Popolano\n" +
                 "Razza:  Umano\n" +
                 "Fede:  nessuna, per ora";
@@ -314,8 +453,9 @@ namespace Valdorso.Creation
             busy = true;
             SetButtons(false);
             statusText.text = "Il sacerdote scrive il tuo nome nel registro...";
-            // Fede e aspetto arriveranno dalle pagine del registro (passi 5.3-5.5): per ora vuoti.
-            ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, string.Empty, string.Empty, OnCreated);
+            // L'aspetto scelto parte come ricetta UMA; la fede arriverà con la sua pagina (passo 5.5).
+            string recipe = ChosenLook().ToCompressedString();
+            ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, string.Empty, recipe, OnCreated);
         }
 
         void OnCreated(bool success, string message, string characterId)
@@ -338,6 +478,8 @@ namespace Valdorso.Creation
             signButton.interactable = interactable;
             backButton.interactable = interactable;
             nextButton.interactable = interactable;
+            if (maleButton != null) maleButton.interactable = interactable;
+            if (femaleButton != null) femaleButton.interactable = interactable;
         }
 
         IEnumerator EnterWorld(string characterId)
@@ -438,6 +580,51 @@ namespace Valdorso.Creation
             colors.fadeDuration = theme != null ? theme.fadeDuration : 0.12f;
             button.colors = colors;
             return button;
+        }
+
+        Slider MakeSlider(Transform parent, Vector2 topLeft, float width, string leftWord, string rightWord)
+        {
+            RectTransform rect = Box(parent, "Cursore", topLeft, new Vector2(width, 30f));
+            rect.gameObject.SetActive(false); // si accende solo quando tutti i pezzi sono collegati
+
+            // La linea del cursore
+            RectTransform track = Box(rect, "Linea", new Vector2(0f, -12f), new Vector2(width, 6f));
+            var trackImage = track.gameObject.AddComponent<Image>();
+            trackImage.color = Fade(Ink, 0.25f);
+
+            RectTransform fillArea = Box(rect, "Area", new Vector2(0f, -12f), new Vector2(width, 6f));
+            RectTransform fill = Box(fillArea, "Riempimento", Vector2.zero, Vector2.zero);
+            Stretch(fill, 0f, 0f, 0f, 0f);
+            var fillImage = fill.gameObject.AddComponent<Image>();
+            fillImage.color = GoldDark;
+
+            // La maniglia: un rombo d'oro, come quello del separatore.
+            RectTransform handleArea = Box(rect, "Area_Maniglia", new Vector2(0f, 0f), new Vector2(width, 30f));
+            RectTransform handle = Box(handleArea, "Maniglia", Vector2.zero, new Vector2(20f, 20f));
+            handle.anchorMin = new Vector2(0f, 0.5f);
+            handle.anchorMax = new Vector2(0f, 0.5f);
+            handle.pivot = new Vector2(0.5f, 0.5f);
+            handle.localRotation = Quaternion.Euler(0f, 0f, 45f);
+            var handleImage = handle.gameObject.AddComponent<Image>();
+            handleImage.color = theme != null ? theme.gold : new Color(0.83f, 0.69f, 0.22f);
+
+            var slider = rect.gameObject.AddComponent<Slider>();
+            slider.fillRect = fill;
+            slider.handleRect = handle;
+            slider.targetGraphic = handleImage;
+            slider.direction = Slider.Direction.LeftToRight;
+            slider.minValue = 0f;
+            slider.maxValue = 1f;
+            slider.value = 0.5f;
+            ColorBlock colors = slider.colors;
+            colors.highlightedColor = new Color(1f, 0.95f, 0.8f);
+            slider.colors = colors;
+
+            Label(parent, leftWord, ItalicFont, 20f, Fade(Ink, 0.7f), topLeft + new Vector2(0f, -30f), new Vector2(200f, 28f), TextAlignmentOptions.Left);
+            Label(parent, rightWord, ItalicFont, 20f, Fade(Ink, 0.7f), topLeft + new Vector2(width - 200f, -30f), new Vector2(200f, 28f), TextAlignmentOptions.Right);
+
+            rect.gameObject.SetActive(true);
+            return slider;
         }
 
         TMP_InputField MakeInputField(Transform parent, Vector2 topLeft, Vector2 size)
