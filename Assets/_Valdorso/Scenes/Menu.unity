@@ -4531,6 +4531,8 @@ MonoBehaviour:
   creationScene: Creazione
   maxRecipeLength: 8000
   maxPortraitBytes: 200000
+  leaveDelay: 20
+  leaveMoveTolerance: 0.5
 --- !u!4 &998197133
 Transform:
   m_ObjectHideFlags: 0

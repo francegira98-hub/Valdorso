@@ -68,6 +68,33 @@ namespace Valdorso.Network
         public string message;
     }
 
+    /// <summary>Dove si va lasciando il mondo.</summary>
+    public enum LeaveMode : byte
+    {
+        Characters = 0, // torna ai personaggi (resta collegato)
+        Menu = 1,       // torna al menu principale
+        Quit = 2        // esce dal gioco
+    }
+
+    /// <summary>PC → server: "voglio lasciare la valle" (parte l'attesa, o si esce subito nei luoghi sicuri).</summary>
+    public struct LeaveWorldRequest : NetworkMessage
+    {
+        public LeaveMode mode;
+    }
+
+    /// <summary>PC → server: "ci ho ripensato, resto".</summary>
+    public struct LeaveWorldCancel : NetworkMessage { }
+
+    /// <summary>Server → PC: a che punto è l'uscita dal mondo.</summary>
+    public struct LeaveWorldStatus : NetworkMessage
+    {
+        public LeaveMode mode;
+        public int secondsLeft;
+        public bool cancelled;  // annullata: il messaggio dice perché
+        public bool done;       // il personaggio è uscito ed è salvato
+        public string message;
+    }
+
     /// <summary>PC → server: "entro nel mondo con questo personaggio".</summary>
     public struct EnterWorldRequest : NetworkMessage
     {

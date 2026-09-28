@@ -7,6 +7,8 @@ using Valdorso.Creatures;
 using Valdorso.Server;
 using Valdorso.Stats;
 using Valdorso.UI;
+using Valdorso.World;
+using Valdorso.WorldEvents;
 
 namespace Valdorso.Network
 {
@@ -31,6 +33,10 @@ namespace Valdorso.Network
         [SerializeField] int maxRecipeLength = 8000;
         [Tooltip("Peso massimo del ritratto accettato alla creazione (byte)")]
         [SerializeField] int maxPortraitBytes = 200000;
+        [Tooltip("Secondi di attesa per lasciare la valle fuori dai luoghi sicuri (anche chi chiude il gioco di colpo resta tanto nel mondo)")]
+        [SerializeField] float leaveDelay = 20f;
+        [Tooltip("Di quanti metri ci si può spostare durante l'attesa prima che l'uscita si annulli")]
+        [SerializeField] float leaveMoveTolerance = 0.5f;
 
         class ActiveCharacter
         {
@@ -41,6 +47,17 @@ namespace Valdorso.Network
 
         // Le fedi che il sacerdote scrive nel registro (vuoto = nessuna). Gli dei oscuri non si dichiarano.
         static readonly HashSet<string> AllowedFaiths = new HashSet<string> { "", "Solara", "Ignar", "Nereia", "Torvald", "Zefira", "Vecchi Dei" };
+
+        // Chi sta lasciando la valle (attesa in corso) e chi è rimasto nel mondo dopo aver chiuso il gioco.
+        class Leaving
+        {
+            public LeaveMode mode;
+            public double endTime;
+            public Vector3 startPosition;
+            public int lastSecondsSent = -1;
+        }
+        readonly Dictionary<NetworkConnectionToClient, Leaving> leaving = new Dictionary<NetworkConnectionToClient, Leaving>();
+        readonly List<(ActiveCharacter entry, double endTime)> lingering = new List<(ActiveCharacter, double)>();
 
         readonly Dictionary<NetworkConnectionToClient, ActiveCharacter> active = new Dictionary<NetworkConnectionToClient, ActiveCharacter>();
         double nextAutosave;
@@ -66,6 +83,11 @@ namespace Valdorso.Network
         {
             base.Update();
             AskForCharactersWhenReady();
+            if (NetworkServer.active)
+            {
+                UpdateLeaving();
+                UpdateLingering();
+            }
 
             if (!NetworkServer.active || Time.unscaledTimeAsDouble < nextAutosave) return;
             nextAutosave = Time.unscaledTimeAsDouble + autosaveInterval;
@@ -84,12 +106,20 @@ namespace Valdorso.Network
             NetworkServer.RegisterHandler<CreateCharacterRequest>(OnCreateCharacterRequest);
             NetworkServer.RegisterHandler<EnterWorldRequest>(OnEnterWorldRequest);
             NetworkServer.RegisterHandler<DeleteCharacterRequest>(OnDeleteCharacterRequest);
+            NetworkServer.RegisterHandler<LeaveWorldRequest>(OnLeaveWorldRequest);
+            NetworkServer.RegisterHandler<LeaveWorldCancel>(OnLeaveWorldCancel);
+            WorldEventLog.EventRecorded += OnWorldEvent;
         }
 
         public override void OnStopServer()
         {
             SaveAll("spegnimento del server");
             active.Clear();
+            leaving.Clear();
+            lingering.Clear();
+            WorldEventLog.EventRecorded -= OnWorldEvent;
+            NetworkServer.UnregisterHandler<LeaveWorldRequest>();
+            NetworkServer.UnregisterHandler<LeaveWorldCancel>();
             NetworkServer.UnregisterHandler<CharacterListRequest>();
             NetworkServer.UnregisterHandler<CreateCharacterRequest>();
             NetworkServer.UnregisterHandler<EnterWorldRequest>();
@@ -302,6 +332,11 @@ namespace Valdorso.Network
             }
             if (active.ContainsKey(conn) || conn.identity != null) return; // è già dentro
 
+            // Se questo personaggio è ancora nel mondo dopo un'uscita brusca, prima lo si salva e lo si toglie:
+            // rientra esattamente dov'era, con le stesse ferite (niente scappatoie).
+            for (int i = lingering.Count - 1; i >= 0; i--)
+                if (lingering[i].entry.record.id == msg.characterId) FinishLingering(i);
+
             bool owned = account.characterIds != null && Array.IndexOf(account.characterIds, msg.characterId) >= 0;
             if (!owned || !CharacterStore.TryLoad(msg.characterId, out CharacterRecord character))
             {
@@ -362,24 +397,141 @@ namespace Valdorso.Network
             yield return baseName + " il Viandante";
         }
 
+        // ---------- Lasciare la valle ----------
+
+        void OnLeaveWorldRequest(NetworkConnectionToClient conn, LeaveWorldRequest msg)
+        {
+            if (!active.TryGetValue(conn, out ActiveCharacter entry) || entry.player == null) return;
+            SafeZone zone = SafeZone.At(entry.player.transform.position);
+            if (zone != null)
+            {
+                Debug.Log($"[Valdorso] {entry.record.name} lascia la valle da {zone.PlaceName}: uscita immediata.");
+                FinishLeaving(conn, entry, msg.mode);
+                return;
+            }
+            leaving[conn] = new Leaving
+            {
+                mode = msg.mode,
+                endTime = Time.unscaledTimeAsDouble + leaveDelay,
+                startPosition = entry.player.transform.position
+            };
+        }
+
+        void OnLeaveWorldCancel(NetworkConnectionToClient conn, LeaveWorldCancel msg)
+        {
+            CancelLeaving(conn, "Resti nella valle.");
+        }
+
+        void CancelLeaving(NetworkConnectionToClient conn, string reason)
+        {
+            if (!leaving.TryGetValue(conn, out Leaving l)) return;
+            leaving.Remove(conn);
+            conn.Send(new LeaveWorldStatus { mode = l.mode, cancelled = true, message = reason });
+        }
+
+        void UpdateLeaving()
+        {
+            if (leaving.Count == 0) return;
+            double now = Time.unscaledTimeAsDouble;
+            foreach (NetworkConnectionToClient conn in new List<NetworkConnectionToClient>(leaving.Keys))
+            {
+                Leaving l = leaving[conn];
+                if (!active.TryGetValue(conn, out ActiveCharacter entry) || entry.player == null)
+                {
+                    leaving.Remove(conn);
+                    continue;
+                }
+                if ((entry.player.transform.position - l.startPosition).sqrMagnitude > leaveMoveTolerance * leaveMoveTolerance)
+                {
+                    CancelLeaving(conn, "Ti sei mosso: resti nella valle.");
+                    continue;
+                }
+                if (now >= l.endTime)
+                {
+                    FinishLeaving(conn, entry, l.mode);
+                    continue;
+                }
+                int seconds = Mathf.CeilToInt((float)(l.endTime - now));
+                if (seconds != l.lastSecondsSent)
+                {
+                    l.lastSecondsSent = seconds;
+                    conn.Send(new LeaveWorldStatus { mode = l.mode, secondsLeft = seconds });
+                }
+            }
+        }
+
+        // Chi colpisce o viene colpito durante l'attesa resta nella valle.
+        void OnWorldEvent(WorldEvent e)
+        {
+            if (e.type != WorldEventType.Damage || leaving.Count == 0) return;
+            foreach (NetworkConnectionToClient conn in new List<NetworkConnectionToClient>(leaving.Keys))
+            {
+                if (!active.TryGetValue(conn, out ActiveCharacter entry) || entry.player == null) continue;
+                uint id = entry.player.GetComponent<NetworkIdentity>().netId;
+                if (e.actorId == id || e.targetId == id) CancelLeaving(conn, "Sei in combattimento: resti nella valle.");
+            }
+        }
+
+        void FinishLeaving(NetworkConnectionToClient conn, ActiveCharacter entry, LeaveMode mode)
+        {
+            leaving.Remove(conn);
+            SaveCharacter(entry);
+            active.Remove(conn);
+            Debug.Log($"[Valdorso] {entry.record.name} ha lasciato la valle: personaggio salvato.");
+            // Il personaggio sparisce dal mondo; il PC resta collegato (per tornare ai personaggi) o si scollega da solo.
+            NetworkServer.RemovePlayerForConnection(conn, RemovePlayerOptions.Destroy);
+            conn.Send(new LeaveWorldStatus { mode = mode, done = true });
+        }
+
+        void UpdateLingering()
+        {
+            double now = Time.unscaledTimeAsDouble;
+            for (int i = lingering.Count - 1; i >= 0; i--)
+                if (now >= lingering[i].endTime || lingering[i].entry.player == null) FinishLingering(i);
+        }
+
+        void FinishLingering(int index)
+        {
+            ActiveCharacter entry = lingering[index].entry;
+            lingering.RemoveAt(index);
+            SaveCharacter(entry);
+            if (entry.player != null) NetworkServer.Destroy(entry.player);
+            Debug.Log($"[Valdorso] {entry.record.name} ha lasciato la valle: personaggio salvato.");
+        }
+
         // ---------- Salvataggio ----------
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
             if (active.TryGetValue(conn, out ActiveCharacter entry))
             {
-                SaveCharacter(entry);
                 active.Remove(conn);
-                Debug.Log($"[Valdorso] {entry.record.name} è uscito: personaggio salvato.");
+                double end = leaving.TryGetValue(conn, out Leaving l) ? l.endTime : Time.unscaledTimeAsDouble + leaveDelay;
+                leaving.Remove(conn);
+
+                SafeZone zone = entry.player != null ? SafeZone.At(entry.player.transform.position) : null;
+                if (zone != null || entry.player == null || end <= Time.unscaledTimeAsDouble)
+                {
+                    SaveCharacter(entry);
+                    Debug.Log($"[Valdorso] {entry.record.name} è uscito: personaggio salvato.");
+                }
+                else
+                {
+                    // Chi chiude il gioco fuori da un luogo sicuro resta nel mondo, fermo e attaccabile, fino alla fine dell'attesa.
+                    NetworkServer.RemovePlayerForConnection(conn, RemovePlayerOptions.KeepActive);
+                    lingering.Add((entry, end));
+                    Debug.Log($"[Valdorso] {entry.record.name} ha lasciato il gioco fuori da un luogo sicuro: resta nella valle per {end - Time.unscaledTimeAsDouble:0} secondi.");
+                }
             }
             base.OnServerDisconnect(conn);
         }
 
         public void SaveAll(string reason)
         {
-            if (active.Count == 0) return;
+            if (active.Count == 0 && lingering.Count == 0) return;
             foreach (ActiveCharacter entry in active.Values) SaveCharacter(entry);
-            Debug.Log($"[Valdorso] Salvati {active.Count} personaggi ({reason}).");
+            foreach (var l in lingering) SaveCharacter(l.entry);
+            Debug.Log($"[Valdorso] Salvati {active.Count + lingering.Count} personaggi ({reason}).");
         }
 
         void SaveCharacter(ActiveCharacter entry)
@@ -432,6 +584,7 @@ namespace Valdorso.Network
             NetworkClient.RegisterHandler<CharacterListResponse>(OnCharacterList);
             NetworkClient.RegisterHandler<CreateCharacterResponse>(OnCreateResponse);
             NetworkClient.RegisterHandler<DeleteCharacterResponse>(OnDeleteResponse);
+            NetworkClient.RegisterHandler<LeaveWorldStatus>(OnLeaveStatus);
         }
 
         public override void OnStopClient()
@@ -470,6 +623,26 @@ namespace Valdorso.Network
             callback?.Invoke(msg.success, msg.message);
             // Dopo una cancellazione riuscita si chiede l'elenco aggiornato.
             if (msg.success) NetworkClient.Send(new CharacterListRequest());
+        }
+
+        /// <summary>A che punto è l'uscita dal mondo (lo mostra il menu di pausa).</summary>
+        public static event Action<LeaveWorldStatus> LeaveStatusReceived;
+
+        void OnLeaveStatus(LeaveWorldStatus msg)
+        {
+            // Tornando ai personaggi si resta collegati: si richiede l'elenco e si riapre il Registro.
+            if (msg.done && msg.mode == LeaveMode.Characters) listRequested = false;
+            LeaveStatusReceived?.Invoke(msg);
+        }
+
+        public static void RequestLeaveWorld(LeaveMode mode)
+        {
+            if (NetworkClient.isConnected) NetworkClient.Send(new LeaveWorldRequest { mode = mode });
+        }
+
+        public static void CancelLeaveWorld()
+        {
+            if (NetworkClient.isConnected) NetworkClient.Send(new LeaveWorldCancel());
         }
 
         /// <summary>Chiede al server di cancellare un personaggio; bisogna riscriverne il nome. Risposta nel callback (riuscito, messaggio).</summary>
