@@ -21,7 +21,7 @@ namespace Valdorso.EditorTools
     /// Attenzione: ricostruire cancella i ritocchi fatti a mano sul terreno.
     /// Funziona solo nell'editor, non entra nel gioco.
     /// </summary>
-    public static class ValleBuilder
+    public static partial class ValleBuilder
     {
         const string CartellaMondo = "Assets/_Valdorso/Mondo";
         const string Cartella = CartellaMondo + "/Valle";
@@ -535,6 +535,22 @@ namespace Valdorso.EditorTools
                     risultato.Add(new Vector4(puntiFiume[k].x, superficieFiume[k], puntiFiume[k].y, larghezza));
                 }
                 return risultato;
+            }
+
+            // Letture usate anche dal seminatore della natura (ValleNatura.cs).
+            public float DistanzaBosco(float x, float z) => bosco.Leggi(x, z);
+            public float DistanzaFiume(float x, float z) => fiumeD.Leggi(x, z);
+            public float DistanzaStrade(float x, float z) => strade.Leggi(x, z);
+            public float DistanzaValle(float x, float z) => valle.Leggi(x, z);
+            public float Quota(float x, float z) => Altezza(x, z) - Fondo(x, z);
+            public float LivelloLago => r.livelloLago;
+
+            /// <summary>Le macchie verdi sui pendii bassi dei monti (le stesse del sottobosco dipinto): 0 = niente, 1 = piena.</summary>
+            public float MacchieMonte(float x, float z)
+            {
+                float suiMonti = Liscio((valle.Leggi(x, z) + 40f) / 100f);
+                float macchie = Liscio((Rumore(x, z, 150f, 2) - 0.45f) / 0.2f) * (1f - Liscio((Quota(x, z) - 230f) / 80f));
+                return macchie * suiMonti;
             }
 
             /// <summary>Il fondo della valle senza rilievi: sale piano da sud-ovest a nord-est.</summary>

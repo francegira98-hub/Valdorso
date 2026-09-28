@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27876b5e129a9df4fa7e6dcb58f1c9d4, type: 3}
+  m_Name: RicettaNatura
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.World.RicettaNatura
+  alberiBosco:
+  - {fileID: 7078907134251479745, guid: 915b43792ae342d4ba5fa425e86cc6f4, type: 3}
+  - {fileID: 2639178135799527569, guid: 2c71f3bb1758e824494c5a4a16c89015, type: 3}
+  - {fileID: 1358054364387221446, guid: 016dad81e5bfd3e49a340179fb4e1150, type: 3}
+  - {fileID: 5556296651694026700, guid: 19df7a28074cb284a8aa8562718310f5, type: 3}
+  - {fileID: 5541041778127469509, guid: 4bc7a3a4d2ed6974abae4e0cba00575a, type: 3}
+  - {fileID: 9046900170786976767, guid: 65926329d063fb84ea4ac2e63a6fcaa4, type: 3}
+  - {fileID: 1653678598776248653, guid: 987094f792fe9f946b536b171a0114c1, type: 3}
+  - {fileID: 1008656033906581803, guid: 47a34fcf711f1d54a9e98658458da727, type: 3}
+  - {fileID: 1260748801560008967, guid: 0d241a507dbce5747b598599a6d9b8cb, type: 3}
+  - {fileID: 2055332569415016339, guid: b350a17bb70b9bf42837ff0e5a2296e0, type: 3}
+  - {fileID: 2417476935487482621, guid: d3c6acd094560b747a862db168cabbd7, type: 3}
+  - {fileID: 8049368575248060617, guid: 01bfe06c2ad059848918daf1ebfc775c, type: 3}
+  - {fileID: 1369272606889684106, guid: 5960d62009404044ebf475d05b259108, type: 3}
+  alberiMonte:
+  - {fileID: 3684338720422282186, guid: 8d75bb48ec181294d9c16ba981022b5a, type: 3}
+  - {fileID: 4565648461373254474, guid: db7dfcfcf1eaa5c4cb14e71bcf24d0a1, type: 3}
+  - {fileID: 6901275522893652771, guid: ae0389b3310d4e34bbea4a8db790599d, type: 3}
+  - {fileID: 2180519111334478296, guid: da116b37074c1b348a73bf96fdce475a, type: 3}
+  - {fileID: 7025587168900912091, guid: ecac8844c6fb9d742891c0dc5b60179b, type: 3}
+  - {fileID: 5346212699020424436, guid: a9720aded241f854fb097e68c03fd4f6, type: 3}
+  - {fileID: 7748974899842165981, guid: 89f40da396e5fb04d9e94a2b8db6933a, type: 3}
+  - {fileID: 2104127946730738794, guid: 39a2bb4d7e48dd348a660ea4f396c14d, type: 3}
+  - {fileID: 8327872573194847758, guid: bd46ccbe8fee8864098008c81815028b, type: 3}
+  - {fileID: 7257683273481729910, guid: ce9449b31aa1140499eb0ac84dd87596, type: 3}
+  - {fileID: 754104431106722823, guid: ccdbd07b15637834996fea79f25e9911, type: 3}
+  - {fileID: 2055332569415016339, guid: b350a17bb70b9bf42837ff0e5a2296e0, type: 3}
+  - {fileID: 2417476935487482621, guid: d3c6acd094560b747a862db168cabbd7, type: 3}
+  - {fileID: 8049368575248060617, guid: 01bfe06c2ad059848918daf1ebfc775c, type: 3}
+  - {fileID: 1369272606889684106, guid: 5960d62009404044ebf475d05b259108, type: 3}
+  alberiPrato:
+  - {fileID: 2133793693996174905, guid: 33388f1098bb51e49bf05eb9c5588389, type: 3}
+  - {fileID: 501937623347154254, guid: 3e2e4a1eddcaef048859e7f4f222377a, type: 3}
+  - {fileID: 7251145916443394076, guid: 48673b4880408c5458ada315d1557f28, type: 3}
+  - {fileID: 7456687285798268066, guid: f196ed17271b9b541832827af1005f73, type: 3}
+  cespugli:
+  - {fileID: 7783754686589239297, guid: 96f8108f92d6ecf458c1668ed951074c, type: 3}
+  - {fileID: 1227008230904540, guid: fa9eddae9eedd5a4cb0c58258fa1c84a, type: 3}
+  - {fileID: 1770989272128412, guid: 54ad073294fda8c4b9565db72fb1c4cc, type: 3}
+  - {fileID: 1576670106550510, guid: 9167c9cd56ddf1a4faebe1341dffb1bd, type: 3}
+  - {fileID: 1524449675286748, guid: c85b7accc96c8994798de48df9d98b1e, type: 3}
+  rocceValle:
+  - {fileID: 1352733118662176, guid: d4d284672cff2f847ab9509bd88f05bc, type: 3}
+  - {fileID: 1653558279864992, guid: c51f7556f8c3cf944b3561a72c5b9fd8, type: 3}
+  - {fileID: 1059410465792494, guid: 812c4419f471b134db1aa264aef6b05d, type: 3}
+  - {fileID: 1342137920590926, guid: 21667d9ef60de35458a57143c0b872fd, type: 3}
+  - {fileID: 1960502298754828, guid: 71933cea0065d0740b35f716d4580d50, type: 3}
+  - {fileID: 1861099641242196, guid: f2327dfaf934b42469f0c0b0626c782d, type: 3}
+  - {fileID: 1009645697504610, guid: 1bfc5752c3d3eed4bb04ce0e8afdf3bf, type: 3}
+  - {fileID: 1446893933530256, guid: d7e77f70e3d00c44990f8ea8613fdc65, type: 3}
+  - {fileID: 1809221509254096, guid: 344ab59e7ea979548ab482de73330566, type: 3}
+  - {fileID: 1241668238674838, guid: 23df6736668a13348a03cb4244feb23c, type: 3}
+  - {fileID: 1855485174695482, guid: 863dfe438e8a7774e9c1a379f866205c, type: 3}
+  - {fileID: 1285456526739500, guid: 052ad3cedde6f07499541d48c2f2a25e, type: 3}
+  - {fileID: 1378585237161572, guid: e264f741455144e4cb67d93dac783b42, type: 3}
+  - {fileID: 1343707792729484, guid: 799f265524bdad84e93877f40e353362, type: 3}
+  - {fileID: 1332372872139496, guid: dfd722beab9e32e41bfb22b0cac9a5f0, type: 3}
+  - {fileID: 1373413698889372, guid: 1a06ff44903e8d54d94ed5c2a12e07bb, type: 3}
+  rocceBosco:
+  - {fileID: 2738582346304997721, guid: e0ced5b88cd8b294dae20fc9369e6e52, type: 3}
+  - {fileID: 8002046714324701000, guid: 1bf49d5ee29caf347ae64313ba2d17b5, type: 3}
+  - {fileID: 109522002936691504, guid: 5cbc05e1e9bc8e543af11584ced6f2b0, type: 3}
+  - {fileID: 3277021642672265599, guid: 8d4c697973e3ceb449de5306f8ed8736, type: 3}
+  - {fileID: 4887113621990586965, guid: dca6bbc2c345ab34da4322bde71612b9, type: 3}
+  - {fileID: 2738582346304997721, guid: ee6bbaa5b166b814ea47ed4048ee7d47, type: 3}
+  - {fileID: 8002046714324701000, guid: 366395f89294dae489909b7306c9504b, type: 3}
+  rocceMonte:
+  - {fileID: 4636979718664440851, guid: 41d0b747eca2c164ea05cd58d7e88449, type: 3}
+  - {fileID: 6115133202928254058, guid: 0de1832062190bc4284e48d52fac1289, type: 3}
+  - {fileID: 2836670678637389298, guid: cc9a2ad6c738e0b44b7e5dd88a5e3d29, type: 3}
+  - {fileID: 2721174417514672056, guid: 502800568a5c17f459802927063acf81, type: 3}
+  - {fileID: 880306349860246338, guid: 2205ea16b9c38c7408a75e2b33e66d0f, type: 3}
+  - {fileID: 5855611398425948851, guid: a670947d3dae6aa4dbaa001f82e31121, type: 3}
+  - {fileID: 5239865172941215622, guid: 1d0c0c6e248d2d64dac4bc67c06957e8, type: 3}
+  - {fileID: 9034402016784481905, guid: a26f6b4c576098344bec21b9ee9250d8, type: 3}
+  - {fileID: 8990784825156194175, guid: 11e6df8c21d6c2743bb7a16e653e6ce5, type: 3}
+  - {fileID: 4088055089527569250, guid: 8f9a3f828b43ff048be447278d86f80f, type: 3}
+  - {fileID: 4458183694086543692, guid: 8af5581d5b7fbcf47bd9ed84a574e4b3, type: 3}
+  - {fileID: 2577915182311115103, guid: 9f58d71795de0a24787a5262be1aceb7, type: 3}
+  - {fileID: 4685238878824468746, guid: 7f2111b88e5189d4386aa6423d3e63a1, type: 3}
+  - {fileID: 2635825797126759234, guid: 56e11720e8caf0d44b9f4619b926a2d7, type: 3}
+  - {fileID: 8465696385111750504, guid: 3cf8aaa4069a2c3429f331de52f6d361, type: 3}
+  - {fileID: 293350263787518907, guid: f307d52f862e1814f95b7c444d1789ad, type: 3}
+  - {fileID: 2628789610315483630, guid: 55da71dbf9f98c3468979f79cbaf94aa, type: 3}
+  - {fileID: 8610669150520385212, guid: 37288319e3d74ea4aa27c1b41236782d, type: 3}
+  rocceFiume:
+  - {fileID: 7124327472978663689, guid: 6083ffddcb8480b4e9222e3e87a83aa3, type: 3}
+  - {fileID: 3496968330695343580, guid: f24a72bd3ad8b1c49ad493d6857a155a, type: 3}
+  - {fileID: 2792556185026468212, guid: 865d09a60b9b74a4ba96dc6df74ce19a, type: 3}
+  - {fileID: 8852388988735290595, guid: be48a6e34ae98f54c935b204b3fa319f, type: 3}
+  erbaPrato:
+  - {fileID: 1710261546573174, guid: c50550e3f1c82d54db6c0b5c920e77b7, type: 3}
+  - {fileID: 1413197532157798, guid: 01d36cd78177f284bb615656d2888b44, type: 3}
+  - {fileID: 1852308700510088, guid: 411c44b5ea136b347a462247368a33da, type: 3}
+  - {fileID: 1017575710971682, guid: 65f2d5e0b6caddd4dbf6cb7d9495d362, type: 3}
+  - {fileID: 1073214543424868, guid: b1a670caba301db429b9451d4c746e38, type: 3}
+  - {fileID: 1582993750345020, guid: c35118c3ec1e8174d99bf9ee94ba1a06, type: 3}
+  erbaBosco:
+  - {fileID: 3929650344775280591, guid: 14f2766e188cc23459aaad2fc444b4e3, type: 3}
+  - {fileID: 1017519755992989601, guid: 45230f306b8204c4695fb81c2f9b2442, type: 3}
+  - {fileID: 5001871497718003202, guid: 402a9e8eaf27e4342a011bb301b9cf9b, type: 3}
+  erbaMonte:
+  - {fileID: 3261647107294068751, guid: 4910d9ce24e3fab42b9f790025a7a4a6, type: 3}
+  - {fileID: 7787531470594460546, guid: 6c3367f8b1935ea4582ef7472f033bd0, type: 3}
+  seme: 312
+  boscoMetriPerAlbero: 45
+  monteMetriPerAlbero: 90
+  probabilitaAlberoPrato: 0.006
+  rocceValleNumero: 70
+  rocceBoscoNumero: 140
+  rocceFiumeNumero: 50
+  rocceMonteNumero: 300
+  erbaPratoDensita: 24
+  distanzaErba: 60
