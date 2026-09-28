@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2e46c951dfbefd42b11f3740568bfa7, type: 3}
+  m_Name: RicettaValle
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.World.RicettaValle
+  prato: {fileID: 8574412962073106934, guid: d8d19655a8a057341bf219762e808409, type: 2}
+  sottobosco: {fileID: 8574412962073106934, guid: a2622eb69d192a34caa214b4517d613a, type: 2}
+  terra: {fileID: 8574412962073106934, guid: 3403fa6b69e788d47adb6fb7e72c9d33, type: 2}
+  roccia: {fileID: 8574412962073106934, guid: 2bb9b60dcdfb11b4a9ccfc791695fdd6, type: 2}
+  ciottoli: {fileID: 8574412962073106934, guid: 8da233d901ce8e84cad52591bee6d7c0, type: 2}
+  tintaPrato: {r: 1, g: 1, b: 1, a: 1}
+  tintaSottobosco: {r: 1, g: 1, b: 1, a: 1}
+  tintaTerra: {r: 0.62, g: 0.55, b: 0.48, a: 1}
+  tintaRoccia: {r: 0.68, g: 0.66, b: 0.63, a: 1}
+  tintaCiottoli: {r: 0.75, g: 0.72, b: 0.68, a: 1}
+  seme: 312
+  fondoValle: 60
+  pendenzaVersoLago: 12
+  monteNord: 280
+  monteSud: 110
+  collina: 55
+  livelloLago: 60
+  profonditaLago: 7
