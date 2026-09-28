@@ -33,6 +33,16 @@ namespace Valdorso.Network
         public string faith;            // vuoto = nessuna fede
         public string appearanceRecipe; // vuoto = aspetto casuale al primo ingresso
         public byte[] portrait;         // il ritratto del viso in JPG (può mancare)
+
+        // Le risposte al sacerdote (chiavi di Backstory) e i due testi del registro.
+        public string homeland;
+        public string formerTrade;
+        public string reason;
+        public string keepsake;
+        public string fear;
+        public string[] traits;
+        public string story;            // il racconto composto dal registro (ritoccabile)
+        public string freeStory;        // "La tua storia", scritta dal giocatore
     }
 
     /// <summary>Server → PC: com'è andata la creazione.</summary>

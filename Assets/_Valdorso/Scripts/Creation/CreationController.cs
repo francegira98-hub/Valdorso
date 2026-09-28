@@ -213,6 +213,16 @@ namespace Valdorso.Creation
         int selectedEntry = -1;
         bool selectionMode;
 
+        // Le domande del sacerdote
+        int homelandIndex, tradeIndex, reasonIndex, keepsakeIndex, fearIndex;
+        readonly int[] traitChoice = new int[4];
+        readonly List<(TMP_Text answer, TMP_Text hint, System.Func<Backstory.Answer> current)> questionRows =
+            new List<(TMP_Text, TMP_Text, System.Func<Backstory.Answer>)>();
+        readonly List<(Button left, Button right)> traitButtons = new List<(Button, Button)>();
+        TMP_Text traitHints, freeStoryCounter;
+        TMP_InputField storyField, freeStoryField;
+        bool storyEdited;
+
         bool HasCharacters => ValdorsoNetworkManager.LastCharacterList is CharacterListResponse list &&
                               list.characters != null && list.characters.Length > 0;
         TMP_Text hairValue, beardValue, browValue, markValue;
@@ -446,6 +456,11 @@ namespace Valdorso.Creation
             pages.Add(BuildFacePage(sheet));
             pages.Add(BuildFeaturesPage(sheet));
             pages.Add(BuildFaithPage(sheet));
+            pages.Add(BuildOriginsPage(sheet));
+            pages.Add(BuildMemoryPage(sheet));
+            pages.Add(BuildCharacterPage(sheet));
+            pages.Add(BuildStoryPage(sheet));
+            pages.Add(BuildFreeStoryPage(sheet));
             pages.Add(BuildSignPage(sheet));
             BuildSelectionPage(sheet);
             BuildConfirmPanel(sheet);
@@ -483,7 +498,7 @@ namespace Valdorso.Creation
         GameObject BuildSignPage(RectTransform sheet)
         {
             RectTransform page = Box(sheet, "Pagina_Firma", new Vector2(0f, -170f), new Vector2(700f, 640f));
-            Label(page, "VI  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "XI  ·  LA FIRMA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
             Label(page, "La corona di Aurelia concede terra e protezione a chi ha il coraggio di restare nella valle.",
                 ItalicFont, 25f, Fade(Ink, 0.85f), new Vector2(60f, -64f), new Vector2(580f, 90f), TextAlignmentOptions.TopLeft);
 
@@ -826,6 +841,7 @@ namespace Valdorso.Creation
             if (browIndex == 0 || browIndex == 1) browIndex = female ? 1 : 0; // arcuate per lei, normali per lui
             RefreshSexButtons();
             RefreshFaceValues();
+            RefreshBackstory();
             ScheduleLook(0f);
         }
 
@@ -943,6 +959,158 @@ namespace Valdorso.Creation
 
         static string Describe(float value, string low, string mid, string high) =>
             value < 0.34f ? low : value > 0.66f ? high : mid;
+
+        // ---------- Le domande del sacerdote ----------
+
+        GameObject BuildOriginsPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Origini", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "VI  ·  LE ORIGINI", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "Il sacerdote intinge la penna. «Raccontami di te, straniero. La valle vuole sapere chi accoglie.»",
+                ItalicFont, 23f, Fade(Ink, 0.85f), new Vector2(60f, -58f), new Vector2(580f, 80f), TextAlignmentOptions.TopLeft);
+            QuestionBlock(page, "Da dove vieni?", -150f, d => homelandIndex = Step(homelandIndex, d, Backstory.Homelands.Length),
+                () => Backstory.Homelands[homelandIndex]);
+            QuestionBlock(page, "Cosa facevi prima?", -300f, d => tradeIndex = Step(tradeIndex, d, Backstory.Trades.Length),
+                () => Backstory.Trades[tradeIndex]);
+            QuestionBlock(page, "Perché sei qui, nella valle?", -450f, d => reasonIndex = Step(reasonIndex, d, Backstory.Reasons.Length),
+                () => Backstory.Reasons[reasonIndex]);
+            return page.gameObject;
+        }
+
+        GameObject BuildMemoryPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Ricordo", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "VII  ·  IL RICORDO E LA PAURA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "«Ognuno porta qualcosa con sé, e ognuno teme qualcosa. Non c'è vergogna in questo.»",
+                ItalicFont, 23f, Fade(Ink, 0.85f), new Vector2(60f, -58f), new Vector2(580f, 80f), TextAlignmentOptions.TopLeft);
+            QuestionBlock(page, "Cosa porti con te?", -150f, d => keepsakeIndex = Step(keepsakeIndex, d, Backstory.Keepsakes.Length),
+                () => Backstory.Keepsakes[keepsakeIndex]);
+            QuestionBlock(page, "Cosa temi di più?", -300f, d => fearIndex = Step(fearIndex, d, Backstory.Fears.Length),
+                () => Backstory.Fears[fearIndex]);
+            Label(page, "Il ricordo resta con te anche se muori, ma un ladro può rubarlo. Le paure si possono vincere: chi ci riesce guadagna un titolo.",
+                ItalicFont, 20f, Fade(Ink, 0.65f), new Vector2(60f, -470f), new Vector2(580f, 80f), TextAlignmentOptions.TopLeft);
+            return page.gameObject;
+        }
+
+        GameObject BuildCharacterPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Carattere", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "VIII  ·  IL CARATTERE", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "«E chi sei, quando nessuno ti guarda?»",
+                ItalicFont, 23f, Fade(Ink, 0.85f), new Vector2(60f, -58f), new Vector2(580f, 50f), TextAlignmentOptions.TopLeft);
+            for (int i = 0; i < Backstory.Traits.Length; i++)
+            {
+                int pair = i;
+                float y = -120f - i * 60f;
+                Button left = MakeButton(page, string.Empty, new Vector2(60f, y), new Vector2(285f, 50f), 21f);
+                Button right = MakeButton(page, string.Empty, new Vector2(355f, y), new Vector2(285f, 50f), 21f);
+                left.onClick.AddListener(() => { if (busy) return; traitChoice[pair] = 0; RefreshBackstory(); });
+                right.onClick.AddListener(() => { if (busy) return; traitChoice[pair] = 1; RefreshBackstory(); });
+                traitButtons.Add((left, right));
+            }
+            traitHints = Label(page, string.Empty, ItalicFont, 20f, Fade(Ink, 0.75f), new Vector2(60f, -375f), new Vector2(580f, 160f), TextAlignmentOptions.TopLeft);
+            traitHints.lineSpacing = 6f;
+            Label(page, "Il carattere non è per sempre: le tue azioni possono cambiarlo, e il sacerdote correggerà il registro.",
+                ItalicFont, 19f, Fade(Ink, 0.6f), new Vector2(60f, -555f), new Vector2(580f, 60f), TextAlignmentOptions.TopLeft);
+            return page.gameObject;
+        }
+
+        GameObject BuildStoryPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Racconto", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "IX  ·  IL RACCONTO", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "Il sacerdote rilegge ad alta voce ciò che ha scritto. Puoi correggere le sue parole.",
+                ItalicFont, 22f, Fade(Ink, 0.85f), new Vector2(60f, -58f), new Vector2(580f, 60f), TextAlignmentOptions.TopLeft);
+            storyField = MakeInputField(page, new Vector2(60f, -125f), new Vector2(580f, 400f), "Il racconto del registro", true, Backstory.MaxStoryLength, 21f);
+            storyField.onValueChanged.AddListener(_ => storyEdited = true);
+            Button recompose = MakeButton(page, "RISCRIVI DALLE RISPOSTE", new Vector2(60f, -540f), new Vector2(330f, 46f), 18f);
+            recompose.onClick.AddListener(() => { if (busy) return; storyEdited = false; storyField.SetTextWithoutNotify(ComposeStory()); });
+            return page.gameObject;
+        }
+
+        GameObject BuildFreeStoryPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Storia", new Vector2(0f, -170f), new Vector2(700f, 640f));
+            Label(page, "X  ·  LA TUA STORIA", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "«Il resto lo scrivi tu.» Racconta con parole tue chi è il tuo personaggio, in gioco di ruolo e coerente con il mondo di Valdorso. " +
+                        "La leggerà chi ti esamina da vicino. È facoltativa, e lo staff può chiedere di correggerla.",
+                ItalicFont, 21f, Fade(Ink, 0.85f), new Vector2(60f, -58f), new Vector2(580f, 110f), TextAlignmentOptions.TopLeft);
+            freeStoryField = MakeInputField(page, new Vector2(60f, -175f), new Vector2(580f, 380f), "Scrivi qui la tua storia (facoltativo)", true, Backstory.MaxFreeStoryLength, 21f);
+            freeStoryCounter = Label(page, string.Empty, ItalicFont, 18f, Fade(Ink, 0.6f), new Vector2(60f, -565f), new Vector2(580f, 30f), TextAlignmentOptions.Right);
+            freeStoryField.onValueChanged.AddListener(t => freeStoryCounter.text = $"{t.Length} / {Backstory.MaxFreeStoryLength}");
+            freeStoryCounter.text = $"0 / {Backstory.MaxFreeStoryLength}";
+            return page.gameObject;
+        }
+
+        // Una domanda: il testo, poi "‹ risposta ›", e sotto il piccolo vantaggio della risposta scelta.
+        void QuestionBlock(Transform page, string question, float y, System.Action<int> step, System.Func<Backstory.Answer> current)
+        {
+            Label(page, question, TextFont, 24f, Ink, new Vector2(60f, y), new Vector2(580f, 36f), TextAlignmentOptions.Left);
+            Button prev = MakeButton(page, "‹", new Vector2(60f, y - 40f), new Vector2(48f, 44f), 26f);
+            TMP_Text answer = Label(page, string.Empty, ItalicFont, 23f, Ink, new Vector2(112f, y - 42f), new Vector2(476f, 40f), TextAlignmentOptions.Center);
+            answer.textWrappingMode = TextWrappingModes.NoWrap;
+            answer.enableAutoSizing = true;
+            answer.fontSizeMin = 15f;
+            answer.fontSizeMax = 23f;
+            Button next = MakeButton(page, "›", new Vector2(592f, y - 40f), new Vector2(48f, 44f), 26f);
+            TMP_Text hint = Label(page, string.Empty, ItalicFont, 19f, Fade(Ink, 0.7f), new Vector2(60f, y - 92f), new Vector2(580f, 50f), TextAlignmentOptions.TopLeft);
+            prev.onClick.AddListener(() => { if (busy) return; step(-1); RefreshBackstory(); });
+            next.onClick.AddListener(() => { if (busy) return; step(1); RefreshBackstory(); });
+            questionRows.Add((answer, hint, current));
+        }
+
+        void RefreshBackstory()
+        {
+            string name = ChosenName;
+            foreach (var row in questionRows)
+            {
+                Backstory.Answer a = row.current();
+                row.answer.text = a.Label(female);
+                row.hint.text = "Vantaggio: " + Backstory.Fill(a.hint, name, female);
+            }
+            var hints = new System.Text.StringBuilder();
+            for (int i = 0; i < traitButtons.Count; i++)
+            {
+                Backstory.Answer[] pair = Backstory.Traits[i];
+                SetButtonLabel(traitButtons[i].left, pair[0].Label(female).ToUpperInvariant());
+                SetButtonLabel(traitButtons[i].right, pair[1].Label(female).ToUpperInvariant());
+                MarkSelected(traitButtons[i].left, traitChoice[i] == 0);
+                MarkSelected(traitButtons[i].right, traitChoice[i] == 1);
+                Backstory.Answer chosen = pair[traitChoice[i]];
+                hints.Append(chosen.Label(female)).Append(": ").Append(chosen.hint).Append('\n');
+            }
+            if (traitHints != null) traitHints.text = hints.ToString();
+        }
+
+        static void SetButtonLabel(Button button, string text)
+        {
+            TMP_Text label = button.GetComponentInChildren<TMP_Text>();
+            if (label != null) label.text = text;
+        }
+
+        string[] ChosenTraits()
+        {
+            var keys = new string[Backstory.Traits.Length];
+            for (int i = 0; i < keys.Length; i++) keys[i] = Backstory.Traits[i][traitChoice[i]].key;
+            return keys;
+        }
+
+        string ComposeStory() => Backstory.Compose(ChosenName, female,
+            Backstory.Homelands[homelandIndex].key, Backstory.Trades[tradeIndex].key, Backstory.Reasons[reasonIndex].key,
+            Backstory.Keepsakes[keepsakeIndex].key, Backstory.Fears[fearIndex].key, ChosenTraits());
+
+        static string HomelandShort(string key)
+        {
+            switch (key)
+            {
+                case "lago": return "il lago";
+                case "minatori": return "i monti";
+                case "capitale": return "la capitale";
+                case "sud": return "il sud";
+                case "confine": return "le terre di confine";
+                default: return "nessuno lo sa";
+            }
+        }
 
         // ---------- La scelta del personaggio ----------
 
@@ -1171,6 +1339,8 @@ namespace Valdorso.Creation
             string pageName = pages[currentPage].name;
             faceShot = pageName == "Pagina_Volto" || pageName == "Pagina_Lineamenti";
             if (pageName == "Pagina_Lineamenti") CheckDnaNames();
+            RefreshBackstory();
+            if (pageName == "Pagina_Racconto" && !storyEdited) storyField.SetTextWithoutNotify(ComposeStory());
 
             bool last = currentPage == pages.Count - 1;
             backButton.gameObject.SetActive(currentPage > 0 || HasCharacters); // dalla prima pagina si torna all'elenco
@@ -1231,6 +1401,7 @@ namespace Valdorso.Creation
                 $"{(female ? "Donna" : "Uomo")}, {Describe(heightSlider.value, "bassa statura", "statura media", "alta statura")}, " +
                 $"{Describe(buildSlider.value, "corporatura esile", "corporatura media", "corporatura robusta")}\n" +
                 $"Capelli {(female ? FemaleHair : MaleHair)[hairIndex].label}, {HairColors[hairColorIndex].label}; occhi {EyeColors[eyeIndex].label}\n" +
+                $"Viene da: {HomelandShort(Backstory.Homelands[homelandIndex].key)} · {Backstory.Trades[tradeIndex].Label(female).ToLowerInvariant()}\n" +
                 "Origine:  Popolano\n" +
                 "Razza:  Umano\n" +
                 $"Fede:  {(Faiths[faithIndex].key.Length > 0 ? Faiths[faithIndex].label : "nessuna")}";
@@ -1251,7 +1422,23 @@ namespace Valdorso.Creation
             // L'aspetto scelto parte come ricetta UMA, insieme alla fede.
             string recipe = ChosenRecipe();
             if (portraitBytes == null) TakePortrait();
-            ValdorsoNetworkManager.RequestCreateCharacter(ChosenName, Faiths[faithIndex].key, recipe, portraitBytes, OnCreated);
+            if (!storyEdited) storyField.SetTextWithoutNotify(ComposeStory());
+            var request = new CreateCharacterRequest
+            {
+                name = ChosenName,
+                faith = Faiths[faithIndex].key,
+                appearanceRecipe = recipe,
+                portrait = portraitBytes,
+                homeland = Backstory.Homelands[homelandIndex].key,
+                formerTrade = Backstory.Trades[tradeIndex].key,
+                reason = Backstory.Reasons[reasonIndex].key,
+                keepsake = Backstory.Keepsakes[keepsakeIndex].key,
+                fear = Backstory.Fears[fearIndex].key,
+                traits = ChosenTraits(),
+                story = storyField.text,
+                freeStory = freeStoryField.text
+            };
+            ValdorsoNetworkManager.RequestCreateCharacter(request, OnCreated);
         }
 
         void OnCreated(bool success, string message, string characterId)
@@ -1276,6 +1463,7 @@ namespace Valdorso.Creation
             nextButton.interactable = interactable;
             if (maleButton != null) maleButton.interactable = interactable;
             foreach (Button b in faithButtons) b.interactable = interactable;
+            foreach (var t in traitButtons) { t.left.interactable = interactable; t.right.interactable = interactable; }
             if (femaleButton != null) femaleButton.interactable = interactable;
         }
 
@@ -1431,7 +1619,8 @@ namespace Valdorso.Creation
             return slider;
         }
 
-        TMP_InputField MakeInputField(Transform parent, Vector2 topLeft, Vector2 size)
+        TMP_InputField MakeInputField(Transform parent, Vector2 topLeft, Vector2 size,
+            string placeholderText = "Scrivi il tuo nome", bool multiline = false, int limit = 24, float fontSize = 32f)
         {
             RectTransform rect = Box(parent, "Campo_Nome", topLeft, size);
             rect.gameObject.SetActive(false); // si accende solo quando tutti i pezzi sono collegati
@@ -1454,23 +1643,24 @@ namespace Valdorso.Creation
             var areaRect = (RectTransform)area.transform;
             Stretch(areaRect, 18f, 18f, 8f, 8f);
 
-            TMP_Text placeholder = Label(areaRect, "Scrivi il tuo nome", ItalicFont, 30f, Fade(Ink, 0.45f), Vector2.zero, Vector2.zero, TextAlignmentOptions.Left);
+            TextAlignmentOptions align = multiline ? TextAlignmentOptions.TopLeft : TextAlignmentOptions.Left;
+            TMP_Text placeholder = Label(areaRect, placeholderText, ItalicFont, fontSize - 2f, Fade(Ink, 0.45f), Vector2.zero, Vector2.zero, align);
             Stretch((RectTransform)placeholder.transform, 0f, 0f, 0f, 0f);
-            TMP_Text text = Label(areaRect, string.Empty, TextFont, 32f, Ink, Vector2.zero, Vector2.zero, TextAlignmentOptions.Left);
+            TMP_Text text = Label(areaRect, string.Empty, TextFont, fontSize, Ink, Vector2.zero, Vector2.zero, align);
             Stretch((RectTransform)text.transform, 0f, 0f, 0f, 0f);
 
             var input = rect.gameObject.AddComponent<TMP_InputField>();
             input.textViewport = areaRect;
             input.textComponent = text;
             input.placeholder = placeholder;
-            input.characterLimit = 24;
-            input.lineType = TMP_InputField.LineType.SingleLine;
+            input.characterLimit = limit;
+            input.lineType = multiline ? TMP_InputField.LineType.MultiLineNewline : TMP_InputField.LineType.SingleLine;
             input.caretColor = Ink;
             input.customCaretColor = true;
             input.selectionColor = Fade(GoldDark, 0.45f);
             input.targetGraphic = background;
             if (TextFont != null) input.fontAsset = TextFont;
-            input.pointSize = 32f;
+            input.pointSize = fontSize;
 
             rect.gameObject.SetActive(true);
             return input;

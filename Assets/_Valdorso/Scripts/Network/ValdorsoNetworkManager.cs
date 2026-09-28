@@ -164,6 +164,13 @@ namespace Valdorso.Network
                 RefuseCreation(conn, "Il sacerdote non conosce questa fede.");
                 return;
             }
+            string backstoryError = Backstory.Validate(msg.homeland, msg.formerTrade, msg.reason, msg.keepsake, msg.fear,
+                msg.traits, msg.story, msg.freeStory);
+            if (backstoryError != null)
+            {
+                RefuseCreation(conn, backstoryError);
+                return;
+            }
 
             CharacterRecord created = null;
             string error = null;
@@ -186,6 +193,14 @@ namespace Valdorso.Network
 
             created.faith = faith;
             created.appearanceRecipe = recipe;
+            created.homeland = msg.homeland;
+            created.formerTrade = msg.formerTrade;
+            created.reason = msg.reason;
+            created.keepsake = msg.keepsake;
+            created.fear = msg.fear;
+            created.traits = (string[])msg.traits.Clone();
+            created.story = Backstory.CleanText(msg.story);
+            created.freeStory = Backstory.CleanText(msg.freeStory);
             CharacterStore.Save(created);
             SavePortrait(created, msg.portrait);
             Debug.Log($"[Valdorso] {account.username} ha scritto nel registro il personaggio {created.name}.");
@@ -501,7 +516,7 @@ namespace Valdorso.Network
         }
 
         /// <summary>Chiede al server di scrivere un personaggio nel registro; la risposta arriva nel callback (riuscito, messaggio, id).</summary>
-        public static void RequestCreateCharacter(string name, string faith, string appearanceRecipe, byte[] portrait, Action<bool, string, string> callback)
+        public static void RequestCreateCharacter(CreateCharacterRequest request, Action<bool, string, string> callback)
         {
             if (!NetworkClient.isConnected)
             {
@@ -509,7 +524,7 @@ namespace Valdorso.Network
                 return;
             }
             pendingCreate = callback;
-            NetworkClient.Send(new CreateCharacterRequest { name = name, faith = faith, appearanceRecipe = appearanceRecipe, portrait = portrait });
+            NetworkClient.Send(request);
         }
 
         /// <summary>Chiede al server di entrare nel mondo con questo personaggio.</summary>

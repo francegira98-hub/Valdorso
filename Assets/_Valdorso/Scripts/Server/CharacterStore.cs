@@ -25,6 +25,16 @@ namespace Valdorso.Server
         public string faith = "";
         public string appearanceRecipe = "";
 
+        // Le risposte al sacerdote (passo 5.8): chiavi di Backstory. I vantaggi si attivano con i sistemi che li usano.
+        public string homeland = "";            // da dove vieni
+        public string formerTrade = "";         // cosa facevi prima
+        public string reason = "";              // perché sei venuto nella valle
+        public string keepsake = "";            // il ricordo che porti con te
+        public string fear = "";                // cosa temi di più
+        public string[] traits = new string[0]; // il carattere: una scelta per ognuna delle quattro coppie
+        public string story = "";               // il racconto composto dal registro (ritoccabile)
+        public string freeStory = "";           // "La tua storia", scritta dal giocatore
+
         public string sceneName = "";
         public bool hasPosition;
         public float posX, posY, posZ, rotY;
