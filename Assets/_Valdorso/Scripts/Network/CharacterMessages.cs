@@ -10,6 +10,10 @@ namespace Valdorso.Network
     {
         public string id;
         public string name;
+        public string faith;            // vuoto = nessuna fede
+        public string lastPlayedAt;     // data e ora UTC (formato ISO)
+        public string appearanceRecipe; // per mostrare il personaggio sul palco
+        public byte[] portrait;         // il ritratto JPG (può mancare)
     }
 
     /// <summary>PC → server: "quali personaggi ho?"</summary>
@@ -38,6 +42,20 @@ namespace Valdorso.Network
         public string message;
         public string characterId;
         public string characterName;
+    }
+
+    /// <summary>PC → server: "cancella questo personaggio" (bisogna riscrivere il suo nome).</summary>
+    public struct DeleteCharacterRequest : NetworkMessage
+    {
+        public string characterId;
+        public string confirmName;
+    }
+
+    /// <summary>Server → PC: com'è andata la cancellazione.</summary>
+    public struct DeleteCharacterResponse : NetworkMessage
+    {
+        public bool success;
+        public string message;
     }
 
     /// <summary>PC → server: "entro nel mondo con questo personaggio".</summary>

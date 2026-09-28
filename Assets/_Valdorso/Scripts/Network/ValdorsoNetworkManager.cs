@@ -12,9 +12,10 @@ namespace Valdorso.Network
 {
     /// <summary>
     /// Il NetworkManager di Valdorso, il "maestro di cerimonie" del server.
-    /// Dopo l'accesso nessuno nasce da solo: il PC chiede i suoi personaggi (anticamera).
-    /// Chi non ne ha apre il Registro di Val d'Orso (scena Creazione) e ne crea uno;
-    /// chi ne ha entra nel mondo dove l'aveva lasciato, con salute, stamina e mana salvati.
+    /// Dopo l'accesso nessuno nasce da solo: il PC chiede i suoi personaggi (anticamera)
+    /// e apre il Registro di Val d'Orso (scena Creazione): chi non ha personaggi ne crea uno,
+    /// chi ne ha li vede con i ritratti e sceglie con chi entrare (oppure ne crea o cancella uno).
+    /// Si entra nel mondo dove si era usciti, con salute, stamina e mana salvati.
     /// Salva i personaggi quando escono, ogni autosaveInterval secondi e quando il server si spegne.
     /// </summary>
     public class ValdorsoNetworkManager : NetworkManager
@@ -46,6 +47,12 @@ namespace Valdorso.Network
 
         // Lato PC
         static Action<bool, string, string> pendingCreate;
+        static Action<bool, string> pendingDelete;
+
+        /// <summary>L'ultimo elenco dei personaggi arrivato dal server (lo legge il Registro).</summary>
+        public static CharacterListResponse? LastCharacterList { get; private set; }
+        /// <summary>Arriva un elenco nuovo mentre il Registro è aperto (per esempio dopo una cancellazione).</summary>
+        public static event Action<CharacterListResponse> CharacterListUpdated;
         bool listRequested;
 
         public override void Awake()
@@ -76,6 +83,7 @@ namespace Valdorso.Network
             NetworkServer.RegisterHandler<CharacterListRequest>(OnCharacterListRequest);
             NetworkServer.RegisterHandler<CreateCharacterRequest>(OnCreateCharacterRequest);
             NetworkServer.RegisterHandler<EnterWorldRequest>(OnEnterWorldRequest);
+            NetworkServer.RegisterHandler<DeleteCharacterRequest>(OnDeleteCharacterRequest);
         }
 
         public override void OnStopServer()
@@ -85,6 +93,7 @@ namespace Valdorso.Network
             NetworkServer.UnregisterHandler<CharacterListRequest>();
             NetworkServer.UnregisterHandler<CreateCharacterRequest>();
             NetworkServer.UnregisterHandler<EnterWorldRequest>();
+            NetworkServer.UnregisterHandler<DeleteCharacterRequest>();
             base.OnStopServer();
         }
 
@@ -110,7 +119,18 @@ namespace Valdorso.Network
             List<CharacterRecord> characters = CharacterStore.LoadAll(account);
             var summaries = new CharacterSummary[characters.Count];
             for (int i = 0; i < characters.Count; i++)
-                summaries[i] = new CharacterSummary { id = characters[i].id, name = characters[i].name };
+            {
+                CharacterRecord c = characters[i];
+                summaries[i] = new CharacterSummary
+                {
+                    id = c.id,
+                    name = c.name,
+                    faith = c.faith ?? string.Empty,
+                    lastPlayedAt = c.lastPlayedAt ?? string.Empty,
+                    appearanceRecipe = c.appearanceRecipe ?? string.Empty,
+                    portrait = LoadPortrait(c.id)
+                };
+            }
 
             conn.Send(new CharacterListResponse
             {
@@ -198,6 +218,59 @@ namespace Valdorso.Network
             {
                 Debug.LogError($"[Valdorso] Ritratto di {character.name} non salvato: {e.Message}");
             }
+        }
+
+        static byte[] LoadPortrait(string characterId)
+        {
+            try
+            {
+                string path = PortraitPath(characterId);
+                return System.IO.File.Exists(path) ? System.IO.File.ReadAllBytes(path) : null;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[Valdorso] Ritratto {characterId} non leggibile: {e.Message}");
+                return null;
+            }
+        }
+
+        void OnDeleteCharacterRequest(NetworkConnectionToClient conn, DeleteCharacterRequest msg)
+        {
+            if (!TryGetAccount(conn, out AccountRecord account))
+            {
+                conn.Disconnect();
+                return;
+            }
+            if (active.ContainsKey(conn))
+            {
+                conn.Send(new DeleteCharacterResponse { success = false, message = "Non si cancella un nome mentre si è nella valle." });
+                return;
+            }
+            bool owned = account.characterIds != null && Array.IndexOf(account.characterIds, msg.characterId) >= 0;
+            if (!owned || !CharacterStore.TryLoad(msg.characterId, out CharacterRecord character))
+            {
+                conn.Send(new DeleteCharacterResponse { success = false, message = "Questo nome non è nel tuo registro." });
+                return;
+            }
+            // Per cancellare bisogna riscrivere il nome: è per sempre.
+            if (!string.Equals(character.name.Trim(), (msg.confirmName ?? string.Empty).Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                conn.Send(new DeleteCharacterResponse { success = false, message = "Il nome scritto non corrisponde." });
+                return;
+            }
+
+            CharacterStore.DeleteForTests(account, character.id); // cancella la scheda, la toglie dall'account e libera il nome
+            try
+            {
+                string portrait = PortraitPath(character.id);
+                if (System.IO.File.Exists(portrait)) System.IO.File.Delete(portrait);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[Valdorso] Ritratto di {character.name} non cancellato: {e.Message}");
+            }
+            Debug.Log($"[Valdorso] {account.username} ha cancellato dal registro il personaggio {character.name}.");
+            conn.Send(new DeleteCharacterResponse { success = true, message = string.Empty });
         }
 
         static void RefuseCreation(NetworkConnectionToClient conn, string message)
@@ -343,6 +416,7 @@ namespace Valdorso.Network
             listRequested = false;
             NetworkClient.RegisterHandler<CharacterListResponse>(OnCharacterList);
             NetworkClient.RegisterHandler<CreateCharacterResponse>(OnCreateResponse);
+            NetworkClient.RegisterHandler<DeleteCharacterResponse>(OnDeleteResponse);
         }
 
         public override void OnStopClient()
@@ -350,6 +424,8 @@ namespace Valdorso.Network
             base.OnStopClient();
             listRequested = false;
             pendingCreate = null;
+            pendingDelete = null;
+            LastCharacterList = null;
         }
 
         // Appena il PC è entrato, pronto e con la scena del mondo caricata, chiede i suoi personaggi (una volta sola).
@@ -366,19 +442,37 @@ namespace Valdorso.Network
 
         void OnCharacterList(CharacterListResponse msg)
         {
-            if (msg.characters != null && msg.characters.Length > 0)
+            // Il Registro si apre sempre: con l'elenco dei personaggi, oppure sulla creazione se non ce ne sono.
+            LastCharacterList = msg;
+            if (SceneManager.GetSceneByName(creationScene).isLoaded) CharacterListUpdated?.Invoke(msg);
+            else OpenCreation();
+        }
+
+        void OnDeleteResponse(DeleteCharacterResponse msg)
+        {
+            Action<bool, string> callback = pendingDelete;
+            pendingDelete = null;
+            callback?.Invoke(msg.success, msg.message);
+            // Dopo una cancellazione riuscita si chiede l'elenco aggiornato.
+            if (msg.success) NetworkClient.Send(new CharacterListRequest());
+        }
+
+        /// <summary>Chiede al server di cancellare un personaggio; bisogna riscriverne il nome. Risposta nel callback (riuscito, messaggio).</summary>
+        public static void RequestDeleteCharacter(string characterId, string confirmName, Action<bool, string> callback)
+        {
+            if (!NetworkClient.isConnected)
             {
-                // Fino al passo 6 (scelta del personaggio) si entra con il primo.
-                RequestEnterWorld(msg.characters[0].id);
+                callback?.Invoke(false, "Non sei collegato al server.");
                 return;
             }
-            OpenCreation();
+            pendingDelete = callback;
+            NetworkClient.Send(new DeleteCharacterRequest { characterId = characterId, confirmName = confirmName });
         }
 
         void OpenCreation()
         {
             if (SceneManager.GetSceneByName(creationScene).isLoaded) return;
-            Debug.Log("[Valdorso] Nessun personaggio: si apre il Registro di Val d'Orso.");
+            Debug.Log("[Valdorso] Si apre il Registro di Val d'Orso.");
             if (ScreenFader.Instance != null) ScreenFader.Instance.FadeOut(0.15f, LoadCreation);
             else LoadCreation();
         }

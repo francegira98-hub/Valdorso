@@ -23,6 +23,8 @@ namespace Valdorso.Creation
     /// A sinistra c'è la pergamena del registro, a pagine: ogni pagina è una scelta (nome, corpo), l'ultima è la firma.
     /// Il personaggio sul palco cambia mentre si sceglie; alla firma il suo aspetto parte per il server come ricetta UMA.
     /// Dopo la firma riaccende il mondo, chiede di entrare e chiude la scena.
+    /// Chi ha già dei personaggi vede prima "I tuoi nomi nel registro": li sceglie (con ritratto e aspetto sul palco),
+    /// entra con uno, ne scrive uno nuovo o ne cancella uno riscrivendone il nome.
     /// Le pagine si costruiscono da codice con i colori e i caratteri del Tema UI "Oro e brace".
     /// </summary>
     public class CreationController : MonoBehaviour
@@ -200,6 +202,19 @@ namespace Valdorso.Creation
         byte[] portraitBytes;
         Coroutine portraitRoutine;
         const int PortraitWidth = 320, PortraitHeight = 400;
+
+        // La scelta del personaggio ("I tuoi nomi nel registro")
+        GameObject selectionPage, confirmPanel;
+        RectTransform selectionRows;
+        Button enterButton, newCharacterButton, deleteButton, confirmDeleteButton;
+        TMP_Text selectionStatus, selectionCount, confirmText;
+        TMP_InputField confirmField;
+        readonly List<(CharacterSummary data, Button row, Texture2D portrait)> entries = new List<(CharacterSummary, Button, Texture2D)>();
+        int selectedEntry = -1;
+        bool selectionMode;
+
+        bool HasCharacters => ValdorsoNetworkManager.LastCharacterList is CharacterListResponse list &&
+                              list.characters != null && list.characters.Length > 0;
         TMP_Text hairValue, beardValue, browValue, markValue;
         GameObject beardRow;
         readonly List<Image> skinMarks = new List<Image>(), hairColorMarks = new List<Image>(), beardColorMarks = new List<Image>(), eyeMarks = new List<Image>();
@@ -225,6 +240,8 @@ namespace Valdorso.Creation
                 preview.gameObject.AddComponent<Valdorso.Creatures.UmaHairTint>();
             if (stageCamera != null)
             {
+                // Un passo indietro rispetto alla scena: anche i personaggi più alti restano interi nell'inquadratura.
+                stageCamera.transform.position -= stageCamera.transform.forward * 0.6f;
                 fullShotPosition = stageCamera.transform.position;
                 fullShotRotation = stageCamera.transform.rotation;
             }
@@ -232,8 +249,9 @@ namespace Valdorso.Creation
             HideWorld();
             EnsureEventSystem();
             BuildRegister();
-            ShowPage(0);
-            ScheduleLook(0f);
+            ValdorsoNetworkManager.CharacterListUpdated += OnCharacterListUpdated;
+            if (HasCharacters) ShowSelection(ValdorsoNetworkManager.LastCharacterList.Value);
+            else ShowCreation();
         }
 
         void LateUpdate()
@@ -306,7 +324,9 @@ namespace Valdorso.Creation
         void OnDestroy()
         {
             RestoreWorld();
+            ValdorsoNetworkManager.CharacterListUpdated -= OnCharacterListUpdated;
             if (portraitTexture != null) Destroy(portraitTexture);
+            ClearEntries();
         }
 
         // =====================================================================
@@ -427,10 +447,12 @@ namespace Valdorso.Creation
             pages.Add(BuildFeaturesPage(sheet));
             pages.Add(BuildFaithPage(sheet));
             pages.Add(BuildSignPage(sheet));
+            BuildSelectionPage(sheet);
+            BuildConfirmPanel(sheet);
 
             // In fondo: avanti, indietro e numero di pagina.
             backButton = MakeButton(sheet, "‹  INDIETRO", new Vector2(50f, -832f), new Vector2(200f, 52f), 22f);
-            backButton.onClick.AddListener(() => ShowPage(currentPage - 1));
+            backButton.onClick.AddListener(GoBack);
             nextButton = MakeButton(sheet, "AVANTI  ›", new Vector2(450f, -832f), new Vector2(200f, 52f), 22f);
             nextButton.onClick.AddListener(Next);
             pageCounter = Label(sheet, string.Empty, ItalicFont, 22f, Fade(Ink, 0.7f), new Vector2(250f, -844f), new Vector2(200f, 30f), TextAlignmentOptions.Center);
@@ -922,6 +944,222 @@ namespace Valdorso.Creation
         static string Describe(float value, string low, string mid, string high) =>
             value < 0.34f ? low : value > 0.66f ? high : mid;
 
+        // ---------- La scelta del personaggio ----------
+
+        void BuildSelectionPage(RectTransform sheet)
+        {
+            RectTransform page = Box(sheet, "Pagina_Scelta", new Vector2(0f, -170f), new Vector2(700f, 740f));
+            selectionPage = page.gameObject;
+            Label(page, "I TUOI NOMI NEL REGISTRO", ButtonFont, 30f, Ink, new Vector2(60f, -10f), new Vector2(580f, 44f), TextAlignmentOptions.Left);
+            Label(page, "Chi è scritto nel registro può tornare nella valle quando vuole. Il Cuore ricorda ogni nome.",
+                ItalicFont, 23f, Fade(Ink, 0.85f), new Vector2(60f, -58f), new Vector2(580f, 70f), TextAlignmentOptions.TopLeft);
+            selectionRows = Box(page, "Elenco", new Vector2(60f, -135f), new Vector2(580f, 330f));
+            selectionCount = Label(page, string.Empty, ItalicFont, 20f, Fade(Ink, 0.7f), new Vector2(60f, -470f), new Vector2(580f, 30f), TextAlignmentOptions.TopLeft);
+
+            enterButton = MakeButton(page, "ENTRA NELLA VALLE", new Vector2(60f, -510f), new Vector2(580f, 58f), 26f);
+            enterButton.onClick.AddListener(EnterWithSelected);
+            newCharacterButton = MakeButton(page, "SCRIVI UN NUOVO NOME", new Vector2(60f, -582f), new Vector2(285f, 48f), 19f);
+            newCharacterButton.onClick.AddListener(() => { if (!busy) ShowCreation(); });
+            deleteButton = MakeButton(page, "CANCELLA DAL REGISTRO", new Vector2(355f, -582f), new Vector2(285f, 48f), 19f);
+            deleteButton.onClick.AddListener(OpenConfirm);
+            selectionStatus = Label(page, string.Empty, ItalicFont, 22f, Fade(Ink, 0.85f), new Vector2(60f, -645f), new Vector2(580f, 70f), TextAlignmentOptions.Top);
+            selectionPage.SetActive(false);
+        }
+
+        void BuildConfirmPanel(RectTransform sheet)
+        {
+            RectTransform panel = Box(sheet, "Conferma_Cancellazione", new Vector2(50f, -300f), new Vector2(600f, 330f));
+            confirmPanel = panel.gameObject;
+            var back = panel.gameObject.AddComponent<Image>();
+            back.sprite = theme != null ? theme.parchmentTexture : null;
+            back.color = theme != null ? Color.Lerp(theme.parchment, theme.ink, 0.12f) : new Color(0.78f, 0.7f, 0.55f);
+            var frameGO = new GameObject("Cornice", typeof(RectTransform), typeof(Image));
+            frameGO.transform.SetParent(panel, false);
+            Stretch((RectTransform)frameGO.transform, 0f, 0f, 0f, 0f);
+            var frame = frameGO.GetComponent<Image>();
+            frame.sprite = theme != null ? theme.buttonFrame : null;
+            frame.type = Image.Type.Sliced;
+            frame.color = Blood;
+            frame.raycastTarget = false;
+            if (frame.sprite == null) frameGO.SetActive(false);
+
+            confirmText = Label(panel, string.Empty, TextFont, 24f, Ink, new Vector2(30f, -25f), new Vector2(540f, 110f), TextAlignmentOptions.TopLeft);
+            confirmField = MakeInputField(panel, new Vector2(30f, -140f), new Vector2(540f, 58f));
+            confirmField.onValueChanged.AddListener(_ => RefreshConfirm());
+            confirmDeleteButton = MakeButton(panel, "CANCELLA PER SEMPRE", new Vector2(30f, -240f), new Vector2(300f, 52f), 19f);
+            confirmDeleteButton.onClick.AddListener(ConfirmDelete);
+            Button cancel = MakeButton(panel, "ANNULLA", new Vector2(350f, -240f), new Vector2(220f, 52f), 19f);
+            cancel.onClick.AddListener(() => confirmPanel.SetActive(false));
+            TMP_Text dangerLabel = confirmDeleteButton.GetComponentInChildren<TMP_Text>();
+            if (dangerLabel != null) dangerLabel.color = new Color(1f, 0.78f, 0.72f);
+            confirmPanel.SetActive(false);
+        }
+
+        void ShowSelection(CharacterListResponse list)
+        {
+            selectionMode = true;
+            faceShot = false;
+            rebuildAt = -1f;
+            foreach (GameObject page in pages) page.SetActive(false);
+            backButton.gameObject.SetActive(false);
+            nextButton.gameObject.SetActive(false);
+            pageCounter.gameObject.SetActive(false);
+            confirmPanel.SetActive(false);
+            selectionPage.SetActive(true);
+
+            ClearEntries();
+            CharacterSummary[] characters = list.characters ?? new CharacterSummary[0];
+            for (int i = 0; i < characters.Length; i++) entries.Add(BuildEntry(characters[i], i));
+            selectionCount.text = $"{characters.Length} di {list.maxCharacters} nomi possibili per questo account.";
+            newCharacterButton.interactable = characters.Length < list.maxCharacters;
+            selectionStatus.text = characters.Length < list.maxCharacters ? string.Empty : "Il registro non ha più spazio per nuovi nomi di questo account.";
+            SelectEntry(Mathf.Clamp(selectedEntry, 0, characters.Length - 1));
+        }
+
+        void ShowCreation()
+        {
+            selectionMode = false;
+            if (selectionPage != null) selectionPage.SetActive(false);
+            if (confirmPanel != null) confirmPanel.SetActive(false);
+            ShowPage(0);
+            ScheduleLook(0f);
+        }
+
+        void GoBack()
+        {
+            if (busy) return;
+            if (currentPage == 0 && HasCharacters) ShowSelection(ValdorsoNetworkManager.LastCharacterList.Value);
+            else ShowPage(currentPage - 1);
+        }
+
+        void OnCharacterListUpdated(CharacterListResponse list)
+        {
+            if (this == null || busy) return;
+            if (list.characters != null && list.characters.Length > 0) ShowSelection(list);
+            else ShowCreation();
+        }
+
+        (CharacterSummary, Button, Texture2D) BuildEntry(CharacterSummary data, int index)
+        {
+            Button row = MakeButton(selectionRows, string.Empty, new Vector2(0f, -index * 104f), new Vector2(580f, 96f), 20f);
+            row.onClick.AddListener(() => { if (!busy) SelectEntry(index); });
+
+            Texture2D portrait = null;
+            RectTransform picture = Box(row.transform, "Ritratto", new Vector2(10f, -8f), new Vector2(64f, 80f));
+            var image = picture.gameObject.AddComponent<RawImage>();
+            image.raycastTarget = false;
+            if (data.portrait != null && data.portrait.Length > 0)
+            {
+                portrait = new Texture2D(2, 2);
+                if (portrait.LoadImage(data.portrait)) image.texture = portrait;
+            }
+            if (image.texture == null) image.color = new Color(0f, 0f, 0f, 0.35f);
+
+            Color light = theme != null ? theme.text : Color.white;
+            Label(row.transform, data.name, TitleFont, 26f, light, new Vector2(92f, -12f), new Vector2(470f, 38f), TextAlignmentOptions.Left);
+            string faith = string.IsNullOrEmpty(data.faith) ? "nessuna fede" : data.faith;
+            Label(row.transform, $"{faith}  ·  {WhenPlayed(data.lastPlayedAt)}", ItalicFont, 20f, Fade(light, 0.75f),
+                new Vector2(92f, -52f), new Vector2(470f, 30f), TextAlignmentOptions.Left);
+            return (data, row, portrait);
+        }
+
+        void ClearEntries()
+        {
+            foreach (var entry in entries)
+            {
+                if (entry.portrait != null) Destroy(entry.portrait);
+                if (entry.row != null) Destroy(entry.row.gameObject);
+            }
+            entries.Clear();
+        }
+
+        void SelectEntry(int index)
+        {
+            if (index < 0 || index >= entries.Count) return;
+            selectedEntry = index;
+            for (int i = 0; i < entries.Count; i++) MarkSelected(entries[i].row, i == index);
+
+            // Sul palco compare il personaggio scelto, con il suo aspetto.
+            string recipe = entries[index].data.appearanceRecipe;
+            if (preview == null || string.IsNullOrEmpty(recipe)) return;
+            RaiseUmaQuality();
+            try
+            {
+                preview.LoadAvatarDefinition(recipe);
+                preview.BuildCharacter(true);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("[Valdorso] Aspetto del personaggio non leggibile: " + e.Message);
+            }
+        }
+
+        void EnterWithSelected()
+        {
+            if (busy || selectedEntry < 0 || selectedEntry >= entries.Count) return;
+            busy = true;
+            SetSelectionButtons(false);
+            CharacterSummary chosen = entries[selectedEntry].data;
+            StartCoroutine(EnterWorld(chosen.id, selectionStatus, $"Il sacerdote legge il nome di {chosen.name}.\nIl frammento batte, e la valle ti riconosce.", 1.6f));
+        }
+
+        void SetSelectionButtons(bool interactable)
+        {
+            enterButton.interactable = interactable;
+            deleteButton.interactable = interactable;
+            newCharacterButton.interactable = interactable && HasCharacters &&
+                ValdorsoNetworkManager.LastCharacterList.Value.characters.Length < ValdorsoNetworkManager.LastCharacterList.Value.maxCharacters;
+            foreach (var entry in entries) entry.row.interactable = interactable;
+        }
+
+        // ---------- La cancellazione (bisogna riscrivere il nome) ----------
+
+        void OpenConfirm()
+        {
+            if (busy || selectedEntry < 0 || selectedEntry >= entries.Count) return;
+            string name = entries[selectedEntry].data.name;
+            confirmText.text = $"Per cancellare per sempre <b>{name}</b> dal registro, scrivi il suo nome qui sotto. Non si potrà tornare indietro.";
+            confirmField.text = string.Empty;
+            confirmPanel.SetActive(true);
+            confirmPanel.transform.SetAsLastSibling();
+            RefreshConfirm();
+            confirmField.Select();
+            confirmField.ActivateInputField();
+        }
+
+        void RefreshConfirm()
+        {
+            if (selectedEntry < 0 || selectedEntry >= entries.Count) return;
+            confirmDeleteButton.interactable = string.Equals(confirmField.text.Trim(), entries[selectedEntry].data.name.Trim(),
+                System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        void ConfirmDelete()
+        {
+            if (busy || selectedEntry < 0 || selectedEntry >= entries.Count) return;
+            CharacterSummary target = entries[selectedEntry].data;
+            busy = true;
+            confirmDeleteButton.interactable = false;
+            ValdorsoNetworkManager.RequestDeleteCharacter(target.id, confirmField.text, (success, message) =>
+            {
+                if (this == null) return;
+                busy = false;
+                confirmPanel.SetActive(false);
+                selectedEntry = 0;
+                selectionStatus.text = success ? $"Il nome di {target.name} è stato cancellato dal registro." : message;
+                SetSelectionButtons(true);
+                // Se è riuscita, l'elenco aggiornato arriva da solo dal server.
+            });
+        }
+
+        static string WhenPlayed(string isoDate)
+        {
+            if (!System.DateTime.TryParse(isoDate, null, System.Globalization.DateTimeStyles.RoundtripKind, out System.DateTime when))
+                return "mai entrato nella valle";
+            int days = (int)(System.DateTime.UtcNow.Date - when.ToUniversalTime().Date).TotalDays;
+            return days <= 0 ? "nella valle oggi" : days == 1 ? "nella valle ieri" : $"nella valle {days} giorni fa";
+        }
+
         // ---------- Navigazione ----------
 
         void ShowPage(int index)
@@ -929,12 +1167,13 @@ namespace Valdorso.Creation
             if (busy) return;
             currentPage = Mathf.Clamp(index, 0, pages.Count - 1);
             for (int i = 0; i < pages.Count; i++) pages[i].SetActive(i == currentPage);
+            pageCounter.gameObject.SetActive(true);
             string pageName = pages[currentPage].name;
             faceShot = pageName == "Pagina_Volto" || pageName == "Pagina_Lineamenti";
             if (pageName == "Pagina_Lineamenti") CheckDnaNames();
 
             bool last = currentPage == pages.Count - 1;
-            backButton.gameObject.SetActive(currentPage > 0);
+            backButton.gameObject.SetActive(currentPage > 0 || HasCharacters); // dalla prima pagina si torna all'elenco
             nextButton.gameObject.SetActive(!last);
             pageCounter.text = $"Pagina {currentPage + 1} di {pages.Count}";
 
@@ -1042,8 +1281,13 @@ namespace Valdorso.Creation
 
         IEnumerator EnterWorld(string characterId)
         {
-            statusText.text = "Il frammento batte più forte, per un istante.\nLa valle ti ha sentito.";
-            yield return new WaitForSecondsRealtime(2f);
+            yield return EnterWorld(characterId, statusText, "Il frammento batte più forte, per un istante.\nLa valle ti ha sentito.", 2f);
+        }
+
+        IEnumerator EnterWorld(string characterId, TMP_Text where, string message, float pause)
+        {
+            where.text = message;
+            yield return new WaitForSecondsRealtime(pause);
 
             bool dark = ScreenFader.Instance == null;
             if (!dark) ScreenFader.Instance.FadeOut(0.8f, () => dark = true);
