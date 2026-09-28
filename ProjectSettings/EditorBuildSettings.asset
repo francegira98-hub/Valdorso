@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/_Valdorso/Scenes/TestRete.unity
     guid: 3b8b873476c43024d82dfa24d1894911
   - enabled: 1
+    path: Assets/_Valdorso/Scenes/Valle.unity
+    guid: 61aef3e59d5640644a62e12a3dfb5525
+  - enabled: 1
     path: Assets/_Valdorso/Scenes/Creazione.unity
     guid: cd465918fa25d864fb87271c3ba258d1
   m_configObjects:
