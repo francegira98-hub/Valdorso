@@ -31,7 +31,7 @@ namespace Valdorso.EditorTools
             }
             RicettaValle ricettaValle = AssetDatabase.LoadAssetAtPath<RicettaValle>(RicettaPath);
             Terrain[] terreni = Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None);
-            GameObject radice = GameObject.Find("Valle");
+            GameObject radice = GameObject.Find("/Valle");
             if (ricettaValle == null || terreni.Length == 0 || radice == null)
             {
                 EditorUtility.DisplayDialog("Valdorso", "Apri la scena Valle (e, se non esiste, crea prima la valle).", "OK");

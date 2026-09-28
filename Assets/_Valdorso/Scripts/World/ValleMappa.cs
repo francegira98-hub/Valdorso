@@ -72,7 +72,7 @@ namespace Valdorso.World
         /// <summary>I luoghi da segnare nella scena (diventano segnaposti per il lavoro dei passi dopo).</summary>
         public static readonly (string nome, Vector2 posizione)[] Luoghi =
         {
-            ("Arrivo_Tempio", V(840, 458)),
+            ("Arrivo_Tempio", V(852, 470)),
             ("Centro_Villaggio", V(850, 450)),
             ("Mulino", V(682, 473)),
             ("Ponte", V(875, 700)),

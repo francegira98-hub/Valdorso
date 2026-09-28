@@ -149,13 +149,12 @@ namespace Valdorso.World
             Metti("SM_barrelClosedA_a1", 70.5f, -24f);
             Metti("SM_barrelOpenedA_a1", 71.3f, -25.2f, 40);
 
-            // Piazza: pozzo, albero del consiglio con le panche, gogna, albo degli editti, mercato
+            // Piazza: pozzo, albero del consiglio con le panche, gogna, mercato (albo degli editti e bacheca della Gilda: al 6.5.6)
             Metti("SM_OldWell_UV_SM_OldWell_Stone", 0, -1);
             o.Add(new Oggetto("SM_EuropeanBeech_L_02", -11, 9, 0f, pernoY: 66f));   // abbassato da Fra il 28/09
             Metti("SM_benchA_a1", -7.5f, 6.5f, 0);
             Metti("SM_benchA_a1", -14f, 4f, 90);
             Metti("SM_PilloryStocks", 12, -8, 20);
-            Metti("SM_barnWallC_3m_a1", 18.5f, 8f, 90);                  // albo degli editti del Balivo
             Metti("SM_FoodStorage_02a", -10, -10);
             Metti("SM_FoodStorage_02a", -4.5f, -10);
             Metti("SM_FoodStorage_01a", 4, -10);
@@ -196,7 +195,6 @@ namespace Valdorso.World
             Metti("SM_cartB_a1", 39, -40, 60);
 
             // Gilda: bacheca degli incarichi davanti alla porta; campo d'addestramento con fantocci e bersagli
-            Metti("SM_barnWallC_3m_a1", -22.5f, 4.5f, 90);               // bacheca degli incarichi
             Metti("SM_Garrison_Dummy", -40, 15.5f);
             Metti("SM_Garrison_Dummy", -36, 15.5f);
             Metti("SM_Garrison_Dummy", -32, 15.5f);
@@ -473,6 +471,9 @@ namespace Valdorso.World
             (4f, new[] { new Vector2(18.2f, 251.7f), new Vector2(15.3f, 252.4f), new Vector2(15, 265), new Vector2(5.2f, 282.4f) }),
             (4f, new[] { new Vector2(15.3f, 252.4f), new Vector2(5, 255), new Vector2(-14.9f, 256.9f) }),
         };
+
+        /// <summary>Dove arriva nella valle chi ha appena firmato il Registro: davanti alla porta del tempio, sulla piazza.</summary>
+        public static readonly Vector2 ArrivoTempio = new Vector2(2f, 20f);
 
         public static Lotto TrovaLotto(string id)
         {

@@ -359,8 +359,18 @@ namespace Valdorso.EditorTools
 
         static GameObject MontaEdifici(Transform valle, Dictionary<string, float> quote, out int pezzi)
         {
-            Transform vecchio = valle.Find("Villaggio");
-            if (vecchio != null) Object.DestroyImmediate(vecchio.gameObject);
+            // Via ogni vecchio "Villaggio" della scena, ovunque sia (anche avanzi finiti in altri gruppi)
+            foreach (Transform t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (t != null && t.name == "Villaggio" && t.gameObject.scene == valle.gameObject.scene)
+                    Object.DestroyImmediate(t.gameObject);
+
+            // Il segnaposto dell'arrivo va davanti alla porta del tempio (x 2, y 20 dal centro del villaggio)
+            Transform arrivo = valle.Find("Segnaposti/Arrivo_Tempio");
+            if (arrivo != null)
+            {
+                Vector2 punto = PiantaVillaggio.AlMondo(PiantaVillaggio.ArrivoTempio);
+                arrivo.position = new Vector3(punto.x, Altezza(punto) + 0.5f, punto.y);
+            }
 
             var villaggio = new GameObject("Villaggio");
             villaggio.transform.SetParent(valle, false);
