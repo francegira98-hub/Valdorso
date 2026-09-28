@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using UnityEditor;
@@ -29,6 +30,7 @@ namespace Valdorso.EditorTools
         const string AtmosferaPath = Cartella + "/Atmosfera_Valle.asset";
         const string RicettaPath = Cartella + "/RicettaValle.asset";
         const string ScenePath = "Assets/_Valdorso/Scenes/Valle.unity";
+        const string CartellaAcqua = Cartella + "/Acqua";
 
         const int RisAltezze = 513;   // punti di altezza per lato di tessera (circa uno al metro)
         const int RisTexture = 512;   // punti di colore per lato di tessera della valle
@@ -179,6 +181,60 @@ namespace Valdorso.EditorTools
                 }
 
                 Debug.Log($"[Valdorso] Valle creata: {n * n} tessere da 500 m (valle 3 × 3 e anello di montagne) in {ScenePath}.\n" + rapporto);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+        }
+
+        /// <summary>
+        /// Scrive i punti del fiume e del lago nel formato CSV di R.A.M 3 ("Load points from csv file").
+        /// Fiume: posizioni nel mondo (l'oggetto RamSpline va messo in 0, 0, 0).
+        /// Lago: posizioni intorno al centro del lago (l'oggetto Lake Polygon va messo nel centro, alla quota dell'acqua).
+        /// </summary>
+        [MenuItem("Valdorso/Valle/Esporta fiume e lago per R.A.M")]
+        static void EsportaAcqua()
+        {
+            RicettaValle ricetta = AssetDatabase.LoadAssetAtPath<RicettaValle>(RicettaPath);
+            if (ricetta == null)
+            {
+                EditorUtility.DisplayDialog("Valdorso", "Prima crea la valle: Valdorso → Valle → Crea la valle.", "OK");
+                return;
+            }
+            try
+            {
+                CreaCartella(Cartella, "Acqua");
+                var campi = new Campi(ricetta);
+                // R.A.M legge i numeri con le impostazioni del PC (in Italia: virgola per i decimali) e il punto e virgola tra i valori.
+                CultureInfo cultura = CultureInfo.CurrentCulture;
+                string N(float v) => v.ToString("0.#####", cultura);
+
+                var fiume = new StringBuilder();
+                List<Vector4> punti = campi.PuntiAcquaFiume(25f);
+                foreach (Vector4 p in punti)
+                    fiume.Append(N(p.x)).Append(';').Append(N(p.y)).Append(';').Append(N(p.z)).Append(';').Append(N(p.w)).Append('\n');
+                File.WriteAllText(CartellaAcqua + "/Fiume.csv", fiume.ToString());
+
+                // Il lago: un anello di punti appena fuori dalla riva, così l'acqua finisce sotto la spiaggia.
+                var lago = new StringBuilder();
+                const int puntiLago = 28;
+                for (int k = 0; k < puntiLago; k++)
+                {
+                    float a = -2f * Mathf.PI * k / puntiLago;
+                    float x = Mathf.Cos(a) * ValleMappa.LagoRaggi.x * 1.03f;
+                    float z = Mathf.Sin(a) * ValleMappa.LagoRaggi.y * 1.03f;
+                    lago.Append(N(x)).Append(";0;").Append(N(z)).Append(";0\n");
+                }
+                File.WriteAllText(CartellaAcqua + "/Lago.csv", lago.ToString());
+                AssetDatabase.Refresh();
+
+                string posizioneLago = $"X {N(ValleMappa.Lago.x)}, Y {N(ricetta.livelloLago)}, Z {N(ValleMappa.Lago.y)}";
+                Debug.Log($"[Valdorso] Scritti {CartellaAcqua}/Fiume.csv ({punti.Count} punti, dalla sorgente al lago) e Lago.csv ({puntiLago} punti).\n" +
+                          "Fiume: oggetto RamSpline in posizione 0, 0, 0. Lago: oggetto Lake Polygon in posizione " + posizioneLago + ".");
+                EditorUtility.DisplayDialog("Valdorso",
+                    $"Pronti Fiume.csv ({punti.Count} punti) e Lago.csv in {CartellaAcqua}.\n\n" +
+                    "River Spline: posizione 0, 0, 0.\nLake Polygon: posizione " + posizioneLago + ".", "OK");
             }
             finally
             {
@@ -389,6 +445,8 @@ namespace Valdorso.EditorTools
             readonly RicettaValle r;
             readonly Griglia valle = new Griglia(), bosco = new Griglia(), fiumeD = new Griglia(), fiumeT = new Griglia(), strade = new Griglia();
             readonly float[] superficieFiume;
+            readonly List<Vector2> puntiFiume;
+            readonly float[] lunghezzeFiume;
             readonly float[] o = new float[12];
 
             const float NucleoFiume = 6f;      // metà larghezza del letto (fiume largo 12 m)
@@ -402,9 +460,11 @@ namespace Valdorso.EditorTools
 
                 // Il fiume: punti, lunghezze e livello dell'acqua che scende sempre verso il lago.
                 List<Vector2> fiume = ValleMappa.CampionaFiume(50);
+                puntiFiume = fiume;
                 var lunghezze = new float[fiume.Count];
                 for (int k = 1; k < fiume.Count; k++) lunghezze[k] = lunghezze[k - 1] + Vector2.Distance(fiume[k - 1], fiume[k]);
                 float totale = lunghezze[fiume.Count - 1];
+                lunghezzeFiume = lunghezze;
                 superficieFiume = new float[fiume.Count];
                 float minimo = float.MaxValue;
                 for (int k = 0; k < fiume.Count; k++)
@@ -452,6 +512,29 @@ namespace Valdorso.EditorTools
                         strade.Scrivi(ix, iz, ds);
                     }
                 }
+            }
+
+            /// <summary>
+            /// I punti del fiume per R.A.M: ogni circa 25 m, dalla sorgente al lago, alla quota dell'acqua.
+            /// x, z = posizione; y = pelo dell'acqua; w = larghezza dell'acqua in metri.
+            /// </summary>
+            public List<Vector4> PuntiAcquaFiume(float passo)
+            {
+                var risultato = new List<Vector4>();
+                float totale = lunghezzeFiume[lunghezzeFiume.Length - 1];
+                float ultimo = -passo;
+                for (int k = 0; k < puntiFiume.Count; k++)
+                {
+                    bool fine = k == puntiFiume.Count - 1;
+                    if (lunghezzeFiume[k] - ultimo < passo && !fine) continue;
+                    ultimo = lunghezzeFiume[k];
+                    float t = lunghezzeFiume[k] / totale;
+                    // Stretto alla sorgente, 13 m nella valle, più largo alla foce nel lago.
+                    float larghezza = Mathf.Lerp(7f, 2f * NucleoFiume + 1f, Liscio(t / 0.3f));
+                    larghezza = Mathf.Lerp(larghezza, 2f * NucleoFiume + 5f, Liscio((t - 0.9f) / 0.1f));
+                    risultato.Add(new Vector4(puntiFiume[k].x, superficieFiume[k], puntiFiume[k].y, larghezza));
+                }
+                return risultato;
             }
 
             /// <summary>Il fondo della valle senza rilievi: sale piano da sud-ovest a nord-est.</summary>
