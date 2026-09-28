@@ -93,3 +93,6 @@ crashlytics-build.properties
 
 /Salvataggi/
 /valdorso_server.json
+
+/[Aa]ssets/_TerrainAutoUpgrade/
+/[Aa]ssets/_TerrainAutoUpgrade.meta
