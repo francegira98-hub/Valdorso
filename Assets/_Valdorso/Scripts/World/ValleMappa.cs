@@ -54,11 +54,11 @@ namespace Valdorso.World
         /// <summary>Le strade di terra battuta.</summary>
         public static readonly Vector2[][] Strade =
         {
-            new[] { V(2000, 95), V(1750, 97), V(1500, 85), V(1375, 145), V(1150, 270), V(900, 420) },              // dal passo al villaggio
-            new[] { V(830, 470), V(880, 575), V(875, 685) },                              // dal villaggio al ponte
+            new[] { V(2000, 95), V(1750, 97), V(1500, 85), V(1375, 145), V(1150, 270), V(980, 372) },   // dal passo all'ingresso del villaggio
+            new[] { V(879.5f, 585), V(875, 685) },                                        // dall'uscita nord del villaggio al ponte
             new[] { V(865, 715), V(800, 830), V(680, 955) },                              // dal ponte alla collina
             new[] { V(855, 705), V(650, 725), V(500, 790), V(345, 825) },                 // dal ponte alle rovine
-            new[] { V(910, 460), V(1075, 550), V(1250, 725), V(1350, 790) },              // dal villaggio alla grotta est
+            new[] { V(990, 503.6f), V(1075, 550), V(1250, 725), V(1350, 790) },           // dall'uscita est del villaggio alla grotta est
             new[] { V(660, 1075), V(680, 1150), V(705, 1230), V(730, 1265) }              // sentiero verso la grotta nord
         };
 
