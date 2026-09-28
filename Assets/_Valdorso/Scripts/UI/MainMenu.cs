@@ -44,6 +44,7 @@ namespace Valdorso.UI
 
         void Start()
         {
+            UIKit.Theme = theme; // le finestre costruite da codice (impostazioni, pausa) usano lo stesso tema
             bool devTools = Application.isEditor || Debug.isDebugBuild;
             if (hostButton != null)
             {
@@ -233,7 +234,9 @@ namespace Valdorso.UI
 
         void ToggleSettings()
         {
-            if (settingsPanel != null) settingsPanel.SetActive(!settingsPanel.activeSelf);
+            // La vecchia finestra "In preparazione" resta nascosta: ora c'è quella vera, uguale anche nel menu di pausa.
+            if (settingsPanel != null) settingsPanel.SetActive(false);
+            SettingsWindow.Open();
         }
 
         void Quit()
