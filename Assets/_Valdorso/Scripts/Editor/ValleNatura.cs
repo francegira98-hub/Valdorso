@@ -219,6 +219,20 @@ namespace Valdorso.EditorTools
                 var rocce = new GameObject("Rocce");
                 rocce.transform.SetParent(natura.transform);
 
+                // Il vento di NatureManufacture: fa ondeggiare erba e alberi (senza, è tutto fermo).
+                bool vento = false;
+                foreach (string guid in AssetDatabase.FindAssets("Prefab_Wind t:Prefab", new[] { "Assets/NatureManufacture Assets" }))
+                {
+                    string percorso = AssetDatabase.GUIDToAssetPath(guid);
+                    if (Path.GetFileNameWithoutExtension(percorso) != "Prefab_Wind") continue;
+                    var prefabVento = AssetDatabase.LoadAssetAtPath<GameObject>(percorso);
+                    var ventoGo = (GameObject)PrefabUtility.InstantiatePrefab(prefabVento, natura.transform);
+                    ventoGo.transform.position = new Vector3(750f, 200f, 750f);
+                    vento = true;
+                    break;
+                }
+                if (!vento) Debug.LogWarning("[Valdorso] Non trovo Prefab_Wind nei pacchetti NatureManufacture: erba e alberi resteranno fermi.");
+
                 int rValle = PosaRocce(campi, terreni, caso, r.rocceValle, r.rocceValleNumero, rocce.transform, "Valle", 0.7f, 1.2f,
                     (x, z, rip) => campi.DistanzaValle(x, z) < -40f && Bosco(campi, x, z) < 0.2f && rip < 25f && LiberoPerAlberi(campi, x, z, 10f));
                 int rBosco = PosaRocce(campi, terreni, caso, r.rocceBosco, r.rocceBoscoNumero, rocce.transform, "Bosco", 0.8f, 1.4f,
@@ -234,7 +248,7 @@ namespace Valdorso.EditorTools
 
                 Debug.Log($"[Valdorso] Natura seminata: alberi {nBosco} nel bosco, {nMonte} sui monti, {nPrato} nei prati, {nCespugli} cespugli " +
                           $"({prototipi.Count} tipi); erba {protoErba.Count} tipi nelle 9 tessere della valle; " +
-                          $"rocce {rValle} nei prati, {rBosco} nel bosco, {rFiume} lungo il fiume, {rMonte} sui monti.\n" + rapportoPrefab);
+                          $"rocce {rValle} nei prati, {rBosco} nel bosco, {rFiume} lungo il fiume, {rMonte} sui monti; vento {(vento ? "sì" : "no")}.\n" + rapportoPrefab);
             }
             finally
             {

@@ -96,3 +96,6 @@ crashlytics-build.properties
 
 /[Aa]ssets/_TerrainAutoUpgrade/
 /[Aa]ssets/_TerrainAutoUpgrade.meta
+
+/[Aa]ssets/Hivemind/
+/[Aa]ssets/Hivemind.meta
