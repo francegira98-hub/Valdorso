@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -12,7 +13,8 @@ namespace Valdorso.EditorTools
     /// Dà vita al villaggio costruito da VillaggioBuilder, senza toccare altro:
     /// - porte: le ante SM_DoorA diventano Porta (chiusa = 90° prima di come le posa il costruttore, cioè aperte);
     /// - sedute: panche, sedie e letti diventano Sedile, con le misure della tabella qui sotto;
-    /// - luoghi sicuri: una scatola invisibile SafeZone intorno alla locanda.
+    /// - luoghi sicuri: una scatola invisibile SafeZone intorno alla locanda;
+    /// - arredi: i mobili dentro gli edifici vanno sul livello "Arredi" (lo crea se manca), che "scavalca e sali" ignora.
     /// Si può rilanciare quando si vuole: rimette le impostazioni, così una correzione fatta qui vale per tutti i pezzi uguali.
     /// Lo chiama anche il costruttore del villaggio, alla fine.
     /// </summary>
@@ -108,7 +110,8 @@ namespace Valdorso.EditorTools
                 if (PreparaLuogoSicuro(villaggio, edificio, luogo)) luoghi++;
             int bacheche = PreparaBacheche(villaggio);
             int finestre = PreparaImposte(villaggio);
-            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri, {bacheche} bacheche, {finestre} finestre con le imposte.";
+            int arredi = PreparaArredi(villaggio);
+            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri, {bacheche} bacheche, {finestre} finestre con le imposte, {arredi} arredi.";
         }
 
         static void PreparaPorta(Transform t)
@@ -698,6 +701,86 @@ namespace Valdorso.EditorTools
             so.FindProperty("placeName").stringValue = luogo;
             so.ApplyModifiedPropertiesWithoutUndo();
             return true;
+        }
+        // ---------------------------------------------------------------- Arredi
+
+        // I pezzi che fanno la casa (non sono arredi): pavimenti, muri, tetti, camini, angoli, porte
+        static readonly string[] Struttura = { "SM_floor", "SM_wall", "SM_roof", "SM_chimney", "SM_planksCorner", "SM_Door" };
+
+        /// <summary>
+        /// Mette sul livello "Arredi" tutto ciò che sta dentro gli edifici e non è la casa stessa
+        /// (tavoli, sedie, letti, bauli, scaffali, botti, camini, candele...). Fuori non cambia niente:
+        /// casse, botti, carri, staccionate e panche accanto alle porte restano da scavalcare.
+        /// Tocca solo gli oggetti sul livello Default (il luogo sicuro resta su Ignore Raycast).
+        /// </summary>
+        static int PreparaArredi(Transform villaggio)
+        {
+            // Il livello 8 è quello del giocatore (Giocatore_UMA, dagli Starter Assets): non va mai usato per i mobili,
+            // altrimenti il controller conta il giocatore stesso come terreno e salta all'infinito.
+            // Se una versione precedente di questo strumento l'aveva chiamato "Arredi", lo si rinomina "Personaggi".
+            RinominaLivello(8, ObstacleTraversalArredi, "Personaggi");
+            int livello = AssicuraLivello(ObstacleTraversalArredi, 10);
+            if (livello < 0)
+            {
+                Debug.LogWarning("[Valdorso] Non c'è un livello libero per gli Arredi (Tags and Layers).");
+                return 0;
+            }
+
+            int n = 0;
+            foreach (Transform edificio in villaggio)
+            {
+                // Gli edifici sono oggetti vuoti creati dal costruttore; i pezzi sparsi fuori sono prefab
+                if (PrefabUtility.IsPartOfPrefabInstance(edificio.gameObject)) continue;
+                foreach (Transform pezzo in edificio)
+                {
+                    if (Struttura.Any(s => pezzo.name.StartsWith(s))) continue;
+                    int l = pezzo.gameObject.layer;
+                    if (l != 0 && l != 8 && l != livello) continue; // 8: mobili segnati per sbaglio dalla prima versione
+                    foreach (Transform t in pezzo.GetComponentsInChildren<Transform>(true))
+                        if (t.gameObject.layer == 0 || t.gameObject.layer == 8) t.gameObject.layer = livello;
+                    n++;
+                }
+            }
+            return n;
+        }
+
+        const string ObstacleTraversalArredi = Valdorso.Movement.ObstacleTraversal.LivelloArredi;
+
+        /// <summary>Se il livello 'numero' si chiama 'vecchio', gli dà il nome 'nuovo'.</summary>
+        static void RinominaLivello(int numero, string vecchio, string nuovo)
+        {
+            Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
+            if (asset == null || asset.Length == 0) return;
+            var tm = new SerializedObject(asset[0]);
+            SerializedProperty l = tm.FindProperty("layers").GetArrayElementAtIndex(numero);
+            if (l.stringValue != vecchio) return;
+            l.stringValue = nuovo;
+            tm.ApplyModifiedProperties();
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[Valdorso] Livello {numero} rinominato \"{nuovo}\".");
+        }
+
+        /// <summary>Il numero del livello con quel nome; se manca, lo crea nel primo posto libero da 'primo' in poi.</summary>
+        static int AssicuraLivello(string nome, int primo)
+        {
+            int esistente = LayerMask.NameToLayer(nome);
+            if (esistente >= 0) return esistente;
+
+            Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
+            if (asset == null || asset.Length == 0) return -1;
+            var tm = new SerializedObject(asset[0]);
+            SerializedProperty livelli = tm.FindProperty("layers");
+            for (int i = primo; i < livelli.arraySize; i++)
+            {
+                SerializedProperty l = livelli.GetArrayElementAtIndex(i);
+                if (!string.IsNullOrEmpty(l.stringValue)) continue;
+                l.stringValue = nome;
+                tm.ApplyModifiedProperties();
+                AssetDatabase.SaveAssets();
+                Debug.Log($"[Valdorso] Creato il livello \"{nome}\" (numero {i}).");
+                return i;
+            }
+            return -1;
         }
     }
 }

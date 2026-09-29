@@ -7,10 +7,11 @@ namespace Valdorso.Creatures
     /// Traduce ciò che accade alla creatura (colpi, morte, attacchi, schivate, ostacoli) in animazioni.
     /// Usa due livelli dell'Animator, accesi solo mentre servono:
     /// - "Parte superiore" (con Avatar Mask): Attacco e Colpito, così le gambe continuano a camminare;
-    /// - "Combattimento" (corpo intero): Schivata, Scavalca, Sale e Morte.
+    /// - "Combattimento" (corpo intero): Schivata, Scavalca, Sale, Arrampica e Morte.
     /// Combattimento sta sopra Parte superiore nella lista dei livelli, quindi quando è acceso vince lui.
     /// A riposo entrambi restano spenti e si vede solo il livello base.
-    /// L'Animator deve avere i parametri: Attack, Hit, Dodge, Vault, Climb (Trigger), Dead (Bool).
+    /// L'Animator deve avere i parametri: Attack, Hit, Dodge, Vault, Climb, ClimbHigh (Trigger), Dead (Bool).
+    /// ClimbHigh (arrampicata alta) lo aggiunge il menu Valdorso → Animazioni → Aggiungi le animazioni degli ostacoli.
     /// Per sedersi e sdraiarsi (Postura) servono anche Seduto e Sdraiato (Bool) nel livello Combattimento:
     /// se mancano, il personaggio si mette al posto ma resta in piedi, senza errori.
     /// Femminile (Bool) sceglie la posa da seduti: vero per i corpi femminili di UMA.
@@ -23,6 +24,7 @@ namespace Valdorso.Creatures
         static readonly int DodgeHash = Animator.StringToHash("Dodge");
         static readonly int VaultHash = Animator.StringToHash("Vault");
         static readonly int ClimbHash = Animator.StringToHash("Climb");
+        static readonly int ClimbHighHash = Animator.StringToHash("ClimbHigh");
         static readonly int DeadHash = Animator.StringToHash("Dead");
         static readonly int SedutoHash = Animator.StringToHash("Seduto");
         static readonly int SdraiatoHash = Animator.StringToHash("Sdraiato");
@@ -120,6 +122,13 @@ namespace Valdorso.Creatures
         public void PlayVault() => Trigger(VaultHash);
         public void PlayClimb() => Trigger(ClimbHash);
 
+        /// <summary>Arrampicata alta. Se l'Animator non ha ancora ClimbHigh, usa la salita normale.</summary>
+        public void PlayClimbHigh()
+        {
+            if (animator != null && HaParametro(ClimbHighHash)) Trigger(ClimbHighHash);
+            else Trigger(ClimbHash);
+        }
+
         /// <summary>Seduto, sdraiato o in piedi (tutti e due falsi). La chiama Postura su ogni PC.</summary>
         public void ImpostaPosa(bool siede, bool giace)
         {
@@ -166,6 +175,7 @@ namespace Valdorso.Creatures
             animator.ResetTrigger(DodgeHash);
             animator.ResetTrigger(VaultHash);
             animator.ResetTrigger(ClimbHash);
+            if (HaParametro(ClimbHighHash)) animator.ResetTrigger(ClimbHighHash);
             seduto = sdraiato = false;
             ApplicaPosa();
             animator.SetBool(DeadHash, true);
