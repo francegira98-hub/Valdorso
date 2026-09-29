@@ -93,6 +93,22 @@ namespace Valdorso.Interazione
             return "Leggi: " + avvisi[guardato].titolo;
         }
 
+        /// <summary>
+        /// La bacheca si può usare solo guardandola davvero: lo sguardo deve cadere sul pannello (con un po' di margine),
+        /// non basta averla di lato mentre si guarda una finestra.
+        /// </summary>
+        public override bool PuoInteragire(GameObject chi)
+        {
+            Camera cam = Camera.main;
+            if (cam == null) return true; // sul server non c'è telecamera: decidono gli altri controlli
+            var piano = new Plane(transform.forward, transform.TransformPoint(centroPannello));
+            var raggio = new Ray(cam.transform.position, cam.transform.forward);
+            if (!piano.Raycast(raggio, out float d)) return false;
+            Vector3 locale = transform.InverseTransformPoint(raggio.GetPoint(d)) - centroPannello;
+            const float Margine = 0.35f;
+            return Mathf.Abs(locale.x) <= misuraPannello.x / 2f + Margine && Mathf.Abs(locale.y) <= misuraPannello.y / 2f + Margine;
+        }
+
         public override void UsaLocale(GameObject chi)
         {
             if (guardato < 0 || guardato >= avvisi.Count)

@@ -196,6 +196,7 @@ namespace Valdorso.Interazione
                 Transform t = c.transform;
                 if (t.IsChildOf(transform)) continue;       // il proprio corpo
                 if (t.IsChildOf(o.transform)) continue;     // l'oggetto stesso
+                if (o.IgnoraOstacolo(c)) continue;          // ciò che l'oggetto dice di ignorare (il muro della finestra)
                 if (c.bounds.size.magnitude < 0.6f) continue; // un oggetto piccolo appoggiato
                 return true;
             }

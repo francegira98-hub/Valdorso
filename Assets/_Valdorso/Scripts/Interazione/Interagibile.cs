@@ -68,6 +68,12 @@ namespace Valdorso.Interazione
         /// <summary>L'azione solo locale (vedi Locale).</summary>
         public virtual void UsaLocale(GameObject chi) { }
 
+        /// <summary>
+        /// Vero se questo collider non deve "nascondere" l'oggetto a chi lo guarda (es. il muro in cui sta una finestra:
+        /// il suo collider è una scatola piena, ma dalla stanza la finestra si vede lo stesso).
+        /// </summary>
+        public virtual bool IgnoraOstacolo(Collider c) => false;
+
         /// <summary>Se in questo momento chi guarda può usare l'oggetto. Lo chiedono sia il client sia il server.</summary>
         public virtual bool PuoInteragire(GameObject chi) => true;
 

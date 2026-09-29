@@ -107,7 +107,8 @@ namespace Valdorso.EditorTools
             foreach (var (edificio, luogo) in luoghiSicuri)
                 if (PreparaLuogoSicuro(villaggio, edificio, luogo)) luoghi++;
             int bacheche = PreparaBacheche(villaggio);
-            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri, {bacheche} bacheche.";
+            int finestre = PreparaImposte(villaggio);
+            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri, {bacheche} bacheche, {finestre} finestre con le imposte.";
         }
 
         static void PreparaPorta(Transform t)
@@ -333,6 +334,207 @@ namespace Valdorso.EditorTools
             for (int i = 0; i < marcatori.Count; i++) lista.GetArrayElementAtIndex(i).objectReferenceValue = marcatori[i];
             so.ApplyModifiedPropertiesWithoutUndo();
             return marcatori.Count;
+        }
+
+        // ---------------------------------------------------------------- imposte delle finestre
+
+        static readonly string[] Ante = { "SM_WindowA_a1", "SM_WindowB_a1", "SM_WindowC_a1", "SM_WindowD_a1" };
+        const float LarghezzaAnta = 0.585f, AltezzaAnta = 1.03f; // misurate dal kit: perno sul cardine, l'anta va verso -X
+
+        /// <summary>
+        /// Monta due imposte (una normale e una specchiata) su ogni vano delle finestre del villaggio.
+        /// Il vano non si indovina: si "tasta" il muro con tanti piccoli raggi e si trova il buco.
+        /// Le imposte stanno sul lato esterno del muro, si aprono verso fuori fino ad appoggiarsi al muro.
+        /// Per ogni finestra c'è un solo oggetto "Imposte" con NetworkIdentity e Finestra: E apre e chiude tutte e due.
+        /// </summary>
+        static int PreparaImposte(Transform villaggio)
+        {
+            int n = 0, edificio = 0, muri = 0, senzaVano = 0;
+            foreach (Transform casa in villaggio)
+            {
+                edificio++;
+                // Il centro della casa, per sapere da che parte è "fuori" per ogni muro
+                Bounds forma = new Bounds(casa.position, Vector3.zero);
+                foreach (Renderer r in casa.GetComponentsInChildren<Renderer>()) forma.Encapsulate(r.bounds);
+
+                foreach (Transform muro in casa)
+                {
+                    if (!muro.name.StartsWith("SM_wallWindow") || muro.name.Contains("Opened")) continue;
+                    // Rifà da capo le imposte di questo muro
+                    for (int i = muro.childCount - 1; i >= 0; i--)
+                        if (muro.GetChild(i).name.StartsWith("Imposte")) Undo.DestroyObjectImmediate(muro.GetChild(i).gameObject);
+
+                    muri++;
+                    List<Rect> vani = TrovaVani(muro);
+                    if (vani.Count == 0) senzaVano++;
+                    foreach (Rect vano in vani)
+                        if (MontaImposte(muro, vano, forma.center, Ante[edificio % Ante.Length])) n++;
+                }
+            }
+            Debug.Log($"[Valdorso] Imposte: {muri} muri con finestra, {n} vani trovati e montati, {senzaVano} muri dove il vano non si trova.");
+            return n;
+        }
+
+        /// <summary>
+        /// I vani (buchi) di un muro, nelle coordinate del muro: X lungo il muro, Y in altezza.
+        /// Si guarda la forma disegnata del muro (le sue mesh, non il collider, che spesso è una scatola piena):
+        /// si "proietta" ogni triangolo sul piano del muro e si segna la griglia coperta; ciò che resta scoperto è il vano.
+        /// </summary>
+        static List<Rect> TrovaVani(Transform muro)
+        {
+            var vani = new List<Rect>();
+
+            // Le mesh del muro: solo quelle più dettagliate (LOD0), se il pezzo ha i livelli di dettaglio
+            var mesh = new List<MeshFilter>();
+            foreach (MeshFilter mf in muro.GetComponentsInChildren<MeshFilter>())
+                if (mf.sharedMesh != null && mf.name.Contains("LOD0")) mesh.Add(mf);
+            if (mesh.Count == 0)
+                foreach (MeshFilter mf in muro.GetComponentsInChildren<MeshFilter>())
+                    if (mf.sharedMesh != null) mesh.Add(mf);
+            if (mesh.Count == 0) return vani;
+
+            // I triangoli nelle coordinate del muro, e quanto è lungo il muro
+            var triangoli = new List<Vector3>();
+            float x0 = float.MaxValue, x1 = float.MinValue;
+            foreach (MeshFilter mf in mesh)
+            {
+                Vector3[] v = mf.sharedMesh.vertices;
+                int[] t = mf.sharedMesh.triangles;
+                var locali = new Vector3[v.Length];
+                for (int k = 0; k < v.Length; k++)
+                {
+                    locali[k] = muro.InverseTransformPoint(mf.transform.TransformPoint(v[k]));
+                    x0 = Mathf.Min(x0, locali[k].x);
+                    x1 = Mathf.Max(x1, locali[k].x);
+                }
+                for (int k = 0; k < t.Length; k++) triangoli.Add(locali[t[k]]);
+            }
+            if (x1 <= x0) return vani;
+
+            const float Passo = 0.05f;
+            int nx = Mathf.CeilToInt((x1 - x0) / Passo), ny = Mathf.CeilToInt(2.4f / Passo);
+            var pieno = new bool[nx, ny];
+            for (int k = 0; k < triangoli.Count; k += 3)
+            {
+                Vector2 a = new Vector2(triangoli[k].x, triangoli[k].y);
+                Vector2 b = new Vector2(triangoli[k + 1].x, triangoli[k + 1].y);
+                Vector2 c = new Vector2(triangoli[k + 2].x, triangoli[k + 2].y);
+                float area = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+                if (Mathf.Abs(area) < 1e-5f) continue; // triangolo "di taglio" (lo spessore del muro): non copre niente
+                int ix0 = Mathf.Max(0, Mathf.FloorToInt((Mathf.Min(a.x, b.x, c.x) - x0) / Passo));
+                int ix1 = Mathf.Min(nx - 1, Mathf.FloorToInt((Mathf.Max(a.x, b.x, c.x) - x0) / Passo));
+                int iy0 = Mathf.Max(0, Mathf.FloorToInt(Mathf.Min(a.y, b.y, c.y) / Passo));
+                int iy1 = Mathf.Min(ny - 1, Mathf.FloorToInt(Mathf.Max(a.y, b.y, c.y) / Passo));
+                for (int ix = ix0; ix <= ix1; ix++)
+                    for (int iy = iy0; iy <= iy1; iy++)
+                    {
+                        if (pieno[ix, iy]) continue;
+                        var p = new Vector2(x0 + (ix + 0.5f) * Passo, (iy + 0.5f) * Passo);
+                        if (DentroTriangolo(p, a, b, c)) pieno[ix, iy] = true;
+                    }
+            }
+
+            var buco = new bool[nx, ny];
+            for (int ix = 1; ix < nx - 1; ix++)
+                for (int iy = 4; iy < ny; iy++) // da 20 cm in su
+                    buco[ix, iy] = !pieno[ix, iy];
+
+            // Raggruppa i punti "vuoti" vicini: ogni gruppo abbastanza grande è un vano
+            var visti = new bool[nx, ny];
+            for (int ix = 0; ix < nx; ix++)
+                for (int iy = 0; iy < ny; iy++)
+                {
+                    if (!buco[ix, iy] || visti[ix, iy]) continue;
+                    int a0 = ix, a1 = ix, b0 = iy, b1 = iy, celle = 0;
+                    var coda = new Queue<Vector2Int>();
+                    coda.Enqueue(new Vector2Int(ix, iy));
+                    visti[ix, iy] = true;
+                    while (coda.Count > 0)
+                    {
+                        Vector2Int q = coda.Dequeue();
+                        celle++;
+                        a0 = Mathf.Min(a0, q.x); a1 = Mathf.Max(a1, q.x); b0 = Mathf.Min(b0, q.y); b1 = Mathf.Max(b1, q.y);
+                        foreach (Vector2Int d in new[] { Vector2Int.left, Vector2Int.right, Vector2Int.up, Vector2Int.down })
+                        {
+                            Vector2Int r = q + d;
+                            if (r.x < 0 || r.y < 0 || r.x >= nx || r.y >= ny || visti[r.x, r.y] || !buco[r.x, r.y]) continue;
+                            visti[r.x, r.y] = true;
+                            coda.Enqueue(r);
+                        }
+                    }
+                    float w = (a1 - a0 + 1) * Passo, h = (b1 - b0 + 1) * Passo;
+                    if (w < 0.4f || h < 0.4f || w > 2.2f) continue; // troppo piccolo, o non è una finestra
+                    vani.Add(new Rect(x0 + a0 * Passo, b0 * Passo, w, h));
+                }
+            return vani;
+        }
+
+        static bool DentroTriangolo(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
+        {
+            float d1 = (p.x - b.x) * (a.y - b.y) - (a.x - b.x) * (p.y - b.y);
+            float d2 = (p.x - c.x) * (b.y - c.y) - (b.x - c.x) * (p.y - c.y);
+            float d3 = (p.x - a.x) * (c.y - a.y) - (c.x - a.x) * (p.y - a.y);
+            bool neg = d1 < 0 || d2 < 0 || d3 < 0, pos = d1 > 0 || d2 > 0 || d3 > 0;
+            return !(neg && pos);
+        }
+
+        static bool MontaImposte(Transform muro, Rect vano, Vector3 centroCasa, string pezzo)
+        {
+            GameObject prefab = CaricaPrefab(pezzo);
+            if (prefab == null) { Debug.LogWarning("[Valdorso] Anta non trovata: " + pezzo); return false; }
+
+            // Da che parte è fuori: l'avanti del muro punta verso fuori oppure verso dentro?
+            float verso = Vector3.Dot(muro.forward, muro.position - centroCasa) >= 0f ? 1f : -1f;
+            const float Incasso = 0.14f; // dentro lo spessore del muro, verso fuori: le ante stanno nel riquadro del vano
+
+            var contenitore = new GameObject("Imposte").transform;
+            Undo.RegisterCreatedObjectUndo(contenitore.gameObject, "Imposte");
+            contenitore.SetParent(muro, false);
+            contenitore.localPosition = new Vector3(vano.center.x, vano.yMin, verso * Incasso);
+            contenitore.localRotation = Quaternion.identity;
+
+            float scalaX = vano.width / 2f / LarghezzaAnta, scalaY = vano.height / AltezzaAnta;
+
+            // Anta destra: cardine sul bordo destro del vano, l'anta va verso sinistra (-X), come nel kit
+            Transform destra = ((GameObject)PrefabUtility.InstantiatePrefab(prefab, contenitore)).transform;
+            destra.name = "Anta destra";
+            destra.localPosition = new Vector3(vano.width / 2f, 0f, 0f);
+            destra.localScale = new Vector3(scalaX, scalaY, 1f);
+
+            // Anta sinistra: la stessa, specchiata, con il cardine sul bordo sinistro
+            Transform sinistra = ((GameObject)PrefabUtility.InstantiatePrefab(prefab, contenitore)).transform;
+            sinistra.name = "Anta sinistra";
+            sinistra.localPosition = new Vector3(-vano.width / 2f, 0f, 0f);
+            sinistra.localScale = new Vector3(-scalaX, scalaY, 1f);
+
+            foreach (Transform t in new[] { destra, sinistra })
+                foreach (Transform f in t.GetComponentsInChildren<Transform>(true))
+                    GameObjectUtility.SetStaticEditorFlags(f.gameObject, 0); // girano: niente Static
+
+            // Aperte: girate verso fuori di 100°, una da una parte e una dall'altra (come ante vere dentro il loro telaio)
+            float apertaDestra = 100f * verso, apertaSinistra = -100f * verso;
+
+            // Il punto da guardare: il centro del vano, a metà del muro
+            var centro = new GameObject("Centro").transform;
+            centro.SetParent(contenitore, false);
+            centro.localPosition = new Vector3(0f, vano.height / 2f, -verso * Incasso);
+
+            Undo.AddComponent<NetworkIdentity>(contenitore.gameObject);
+            Finestra finestra = Undo.AddComponent<Finestra>(contenitore.gameObject);
+            var so = new SerializedObject(finestra);
+            so.FindProperty("nome").stringValue = "le imposte";
+            so.FindProperty("distanza").floatValue = 2.4f;
+            so.FindProperty("punto").objectReferenceValue = centro;
+            SerializedProperty ante = so.FindProperty("ante");
+            ante.arraySize = 2;
+            ante.GetArrayElementAtIndex(0).FindPropertyRelative("perno").objectReferenceValue = destra;
+            ante.GetArrayElementAtIndex(0).FindPropertyRelative("chiusaY").floatValue = 0f;
+            ante.GetArrayElementAtIndex(0).FindPropertyRelative("apertaY").floatValue = apertaDestra;
+            ante.GetArrayElementAtIndex(1).FindPropertyRelative("perno").objectReferenceValue = sinistra;
+            ante.GetArrayElementAtIndex(1).FindPropertyRelative("chiusaY").floatValue = 0f;
+            ante.GetArrayElementAtIndex(1).FindPropertyRelative("apertaY").floatValue = apertaSinistra;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            return true;
         }
 
         // ---------------------------------------------------------------- bacheche
