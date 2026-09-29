@@ -396,13 +396,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5140980}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5140979}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &5140977 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 5140976}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5140978 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 5140976}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5140979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5140978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &5140980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5140978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1417872910
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &5158392
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1262,13 +1316,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 14356351}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 14356350}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &14356348 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 14356347}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &14356349 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 14356347}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &14356350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14356349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &14356351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14356349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 645578827
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &15554607
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2813,6 +2921,42 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4103902658808440, guid: 23df6736668a13348a03cb4244feb23c, type: 3}
   m_PrefabInstance: {fileID: 35572959}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &35851349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 35851350}
+  m_Layer: 0
+  m_Name: Posti
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &35851350
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 35851349}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1058602611}
+  - {fileID: 1941458073}
+  - {fileID: 451735174}
+  - {fileID: 1138744104}
+  - {fileID: 430614750}
+  m_Father: {fileID: 43026354}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &37101611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3369,6 +3513,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -3409,16 +3557,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 41594610}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 41594609}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &41594607 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 41594606}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &41594608 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 41594606}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &41594609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41594608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &41594610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 41594608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3338390047
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &41815894
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3683,14 +3893,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 35851350}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 43026357}
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 43026356}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000017194868824866056876, type: 3}
 --- !u!4 &43026354 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
   m_PrefabInstance: {fileID: 43026353}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &43026355 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+  m_PrefabInstance: {fileID: 43026353}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &43026356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43026355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il tavolo
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti al tavolo
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 0
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali:
+  - {fileID: 1058602611}
+  - {fileID: 1941458073}
+  - {fileID: 451735174}
+  - {fileID: 1138744104}
+  - {fileID: 430614750}
+--- !u!114 &43026357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43026355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3454166439
+  _assetId: 2184408366
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &44414879
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7181,6 +7453,73 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030979438, guid: abc00000000016931434035257922689, type: 3}
   m_PrefabInstance: {fileID: 90625432}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &90755312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 90755313}
+  - component: {fileID: 90755315}
+  - component: {fileID: 90755314}
+  m_Layer: 2
+  m_Name: Luogo sicuro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &90755313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90755312}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 795701304}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &90755314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90755312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da0bce44729aea74e8f99dce8f8743a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.World.SafeZone
+  placeName: la Locanda
+--- !u!65 &90755315
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90755312}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 18.6, y: 7.5, z: 6.6}
+  m_Center: {x: 9, y: 3.75, z: -3}
 --- !u!1001 &91806576
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10792,13 +11131,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058917, guid: abc00000000014973009451586704569, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 126980039}
+    - targetCorrespondingSourceObject: {fileID: 1031058917, guid: abc00000000014973009451586704569, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 126980038}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000014973009451586704569, type: 3}
 --- !u!4 &126980036 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058918, guid: abc00000000014973009451586704569, type: 3}
   m_PrefabInstance: {fileID: 126980035}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &126980037 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058917, guid: abc00000000014973009451586704569, type: 3}
+  m_PrefabInstance: {fileID: 126980035}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &126980038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126980037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la sedia
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla sedia
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &126980039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 126980037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3928067047
+  _assetId: 3277289910
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &127355168
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15535,6 +15928,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4049574481428132, guid: 54ad073294fda8c4b9565db72fb1c4cc, type: 3}
   m_PrefabInstance: {fileID: 175130473}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &176350689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 176350690}
+  m_Layer: 0
+  m_Name: Posto 5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &176350690
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176350689}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: -0.048057556, z: -1.3199999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 965607593}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &177381341
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35047,14 +35471,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 375389277}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 213070612}
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 213070611}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000017194868824866056876, type: 3}
 --- !u!4 &213070609 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
   m_PrefabInstance: {fileID: 213070608}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &213070610 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+  m_PrefabInstance: {fileID: 213070608}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &213070611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213070610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il tavolo
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti al tavolo
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 0
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali:
+  - {fileID: 1213347615}
+  - {fileID: 1616338705}
+  - {fileID: 1662885095}
+  - {fileID: 882727386}
+  - {fileID: 287777102}
+--- !u!114 &213070612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213070610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1083018560
+  _assetId: 2184408366
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &213455782
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36771,6 +37257,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.45
@@ -36811,16 +37301,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 239122543}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 239122542}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &239122540 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 239122539}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &239122541 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 239122539}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &239122542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239122541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &239122543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239122541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3797667509
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &239357384
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37506,13 +38058,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 247634116}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 247634115}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &247634113 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 247634112}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &247634114 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 247634112}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &247634115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247634114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &247634116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247634114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3632601362
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &247911457
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38019,6 +38625,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1031005205, guid: abc00000000016960943808521108304, type: 3}
   m_PrefabInstance: {fileID: 253314503}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &253322789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 253322790}
+  m_Layer: 0
+  m_Name: Posto 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &253322790
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 253322789}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 1.5999999, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 965607593}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &253348516
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39867,13 +40504,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 274985291}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 274985290}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &274985288 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 274985287}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &274985289 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 274985287}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &274985290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274985289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &274985291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274985289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2603954645
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &275152703
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40788,6 +41479,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5548072903747091912, guid: 631746565cbba1041b56d4a3a89770f3, type: 3}
   m_PrefabInstance: {fileID: 287625204}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &287777101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 287777102}
+  m_Layer: 0
+  m_Name: Posto 5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &287777102
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287777101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: -0.048057556, z: -1.3199999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 375389277}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &287950601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41757,13 +42479,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 301047046}
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 301047045}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000014957627284717281866, type: 3}
 --- !u!4 &301047043 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979604, guid: abc00000000014957627284717281866, type: 3}
   m_PrefabInstance: {fileID: 301047042}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &301047044 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+  m_PrefabInstance: {fileID: 301047042}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &301047045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301047044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la sedia
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla sedia
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 180
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &301047046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301047044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1349048519
+  _assetId: 2657423201
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &302293515
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80246,6 +81022,42 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2662838837835058946, guid: b0b3f613cc8192b4badfe3ba990e184d, type: 3}
   m_PrefabInstance: {fileID: 375324673}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &375389276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 375389277}
+  m_Layer: 0
+  m_Name: Posti
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &375389277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375389276}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1213347615}
+  - {fileID: 1616338705}
+  - {fileID: 1662885095}
+  - {fileID: 882727386}
+  - {fileID: 287777102}
+  m_Father: {fileID: 213070609}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &375649144
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82677,6 +83489,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.45
@@ -82717,16 +83533,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 403819002}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 403819001}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &403818999 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 403818998}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &403819000 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 403818998}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &403819001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403819000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &403819002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403819000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 4212408146
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &404009157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -84653,6 +85531,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.45
@@ -84693,16 +85575,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 421036432}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 421036431}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &421036429 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 421036428}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &421036430 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 421036428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &421036431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421036430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &421036432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421036430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 735339378
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &422283948
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85135,6 +86079,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8510265533506988209, guid: b029e812b5e0bdd40ac607f2cf7178c4, type: 3}
   m_PrefabInstance: {fileID: 426028433}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &426384097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 426384098}
+  m_Layer: 0
+  m_Name: Posto 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &426384098
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426384097}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 1.5999999, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1131827837}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &426776533
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85629,6 +86604,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2631121322984271317, guid: 016dad81e5bfd3e49a340179fb4e1150, type: 3}
   m_PrefabInstance: {fileID: 430144780}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &430614749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 430614750}
+  m_Layer: 0
+  m_Name: Posto 5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &430614750
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 430614749}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: -0.048057556, z: -1.3199999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 35851350}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &432619614
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -87113,6 +88119,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -87153,16 +88163,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 448270228}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 448270227}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &448270225 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 448270224}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &448270226 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 448270224}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &448270227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448270226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &448270228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448270226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1813285480
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &448293310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -87731,6 +88803,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1031005205, guid: abc00000000016960943808521108304, type: 3}
   m_PrefabInstance: {fileID: 451696905}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &451735173
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 451735174}
+  m_Layer: 0
+  m_Name: Posto 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &451735174
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451735173}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 1.5999999, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 35851350}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &453027612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -90802,13 +91905,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 491981711}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 491981710}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &491981708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 491981707}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &491981709 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 491981707}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &491981710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491981709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &491981711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491981709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1084798300
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &492327227
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -90864,13 +92021,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 492327231}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 492327230}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &492327228 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 492327227}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &492327229 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 492327227}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &492327230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492327229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &492327231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492327229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1084732826
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &492974447
 GameObject:
   m_ObjectHideFlags: 0
@@ -92711,14 +93922,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1131827837}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 514310976}
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 514310975}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000017194868824866056876, type: 3}
 --- !u!4 &514310973 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
   m_PrefabInstance: {fileID: 514310972}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &514310974 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+  m_PrefabInstance: {fileID: 514310972}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &514310975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514310974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il tavolo
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti al tavolo
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 0
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali:
+  - {fileID: 918645522}
+  - {fileID: 1967761865}
+  - {fileID: 426384098}
+  - {fileID: 883436889}
+  - {fileID: 1118842728}
+--- !u!114 &514310976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 514310974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2795156191
+  _assetId: 2184408366
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &517392531
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -94899,13 +96172,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 548073707}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 548073706}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &548073704 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 548073703}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &548073705 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 548073703}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &548073706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548073705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &548073707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548073705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 28771033
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &548223215
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95949,13 +97276,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 555908884}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 555908883}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &555908881 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 555908880}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &555908882 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 555908880}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &555908883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555908882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: -90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &555908884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555908882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2790409462
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &556314423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -98122,6 +99503,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.45
@@ -98162,16 +99547,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 578278401}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 578278400}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &578278398 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 578278397}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &578278399 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 578278397}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &578278400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 578278399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &578278401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 578278399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3594361455
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &579227630
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -103236,14 +104683,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 965607593}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 644335698}
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 644335697}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000017194868824866056876, type: 3}
 --- !u!4 &644335695 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
   m_PrefabInstance: {fileID: 644335694}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &644335696 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+  m_PrefabInstance: {fileID: 644335694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &644335697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644335696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il tavolo
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti al tavolo
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 0
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali:
+  - {fileID: 1673363414}
+  - {fileID: 2123177993}
+  - {fileID: 253322790}
+  - {fileID: 842865297}
+  - {fileID: 176350690}
+--- !u!114 &644335698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644335696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 787549289
+  _assetId: 2184408366
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &644962163
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -109197,13 +110706,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 716853057}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 716853056}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &716853054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 716853053}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &716853055 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 716853053}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &716853056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716853055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &716853057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716853055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2164281018
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &716959800
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -110618,6 +112181,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6624766793370811749, guid: c97a2fa2e2dc11843ba810cffa4df640, type: 3}
   m_PrefabInstance: {fileID: 727994668}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &728878549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 728878550}
+  m_Layer: 0
+  m_Name: Posto 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &728878550
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728878549}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.9066666, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1807552132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &730354870
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -115256,6 +116850,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -115296,16 +116894,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 789707196}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 789707195}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &789707193 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 789707192}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &789707194 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 789707192}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &789707195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789707194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &789707196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 789707194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 509936657
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &790804225
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -115727,6 +117387,7 @@ Transform:
   - {fileID: 378851056}
   - {fileID: 1359894574}
   - {fileID: 1046570653}
+  - {fileID: 90755313}
   m_Father: {fileID: 343500180}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &797896065
@@ -118629,13 +120290,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 820890383}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 820890382}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &820890380 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 820890379}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &820890381 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 820890379}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &820890382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820890381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: -90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &820890383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820890381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2796314013
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &820993783
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -120594,6 +122309,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1355315482015289681, guid: 56e11720e8caf0d44b9f4619b926a2d7, type: 3}
   m_PrefabInstance: {fileID: 842190677}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &842865296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 842865297}
+  m_Layer: 0
+  m_Name: Posto 4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &842865297
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842865296}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 2.2933333, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 965607593}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &843199471
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -123656,6 +125402,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030982294, guid: abc00000000009958779760434411957, type: 3}
   m_PrefabInstance: {fileID: 882129383}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &882727385
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 882727386}
+  m_Layer: 0
+  m_Name: Posto 4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &882727386
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 882727385}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 2.2933333, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 375389277}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &883321190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -123730,6 +125507,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6624766793370811749, guid: c97a2fa2e2dc11843ba810cffa4df640, type: 3}
   m_PrefabInstance: {fileID: 883321190}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &883436888
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 883436889}
+  m_Layer: 0
+  m_Name: Posto 4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &883436889
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 883436888}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 2.2933333, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1131827837}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &884197856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -126144,14 +127952,76 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1807552132}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 909038319}
+    - targetCorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 909038318}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000017194868824866056876, type: 3}
 --- !u!4 &909038316 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030995393, guid: abc00000000017194868824866056876, type: 3}
   m_PrefabInstance: {fileID: 909038315}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &909038317 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030995392, guid: abc00000000017194868824866056876, type: 3}
+  m_PrefabInstance: {fileID: 909038315}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &909038318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909038317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il tavolo
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti al tavolo
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 0
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali:
+  - {fileID: 1173505193}
+  - {fileID: 728878550}
+  - {fileID: 1647516284}
+  - {fileID: 1794671399}
+  - {fileID: 2111992307}
+--- !u!114 &909038319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909038317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1831234728
+  _assetId: 2184408366
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &910188897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -126849,6 +128719,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -126889,16 +128763,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 916462297}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 916462296}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &916462294 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 916462293}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &916462295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 916462293}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &916462296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916462295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &916462297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916462295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1161089011
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &916939304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -126973,6 +128909,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3098314057369584459, guid: 2007fce10955d9f4ba3fe11082ef923d, type: 3}
   m_PrefabInstance: {fileID: 916939304}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &918645521
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 918645522}
+  m_Layer: 0
+  m_Name: Posto 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &918645522
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918645521}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.048057556, z: -0.04}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1131827837}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &918971488
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -131411,6 +133378,42 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030975836, guid: abc00000000006989190562853242678, type: 3}
   m_PrefabInstance: {fileID: 964993184}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &965607592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 965607593}
+  m_Layer: 0
+  m_Name: Posti
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &965607593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965607592}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1673363414}
+  - {fileID: 2123177993}
+  - {fileID: 253322790}
+  - {fileID: 842865297}
+  - {fileID: 176350690}
+  m_Father: {fileID: 644335695}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &966900020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -133303,13 +135306,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 991703006}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 991703005}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &991703003 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 991703002}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &991703004 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 991703002}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &991703005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991703004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: -90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &991703006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991703004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3704783312
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &991859411
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -135593,13 +137650,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1023021949}
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1023021948}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000014957627284717281866, type: 3}
 --- !u!4 &1023021946 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979604, guid: abc00000000014957627284717281866, type: 3}
   m_PrefabInstance: {fileID: 1023021945}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1023021947 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+  m_PrefabInstance: {fileID: 1023021945}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1023021948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023021947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la sedia
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla sedia
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 180
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1023021949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023021947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 943419835
+  _assetId: 2657423201
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1025119904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -138151,13 +140262,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1054659561}
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1054659560}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000014957627284717281866, type: 3}
 --- !u!4 &1054659558 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979604, guid: abc00000000014957627284717281866, type: 3}
   m_PrefabInstance: {fileID: 1054659557}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1054659559 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+  m_PrefabInstance: {fileID: 1054659557}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1054659560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054659559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la sedia
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla sedia
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 0
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1054659561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054659559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 766693608
+  _assetId: 2657423201
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1054663151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -138684,6 +140849,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2586289693084048354, guid: 0bf8d7243ab9d084394d7c84a968842e, type: 3}
   m_PrefabInstance: {fileID: 1057777976}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1058602610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1058602611}
+  m_Layer: 0
+  m_Name: Posto 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1058602611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1058602610}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.048057556, z: -0.04}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 35851350}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1059795178
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -143336,6 +145532,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1031002491, guid: abc00000000014170434364333233579, type: 3}
   m_PrefabInstance: {fileID: 1118676253}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1118842727
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1118842728}
+  m_Layer: 0
+  m_Name: Posto 5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1118842728
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118842727}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: -0.048057556, z: -1.3199999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1131827837}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1121423964
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -144433,6 +146660,42 @@ Transform:
   - {fileID: 722982295}
   m_Father: {fileID: 1158111390}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1131827836
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1131827837}
+  m_Layer: 0
+  m_Name: Posti
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1131827837
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131827836}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 918645522}
+  - {fileID: 1967761865}
+  - {fileID: 426384098}
+  - {fileID: 883436889}
+  - {fileID: 1118842728}
+  m_Father: {fileID: 514310973}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1132585972
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145223,6 +147486,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4004717675543240, guid: d10e13372d41b754cb05474680f880e5, type: 3}
   m_PrefabInstance: {fileID: 1138361455}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1138744103
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1138744104}
+  m_Layer: 0
+  m_Name: Posto 4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1138744104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138744103}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 2.2933333, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 35851350}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1139226277
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148664,6 +150958,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030972257, guid: abc00000000017988779724948665030, type: 3}
   m_PrefabInstance: {fileID: 1173366125}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1173505192
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1173505193}
+  m_Layer: 0
+  m_Name: Posto 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1173505193
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173505192}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.048057556, z: -0.04}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1807552132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1174380203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -151930,6 +154255,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 788717238192036069, guid: 987ead70976f59842830f4ead4719900, type: 3}
   m_PrefabInstance: {fileID: 1211220115}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1213347614
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1213347615}
+  m_Layer: 0
+  m_Name: Posto 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1213347615
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1213347614}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.048057556, z: -0.04}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 375389277}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1213989807
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -152090,6 +154446,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.45
@@ -152130,16 +154490,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1214605470}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1214605469}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &1214605467 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 1214605466}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1214605468 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 1214605466}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1214605469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214605468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &1214605470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1214605468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 280494520
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1216281026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -157072,13 +159494,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1267939764}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1267939763}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1267939761 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1267939760}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1267939762 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1267939760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1267939763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267939762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1267939764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1267939762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3719723634
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1268177934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -174258,13 +176734,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1472015505}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1472015504}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &1472015502 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 1472015501}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1472015503 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 1472015501}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1472015504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472015503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &1472015505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472015503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1128906183
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1472327268
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -176888,13 +179418,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1499277858}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1499277857}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1499277855 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1499277854}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1499277856 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1499277854}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1499277857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499277856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1499277858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499277856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1849693006
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1501812459
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -183506,6 +186090,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.45
@@ -183546,16 +186134,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1574991649}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1574991648}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &1574991646 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 1574991645}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1574991647 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 1574991645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1574991648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574991647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &1574991649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574991647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 734469674
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1575292828
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -185297,13 +187947,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1589670197}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1589670196}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &1589670194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 1589670193}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1589670195 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 1589670193}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1589670196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589670195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &1589670197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589670195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 110924137
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1591291020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -188478,6 +191182,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030973493, guid: abc00000000006495075891427913313, type: 3}
   m_PrefabInstance: {fileID: 1616034199}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1616338704
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1616338705}
+  m_Layer: 0
+  m_Name: Posto 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1616338705
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616338704}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.9066666, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 375389277}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1617308854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -189867,13 +192602,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1631152064}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1631152063}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1631152061 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1631152060}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1631152062 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1631152060}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1631152063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631152062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1631152064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631152062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3379225473
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1631467479
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -191138,6 +193927,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 788717238192036069, guid: 987ead70976f59842830f4ead4719900, type: 3}
   m_PrefabInstance: {fileID: 1647073988}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1647516283
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1647516284}
+  m_Layer: 0
+  m_Name: Posto 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1647516284
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647516283}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 1.5999999, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1807552132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1648980214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -191329,13 +194149,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1651453515}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1651453514}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1651453512 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1651453511}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1651453513 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1651453511}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1651453514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651453513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: -90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1651453515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1651453513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 778628364
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1652175178
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -192122,6 +194996,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030972257, guid: abc00000000017988779724948665030, type: 3}
   m_PrefabInstance: {fileID: 1661502815}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1662885094
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1662885095}
+  m_Layer: 0
+  m_Name: Posto 3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1662885095
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662885094}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 1.5999999, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 375389277}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1664757935
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -192991,13 +195896,98 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058903, guid: abc00000000003606046160283659634, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1673080056}
+    - targetCorrespondingSourceObject: {fileID: 1031058903, guid: abc00000000003606046160283659634, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1673080055}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000003606046160283659634, type: 3}
 --- !u!4 &1673080053 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058904, guid: abc00000000003606046160283659634, type: 3}
   m_PrefabInstance: {fileID: 1673080052}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1673080054 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058903, guid: abc00000000003606046160283659634, type: 3}
+  m_PrefabInstance: {fileID: 1673080052}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1673080055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673080054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la sedia
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla sedia
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 180
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1673080056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673080054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1872104765
+  _assetId: 2652906467
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!1 &1673363413
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1673363414}
+  m_Layer: 0
+  m_Name: Posto 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1673363414
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1673363413}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.048057556, z: -0.04}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 965607593}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1673656821
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -193201,13 +196191,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1681159784}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1681159783}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &1681159781 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 1681159780}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1681159782 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 1681159780}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1681159783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1681159782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &1681159784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1681159782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1149520848
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1684749381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -198806,13 +201850,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1747000597}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1747000596}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1747000594 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1747000593}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1747000595 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1747000593}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1747000596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747000595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1747000597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747000595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3109134153
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1747698129
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -198942,13 +202040,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1747767275}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1747767274}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1747767272 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1747767271}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1747767273 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1747767271}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1747767274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747767273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: -90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1747767275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747767273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2555140295
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1747967998
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -204100,6 +207252,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4307084404817226, guid: 4a7f57b08cfccb443b2d238fa0439895, type: 3}
   m_PrefabInstance: {fileID: 1794660995}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1794671398
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1794671399}
+  m_Layer: 0
+  m_Name: Posto 4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1794671399
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794671398}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 2.2933333, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1807552132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1794785366
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -204563,13 +207746,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1798935095}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1798935094}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1798935092 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1798935091}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1798935093 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1798935091}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1798935094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798935093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1798935095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798935093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 257033950
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1799955127
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -205286,6 +208523,42 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2752123228923036613, guid: 8d4c697973e3ceb449de5306f8ed8736, type: 3}
   m_PrefabInstance: {fileID: 1807520673}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1807552131
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1807552132}
+  m_Layer: 0
+  m_Name: Posti
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1807552132
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807552131}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1173505193}
+  - {fileID: 728878550}
+  - {fileID: 1647516284}
+  - {fileID: 1794671399}
+  - {fileID: 2111992307}
+  m_Father: {fileID: 909038316}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1807650971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -207794,6 +211067,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -207834,16 +211111,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1833446716}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1833446715}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &1833446713 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 1833446712}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1833446714 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 1833446712}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1833446715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833446714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &1833446716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833446714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3405070557
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1833715712
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -209307,13 +212646,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1851738905}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1851738904}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1851738902 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1851738901}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1851738903 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1851738901}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1851738904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851738903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1851738905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1851738903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3417964660
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1853186287
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -209789,13 +213182,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1856882496}
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1856882495}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000014957627284717281866, type: 3}
 --- !u!4 &1856882493 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979604, guid: abc00000000014957627284717281866, type: 3}
   m_PrefabInstance: {fileID: 1856882492}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1856882494 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+  m_PrefabInstance: {fileID: 1856882492}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1856882495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856882494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la sedia
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla sedia
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 180
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1856882496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856882494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 69370941
+  _assetId: 2657423201
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1856890920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -209851,13 +213298,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1856890924}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1856890923}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1856890921 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1856890920}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1856890922 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1856890920}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1856890923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856890922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1856890924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856890922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 4012175712
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1857382069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -215461,13 +218962,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1923536773}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1923536772}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &1923536770 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 1923536769}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1923536771 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 1923536769}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1923536772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923536771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &1923536773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923536771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3727486183
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1924052588
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -215929,6 +219484,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -215969,16 +219528,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1928557929}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1928557928}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &1928557926 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 1928557925}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1928557927 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 1928557925}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1928557928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928557927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &1928557929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928557927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2024394013
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1928676123
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -217399,6 +221020,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4838954911858296187, guid: 3cf8aaa4069a2c3429f331de52f6d361, type: 3}
   m_PrefabInstance: {fileID: 1941054350}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1941458072
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1941458073}
+  m_Layer: 0
+  m_Name: Posto 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1941458073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1941458072}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.9066666, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 35851350}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1941890609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -219051,13 +222703,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1958857354}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1958857353}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &1958857351 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 1958857350}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1958857352 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 1958857350}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1958857353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1958857352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &1958857354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1958857352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 4130279407
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &1960510664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -219800,6 +223506,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1030974220, guid: abc00000000003829284974811255115, type: 3}
   m_PrefabInstance: {fileID: 1966658189}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1967761864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1967761865}
+  m_Layer: 0
+  m_Name: Posto 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1967761865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967761864}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.9066666, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1131827837}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1968445077
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -224269,13 +228006,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2026844443}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2026844442}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &2026844440 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 2026844439}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2026844441 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 2026844439}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2026844442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026844441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: -90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &2026844443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2026844441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3683190627
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &2027282534
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -231303,13 +235094,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2109406107}
+    - targetCorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2109406106}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000002810132281911656282, type: 3}
 --- !u!4 &2109406104 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031058897, guid: abc00000000002810132281911656282, type: 3}
   m_PrefabInstance: {fileID: 2109406103}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2109406105 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1031058896, guid: abc00000000002810132281911656282, type: 3}
+  m_PrefabInstance: {fileID: 2109406103}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2109406106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109406105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: il letto
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 1
+  azione: Sdraiati sul letto
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 90
+  altezza: 0.5
+  spostamento: {x: 0, y: 0, z: 0}
+  postiManuali: []
+--- !u!114 &2109406107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109406105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 3870169045
+  _assetId: 839603984
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &2109533297
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -231508,6 +235353,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1031057926, guid: abc00000000003968449917858030979, type: 3}
   m_PrefabInstance: {fileID: 2110832172}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2111992306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2111992307}
+  m_Layer: 0
+  m_Name: Posto 5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2111992307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111992306}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.4, y: -0.048057556, z: -1.3199999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1807552132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2112791408
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -231711,13 +235587,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2114993965}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2114993964}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &2114993962 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 2114993961}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2114993963 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 2114993961}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2114993964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114993963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: -90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &2114993965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114993963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2947514983
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &2115153556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -232138,6 +236068,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5231304108262613231, guid: dca6bbc2c345ab34da4322bde71612b9, type: 3}
   m_PrefabInstance: {fileID: 2122396459}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2123177992
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2123177993}
+  m_Layer: 0
+  m_Name: Posto 2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2123177993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123177992}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.9066666, y: -0.048057556, z: 0.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 965607593}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2123919682
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -232886,13 +236847,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2128623295}
+    - targetCorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2128623294}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000014957627284717281866, type: 3}
 --- !u!4 &2128623292 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979604, guid: abc00000000014957627284717281866, type: 3}
   m_PrefabInstance: {fileID: 2128623291}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2128623293 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979603, guid: abc00000000014957627284717281866, type: 3}
+  m_PrefabInstance: {fileID: 2128623291}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2128623294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128623293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la sedia
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla sedia
+  postiMassimi: 1
+  passo: 0.65
+  versoY: 0
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &2128623295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128623293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 2163968304
+  _assetId: 2657423201
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &2130962944
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -233349,6 +237364,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_DoorA_a1
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.45
@@ -233389,16 +237408,78 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1030992855, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992859, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030992863, guid: abc00000000015844733228908493071, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2137085532}
+    - targetCorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2137085531}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000015844733228908493071, type: 3}
 --- !u!4 &2137085529 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030992852, guid: abc00000000015844733228908493071, type: 3}
   m_PrefabInstance: {fileID: 2137085528}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2137085530 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030992851, guid: abc00000000015844733228908493071, type: 3}
+  m_PrefabInstance: {fileID: 2137085528}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2137085531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137085530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79dad9f5592891341871e00b8512e6e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Porta
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la porta
+  distanza: 2.2
+  punto: {fileID: 0}
+  angoloChiusa: 0
+  angoloAperta: 90
+  apertaAllInizio: 0
+  velocita: 150
+--- !u!114 &2137085532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2137085530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 777013470
+  _assetId: 1180072527
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &2137513054
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -234170,13 +238251,67 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2143735323}
+    - targetCorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2143735322}
   m_SourcePrefab: {fileID: 100100000, guid: abc00000000007451243948859808059, type: 3}
 --- !u!4 &2143735320 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1030979520, guid: abc00000000007451243948859808059, type: 3}
   m_PrefabInstance: {fileID: 2143735319}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2143735321 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1030979519, guid: abc00000000007451243948859808059, type: 3}
+  m_PrefabInstance: {fileID: 2143735319}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2143735322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143735321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1026dae1a954f094590acb033f21bd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Valdorso.Interazione.Sedile
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  nome: la panca
+  distanza: 2.2
+  punto: {fileID: 0}
+  tipo: 0
+  azione: Siediti sulla panca
+  postiMassimi: 0
+  passo: 0.65
+  versoY: 90
+  altezza: 0
+  spostamento: {x: 0, y: 0, z: 0.25}
+  postiManuali: []
+--- !u!114 &2143735323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143735321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
+  sceneId: 1390286457
+  _assetId: 2106704715
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &2146263213
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -86,6 +86,7 @@ namespace Valdorso.EditorTools
 
                 EditorUtility.DisplayProgressBar("Valdorso", "Monto gli edifici...", 0.8f);
                 GameObject villaggio = MontaEdifici(valle.transform, quote, out int pezzi);
+                VillaggioVivo.Prepara(villaggio.transform);
 
                 foreach (Terrain t in terreni) EditorUtility.SetDirty(t.terrainData);
                 EditorSceneManager.MarkSceneDirty(valle.scene);

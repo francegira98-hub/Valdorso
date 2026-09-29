@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Valdorso.Creatures;
 using Valdorso.UI;
+using Valdorso.World;
 
 namespace Valdorso.Interazione
 {
@@ -31,9 +32,12 @@ namespace Valdorso.Interazione
         [SerializeField] LayerMask ostacoli = ~0;
 
         Creature creature;
+        Postura postura;
         SuggerimentoInterazione suggerimento;
         Interagibile bersaglio;
         double prossimaLocale;
+        SafeZone luogoAttuale;
+        float prossimoControlloLuogo;
         double prossimaServer;
 
         Vector3 Petto => transform.position + Vector3.up * altezzaPetto;
@@ -41,6 +45,7 @@ namespace Valdorso.Interazione
         void Awake()
         {
             creature = GetComponent<Creature>();
+            postura = GetComponent<Postura>();
         }
 
         public override void OnStartLocalPlayer()
@@ -52,10 +57,12 @@ namespace Valdorso.Interazione
         {
             bersaglio = null;
             if (suggerimento != null) suggerimento.Nascondi();
+            if (isLocalPlayer) PannelloLettura.Chiudi();
         }
 
         void OnDestroy()
         {
+            if (isLocalPlayer) PannelloLettura.Chiudi();
             if (suggerimento != null) Destroy(suggerimento.gameObject);
         }
 
@@ -67,6 +74,41 @@ namespace Valdorso.Interazione
             {
                 bersaglio = null;
                 suggerimento.Nascondi();
+                return;
+            }
+
+            ControllaLuogoSicuro();
+
+            // Mentre si legge una bacheca: E chiude, e allontanarsi chiude da solo
+            if (PannelloLettura.Aperto)
+            {
+                bersaglio = null;
+                if (PannelloLettura.Fonte == null || Vector3.Distance(Petto, PannelloLettura.Fonte.position) > 4f)
+                {
+                    PannelloLettura.Chiudi();
+                    return;
+                }
+                suggerimento.Mostra("Chiudi");
+                Keyboard k = Keyboard.current;
+                if (k != null && k.eKey.wasPressedThisFrame)
+                {
+                    prossimaLocale = Time.timeAsDouble + attesa;
+                    PannelloLettura.Chiudi();
+                }
+                return;
+            }
+
+            // Da seduti o sdraiati (o mentre si va verso il posto) l'unica cosa da fare con E è alzarsi
+            if (postura != null && postura.Occupato)
+            {
+                bersaglio = null;
+                suggerimento.Mostra("Alzati");
+                Keyboard tastiera = Keyboard.current;
+                if (tastiera != null && tastiera.eKey.wasPressedThisFrame && Time.timeAsDouble >= prossimaLocale)
+                {
+                    prossimaLocale = Time.timeAsDouble + attesa;
+                    postura.ChiediDiAlzarti();
+                }
                 return;
             }
 
@@ -83,7 +125,20 @@ namespace Valdorso.Interazione
             if (Time.timeAsDouble < prossimaLocale) return;
 
             prossimaLocale = Time.timeAsDouble + attesa;
-            CmdInteragisci(bersaglio.netIdentity, bersaglio.ComponentIndex);
+            if (bersaglio.Locale) bersaglio.UsaLocale(gameObject);
+            else CmdInteragisci(bersaglio.netIdentity, bersaglio.ComponentIndex);
+        }
+
+        /// <summary>Quattro volte al secondo: se si entra o si esce da un luogo sicuro, lo dice in alto sullo schermo.</summary>
+        void ControllaLuogoSicuro()
+        {
+            if (Time.time < prossimoControlloLuogo) return;
+            prossimoControlloLuogo = Time.time + 0.25f;
+            SafeZone qui = SafeZone.At(transform.position);
+            if (qui == luogoAttuale) return;
+            if (qui != null) suggerimento.Avviso("Al sicuro: " + qui.PlaceName, "Da qui si lascia la valle subito, senza attesa");
+            else if (luogoAttuale != null) suggerimento.Avviso("Lasci " + luogoAttuale.PlaceName, "");
+            luogoAttuale = qui;
         }
 
         /// <summary>
@@ -121,14 +176,28 @@ namespace Valdorso.Interazione
             return migliore;
         }
 
-        /// <summary>Vero se tra il petto e l'oggetto c'è qualcos'altro (un muro, il terreno).</summary>
+        static readonly RaycastHit[] colpi = new RaycastHit[16];
+
+        /// <summary>
+        /// Vero se tra il petto e l'oggetto c'è qualcosa di grande (un muro, il terreno, un armadio).
+        /// Gli oggetti piccoli, come piatti, boccali e candele appoggiati su un tavolo, non nascondono niente.
+        /// </summary>
         bool Nascosto(Vector3 da, Vector3 a, Interagibile o)
         {
-            if (!Physics.Linecast(da, a, out RaycastHit hit, ostacoli, QueryTriggerInteraction.Ignore)) return false;
-            Transform t = hit.collider.transform;
-            if (t.IsChildOf(transform)) return false;        // il proprio corpo
-            if (t.IsChildOf(o.transform)) return false;      // l'oggetto stesso
-            return true;
+            Vector3 dir = a - da;
+            float lunghezza = dir.magnitude;
+            if (lunghezza < 0.01f) return false;
+            int n = Physics.RaycastNonAlloc(da, dir / lunghezza, colpi, lunghezza, ostacoli, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < n; i++)
+            {
+                Collider c = colpi[i].collider;
+                Transform t = c.transform;
+                if (t.IsChildOf(transform)) continue;       // il proprio corpo
+                if (t.IsChildOf(o.transform)) continue;     // l'oggetto stesso
+                if (c.bounds.size.magnitude < 0.6f) continue; // un oggetto piccolo appoggiato
+                return true;
+            }
+            return false;
         }
 
         [Command]

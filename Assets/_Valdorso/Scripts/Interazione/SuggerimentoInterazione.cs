@@ -6,15 +6,15 @@ using Valdorso.UI;
 namespace Valdorso.Interazione
 {
     /// <summary>
-    /// La scritta in basso al centro dello schermo quando si può usare qualcosa: un tasto "E" nella cornice d'oro
+    /// La scritta in basso al centro dello schermo quando si può usare qualcosa: un tasto "E" con un filo d'oro
     /// e accanto l'azione ("Accendi la lanterna"), nello stile "Oro e brace". Compare e sparisce con una dissolvenza.
     /// La crea l'Interattore solo sul PC di chi gioca.
     /// </summary>
     public class SuggerimentoInterazione : MonoBehaviour
     {
-        const float LatoTasto = 46f;
+        const float LatoTasto = 40f;
         const float Spazio = 16f;
-        const float AltezzaDalFondo = 230f;
+        const float AltezzaDalFondo = 130f;
 
         CanvasGroup gruppo;
         RectTransform riga;
@@ -23,9 +23,14 @@ namespace Valdorso.Interazione
         TMP_Text testo;
         float alfaVoluto;
 
+        CanvasGroup gruppoAvviso;
+        TMP_Text avvisoTitolo;
+        TMP_Text avvisoRiga;
+        float avvisoFinoA;
+
         public static SuggerimentoInterazione Crea()
         {
-            var go = new GameObject("Suggerimento interazione", typeof(Canvas), typeof(CanvasScaler), typeof(CanvasGroup));
+            var go = new GameObject("Suggerimento interazione", typeof(Canvas), typeof(CanvasScaler));
             var canvas = go.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 20; // sotto il menu di pausa (450) e le impostazioni (500)
@@ -40,22 +45,28 @@ namespace Valdorso.Interazione
 
         void Costruisci()
         {
-            gruppo = GetComponent<CanvasGroup>();
-            gruppo.alpha = 0f;
-            gruppo.interactable = false;
-            gruppo.blocksRaycasts = false;
-
             // La riga intera, ancorata in basso al centro
             riga = UIKit.Box(transform, "Riga", Vector2.zero, new Vector2(600f, LatoTasto));
             riga.anchorMin = riga.anchorMax = new Vector2(0.5f, 0f);
             riga.pivot = new Vector2(0.5f, 0.5f);
             riga.anchoredPosition = new Vector2(0f, AltezzaDalFondo);
+            gruppo = riga.gameObject.AddComponent<CanvasGroup>();
+            gruppo.alpha = 0f;
+            gruppo.interactable = false;
+            gruppo.blocksRaycasts = false;
 
-            // Il tasto: finestrella scura con la cornice d'oro e la lettera E
-            tasto = UIKit.Window(riga, "Tasto", new Vector2(LatoTasto, LatoTasto));
+
+            // Il tasto: quadratino scuro con un filo d'oro sottile e la lettera E
+            tasto = UIKit.Box(riga, "Tasto", Vector2.zero, new Vector2(LatoTasto, LatoTasto));
             tasto.anchorMin = tasto.anchorMax = new Vector2(0f, 0.5f);
             tasto.pivot = new Vector2(0f, 0.5f);
-            TMP_Text lettera = UIKit.Label(tasto, "E", UIKit.ButtonFont, 26f, UIKit.GoldLight,
+            var fondoTasto = tasto.gameObject.AddComponent<Image>();
+            fondoTasto.color = UIKit.PanelColor;
+            fondoTasto.raycastTarget = false;
+            var filo = tasto.gameObject.AddComponent<Outline>();
+            filo.effectColor = UIKit.Fade(UIKit.Gold, 0.9f);
+            filo.effectDistance = new Vector2(1.5f, -1.5f);
+            TMP_Text lettera = UIKit.Label(tasto, "E", UIKit.ButtonFont, 24f, UIKit.GoldLight,
                 Vector2.zero, new Vector2(LatoTasto, LatoTasto), TextAlignmentOptions.Center);
             UIKit.Stretch((RectTransform)lettera.transform);
 
@@ -75,6 +86,33 @@ namespace Valdorso.Interazione
             rt.anchorMin = rt.anchorMax = new Vector2(0f, 0.5f);
             rt.pivot = new Vector2(0f, 0.5f);
             testo.textWrappingMode = TextWrappingModes.NoWrap;
+        }
+
+        void CostruisciAvviso()
+        {
+            // In alto al centro: il nome del luogo in Cinzel d'oro, sotto una riga in corsivo
+            RectTransform box = UIKit.Box(transform, "Avviso", Vector2.zero, new Vector2(900f, 90f));
+            box.anchorMin = box.anchorMax = new Vector2(0.5f, 1f);
+            box.pivot = new Vector2(0.5f, 1f);
+            box.anchoredPosition = new Vector2(0f, -120f);
+            gruppoAvviso = box.gameObject.AddComponent<CanvasGroup>();
+            gruppoAvviso.alpha = 0f;
+            gruppoAvviso.blocksRaycasts = false;
+
+            avvisoTitolo = UIKit.Label(box, "", UIKit.TitleFont, 32f, UIKit.GoldLight,
+                Vector2.zero, new Vector2(900f, 46f), TextAlignmentOptions.Center);
+            avvisoRiga = UIKit.Label(box, "", UIKit.TextFont, 22f, UIKit.TextSoft,
+                new Vector2(0f, -48f), new Vector2(900f, 34f), TextAlignmentOptions.Center);
+            avvisoRiga.fontStyle = FontStyles.Italic;
+        }
+
+        /// <summary>Un avviso in alto al centro per qualche secondo (es. entrando in un luogo sicuro).</summary>
+        public void Avviso(string titolo, string riga)
+        {
+            if (gruppoAvviso == null) CostruisciAvviso();
+            avvisoTitolo.text = titolo;
+            avvisoRiga.text = riga;
+            avvisoFinoA = Time.unscaledTime + 4f;
         }
 
         /// <summary>Mostra (o aggiorna) la scritta con l'azione.</summary>
@@ -100,6 +138,11 @@ namespace Valdorso.Interazione
         void Update()
         {
             gruppo.alpha = Mathf.MoveTowards(gruppo.alpha, alfaVoluto, Time.unscaledDeltaTime * 6f);
+            if (gruppoAvviso != null)
+            {
+                float voluto = Time.unscaledTime < avvisoFinoA ? 1f : 0f;
+                gruppoAvviso.alpha = Mathf.MoveTowards(gruppoAvviso.alpha, voluto, Time.unscaledDeltaTime * 2f);
+            }
         }
     }
 }

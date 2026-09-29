@@ -1,3 +1,4 @@
+using UMA.CharacterSystem;
 using UnityEngine;
 
 namespace Valdorso.Creatures
@@ -10,6 +11,9 @@ namespace Valdorso.Creatures
     /// Combattimento sta sopra Parte superiore nella lista dei livelli, quindi quando è acceso vince lui.
     /// A riposo entrambi restano spenti e si vede solo il livello base.
     /// L'Animator deve avere i parametri: Attack, Hit, Dodge, Vault, Climb (Trigger), Dead (Bool).
+    /// Per sedersi e sdraiarsi (Postura) servono anche Seduto e Sdraiato (Bool) nel livello Combattimento:
+    /// se mancano, il personaggio si mette al posto ma resta in piedi, senza errori.
+    /// Femminile (Bool) sceglie la posa da seduti: vero per i corpi femminili di UMA.
     /// </summary>
     [RequireComponent(typeof(Creature))]
     public class CreatureAnimator : MonoBehaviour
@@ -20,6 +24,11 @@ namespace Valdorso.Creatures
         static readonly int VaultHash = Animator.StringToHash("Vault");
         static readonly int ClimbHash = Animator.StringToHash("Climb");
         static readonly int DeadHash = Animator.StringToHash("Dead");
+        static readonly int SedutoHash = Animator.StringToHash("Seduto");
+        static readonly int SdraiatoHash = Animator.StringToHash("Sdraiato");
+        static readonly int FemminileHash = Animator.StringToHash("Femminile");
+
+        bool seduto, sdraiato;
 
         [SerializeField] Animator animator;
         [Tooltip("Livello a corpo intero: schivata, scavalcata, salita, morte")]
@@ -103,12 +112,44 @@ namespace Valdorso.Creatures
             animator = newAnimator;
             FindLayers();
             if (animator != null && creature != null) animator.SetBool(DeadHash, creature.IsDead);
+            ApplicaPosa();
         }
 
         public void PlayAttack() => Trigger(AttackHash);
         public void PlayDodge() => Trigger(DodgeHash);
         public void PlayVault() => Trigger(VaultHash);
         public void PlayClimb() => Trigger(ClimbHash);
+
+        /// <summary>Seduto, sdraiato o in piedi (tutti e due falsi). La chiama Postura su ogni PC.</summary>
+        public void ImpostaPosa(bool siede, bool giace)
+        {
+            seduto = siede;
+            sdraiato = giace;
+            ApplicaPosa();
+        }
+
+        void ApplicaPosa()
+        {
+            if (animator == null) return;
+            if (HaParametro(SedutoHash)) animator.SetBool(SedutoHash, seduto);
+            if (HaParametro(SdraiatoHash)) animator.SetBool(SdraiatoHash, sdraiato);
+            if (HaParametro(FemminileHash)) animator.SetBool(FemminileHash, CorpoFemminile());
+        }
+
+        /// <summary>Vero se il corpo UMA del personaggio è femminile (razza "Human Female").</summary>
+        bool CorpoFemminile()
+        {
+            var avatar = GetComponent<DynamicCharacterAvatar>();
+            return avatar != null && avatar.activeRace != null && avatar.activeRace.name != null
+                   && avatar.activeRace.name.Contains("Female");
+        }
+
+        bool HaParametro(int hash)
+        {
+            foreach (AnimatorControllerParameter p in animator.parameters)
+                if (p.nameHash == hash) return true;
+            return false;
+        }
 
         void Trigger(int hash)
         {
@@ -125,6 +166,8 @@ namespace Valdorso.Creatures
             animator.ResetTrigger(DodgeHash);
             animator.ResetTrigger(VaultHash);
             animator.ResetTrigger(ClimbHash);
+            seduto = sdraiato = false;
+            ApplicaPosa();
             animator.SetBool(DeadHash, true);
         }
 

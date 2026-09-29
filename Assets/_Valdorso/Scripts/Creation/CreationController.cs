@@ -1474,15 +1474,19 @@ namespace Valdorso.Creation
 
         IEnumerator EnterWorld(string characterId, TMP_Text where, string message, float pause)
         {
+            var orologio = System.Diagnostics.Stopwatch.StartNew();
             where.text = message;
-            yield return new WaitForSecondsRealtime(pause);
+            // Il messaggio si legge anche mentre il sipario scende: niente attesa a vuoto prima
+            yield return new WaitForSecondsRealtime(Mathf.Min(pause, 0.5f));
 
             bool dark = ScreenFader.Instance == null;
-            if (!dark) ScreenFader.Instance.FadeOut(0.8f, () => dark = true);
+            if (!dark) ScreenFader.Instance.FadeOut(0.45f, () => dark = true);
             while (!dark) yield return null;
+            Debug.Log($"[Valdorso][Ingresso] buio dopo {orologio.ElapsedMilliseconds} ms");
 
             // Nel buio: si riaccende il mondo e si chiede di entrare.
             RestoreWorld();
+            Debug.Log($"[Valdorso][Ingresso] mondo riacceso dopo {orologio.ElapsedMilliseconds} ms");
             ValdorsoNetworkManager.RequestEnterWorld(characterId);
 
             float timeout = 10f;
@@ -1491,9 +1495,14 @@ namespace Valdorso.Creation
                 timeout -= Time.unscaledDeltaTime;
                 yield return null;
             }
+            Debug.Log($"[Valdorso][Ingresso] personaggio arrivato dal server dopo {orologio.ElapsedMilliseconds} ms");
 
-            if (ScreenFader.Instance != null) ScreenFader.Instance.FadeIn();
-            SceneManager.UnloadSceneAsync(gameObject.scene);
+            // Il Registro si toglie subito, al buio: così i primi fotogrammi disegnano già solo la valle
+            AsyncOperation togli = SceneManager.UnloadSceneAsync(gameObject.scene);
+            // (da qui la scena si sta chiudendo: il resto lo fa un aiutante che sopravvive, AttesaIngresso)
+            Valdorso.DevTools.MisuraIngresso.Avvia(orologio.ElapsedMilliseconds);
+            AttesaIngresso.Avvia(orologio.ElapsedMilliseconds);
+            yield return togli;
         }
 
         // =====================================================================

@@ -29,11 +29,14 @@ namespace Valdorso.Interazione
 
         Vector3 centroLocale;
 
+        /// <summary>Il centro dell'oggetto nelle sue coordinate (segue l'oggetto quando ruota, come una porta).</summary>
+        protected Vector3 CentroLocale => centroLocale;
+
         public float Distanza => distanza;
         public string Nome => nome;
 
         /// <summary>Il punto del mondo dove sta l'oggetto per chi lo guarda.</summary>
-        public Vector3 Punto => punto != null ? punto.position : transform.TransformPoint(centroLocale);
+        public virtual Vector3 Punto => punto != null ? punto.position : transform.TransformPoint(centroLocale);
 
         protected virtual void Awake()
         {
@@ -55,6 +58,15 @@ namespace Valdorso.Interazione
         /// quindi deve leggere solo dati già sincronizzati.
         /// </summary>
         public abstract string Azione(GameObject chi);
+
+        /// <summary>
+        /// Vero per le azioni che riguardano solo chi le fa e non cambiano il mondo (leggere una bacheca):
+        /// allora l'Interattore chiama UsaLocale sul PC di chi gioca, senza passare dal server.
+        /// </summary>
+        public virtual bool Locale => false;
+
+        /// <summary>L'azione solo locale (vedi Locale).</summary>
+        public virtual void UsaLocale(GameObject chi) { }
 
         /// <summary>Se in questo momento chi guarda può usare l'oggetto. Lo chiedono sia il client sia il server.</summary>
         public virtual bool PuoInteragire(GameObject chi) => true;
