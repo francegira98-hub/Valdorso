@@ -60,6 +60,21 @@ namespace Valdorso.Network
         readonly List<(ActiveCharacter entry, double endTime)> lingering = new List<(ActiveCharacter, double)>();
 
         readonly Dictionary<NetworkConnectionToClient, ActiveCharacter> active = new Dictionary<NetworkConnectionToClient, ActiveCharacter>();
+
+        /// <summary>
+        /// Solo sul server: il personaggio con cui è entrato nel mondo questo collegamento (id e nome).
+        /// Serve a chi deve sapere "chi" ha fatto qualcosa (es. accettare un incarico dalla bacheca).
+        /// </summary>
+        public static bool TryGetCharacter(NetworkConnectionToClient conn, out string id, out string name)
+        {
+            id = name = null;
+            var manager = singleton as ValdorsoNetworkManager;
+            if (manager == null || conn == null || !manager.active.TryGetValue(conn, out ActiveCharacter entry) || entry.record == null)
+                return false;
+            id = entry.record.id;
+            name = entry.record.name;
+            return true;
+        }
         double nextAutosave;
 
         // Lato PC

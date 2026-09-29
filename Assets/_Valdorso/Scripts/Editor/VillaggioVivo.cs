@@ -106,7 +106,8 @@ namespace Valdorso.EditorTools
             }
             foreach (var (edificio, luogo) in luoghiSicuri)
                 if (PreparaLuogoSicuro(villaggio, edificio, luogo)) luoghi++;
-            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri.";
+            int bacheche = PreparaBacheche(villaggio);
+            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri, {bacheche} bacheche.";
         }
 
         static void PreparaPorta(Transform t)
@@ -332,6 +333,126 @@ namespace Valdorso.EditorTools
             for (int i = 0; i < marcatori.Count; i++) lista.GetArrayElementAtIndex(i).objectReferenceValue = marcatori[i];
             so.ApplyModifiedPropertiesWithoutUndo();
             return marcatori.Count;
+        }
+
+        // ---------------------------------------------------------------- bacheche
+
+        const string CartellaHivemind = "Assets/HIVEMIND";
+        static readonly string[] Assi = { "SM_plankA2_a1", "SM_plankA4_a1", "SM_plankA5_a1", "SM_plankA7_a1", "SM_plankA9_a1", "SM_plankA10_a1", "SM_plankA15_a1" };
+
+        /// <summary>
+        /// Le due bacheche del villaggio, costruite con le assi del kit di Hivemind:
+        /// - dentro la Gilda, grande, sul muro di fondo proprio di fronte alla porta, nel tratto di muro pieno
+        ///   tra x 6 e 9 (sul retro le finestre stanno da x 3 a 6 e da 9 a 12): gli incarichi;
+        /// - davanti alla casa del Balivo, all'aperto, su due pali con un tettuccio: i proclami.
+        /// Ogni volta si rifanno da capo (così una correzione qui vale subito).
+        /// </summary>
+        static int PreparaBacheche(Transform villaggio)
+        {
+            int n = 0;
+            Transform gilda = villaggio.Find("Gilda degli avventurieri");
+            if (gilda != null && CostruisciBacheca(gilda, "Bacheca degli incarichi", new Vector3(7.4f, 0f, -5.84f), 0f, false,
+                    BachecaAvvisi.TipoBacheca.Incarichi, "Gilda", "Bacheca della Gilda", "la bacheca degli incarichi")) n++;
+            Transform balivo = villaggio.Find("Casa del Balivo");
+            if (balivo != null && CostruisciBacheca(balivo, "Bacheca del Balivo", new Vector3(2.5f, 0f, 2.2f), 0f, true,
+                    BachecaAvvisi.TipoBacheca.Proclami, "Balivo", "Proclami del Balivo", "la bacheca del Balivo")) n++;
+            return n;
+        }
+
+        static bool CostruisciBacheca(Transform edificio, string nomeOggetto, Vector3 posizione, float rotY, bool allAperto,
+            BachecaAvvisi.TipoBacheca tipo, string archivio, string titolo, string nome)
+        {
+            Transform vecchia = edificio.Find(nomeOggetto);
+            if (vecchia != null) Undo.DestroyObjectImmediate(vecchia.gameObject);
+
+            var radice = new GameObject(nomeOggetto).transform;
+            Undo.RegisterCreatedObjectUndo(radice.gameObject, nomeOggetto);
+            radice.SetParent(edificio, false);
+            radice.localPosition = posizione;
+            radice.localRotation = Quaternion.Euler(0f, rotY, 0f);
+
+            // Il pannello: sei assi in piedi, una sopra l'altra (l'asse ruotata di 90° attorno a X diventa "in piedi")
+            float zPannello = allAperto ? 0.14f : 0.05f;  // all'aperto sta davanti ai pali; al chiuso contro il muro
+            const float basso = 0.95f, passo = 0.2f;
+            int quante = 6;
+            for (int i = 0; i < quante; i++)
+                Pezzo(Assi[i % Assi.Length], radice, new Vector3(0f, basso + passo * (i + 0.5f), zPannello), new Vector3(90f, 0f, 0f));
+            float alto = basso + passo * quante;
+
+            if (allAperto)
+            {
+                // Due pali piantati a terra e un tettuccio spiovente all'indietro, per la pioggia
+                Pezzo("SM_woodenPlankA_a1", radice, new Vector3(-0.9f, 1.3f, 0f), Vector3.zero);
+                Pezzo("SM_woodenPlankA_a1", radice, new Vector3(0.9f, 1.3f, 0f), Vector3.zero);
+                const float pendenza = 24f;
+                float t = Mathf.Tan(pendenza * Mathf.Deg2Rad);
+                for (int i = 0; i < 4; i++)
+                {
+                    float z = 0.45f - i * 0.2f;
+                    Pezzo(Assi[(i + 2) % Assi.Length], radice, new Vector3(0f, 2.62f + (z - 0.45f) * t, z), new Vector3(-pendenza, 0f, 0f));
+                }
+            }
+            else
+            {
+                // Al muro: due listelli verticali ai lati e un'asse sopra, come una cornice
+                Pezzo("SM_plankB2_a1", radice, new Vector3(-0.88f, (basso + alto) / 2f, zPannello + 0.06f), new Vector3(90f, 0f, 0f));
+                Pezzo("SM_plankB6_a1", radice, new Vector3(0.88f, (basso + alto) / 2f, zPannello + 0.06f), new Vector3(90f, 0f, 0f));
+            }
+            // L'asse di testa, orizzontale, sopra il pannello
+            Pezzo("SM_plankA3_a1", radice, new Vector3(0f, alto + 0.06f, zPannello + 0.05f), Vector3.zero);
+
+            // Rete e comportamento
+            if (radice.GetComponent<NetworkIdentity>() == null) Undo.AddComponent<NetworkIdentity>(radice.gameObject);
+            BachecaAvvisi b = Undo.AddComponent<BachecaAvvisi>(radice.gameObject);
+            var so = new SerializedObject(b);
+            so.FindProperty("nome").stringValue = nome;
+            so.FindProperty("distanza").floatValue = 2.8f;
+            so.FindProperty("tipo").enumValueIndex = (int)tipo;
+            so.FindProperty("archivio").stringValue = archivio;
+            so.FindProperty("titoloBacheca").stringValue = titolo;
+            so.FindProperty("centroPannello").vector3Value = new Vector3(0f, (basso + alto) / 2f, zPannello + 0.065f);
+            so.FindProperty("misuraPannello").vector2Value = new Vector2(1.55f, alto - basso - 0.05f);
+            so.ApplyModifiedPropertiesWithoutUndo();
+            return true;
+        }
+
+        /// <summary>Posa un pezzo del kit con il centro della sua forma nel punto dato (in coordinate del padre).</summary>
+        static GameObject Pezzo(string nomePrefab, Transform padre, Vector3 centroLocale, Vector3 rotazioneLocale)
+        {
+            GameObject prefab = CaricaPrefab(nomePrefab);
+            if (prefab == null)
+            {
+                Debug.LogWarning("[Valdorso] Pezzo non trovato per la bacheca: " + nomePrefab);
+                return null;
+            }
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, padre);
+            go.transform.localPosition = Vector3.zero;
+            go.transform.localRotation = Quaternion.Euler(rotazioneLocale);
+            bool primo = true;
+            Bounds b = new Bounds(go.transform.position, Vector3.zero);
+            foreach (Renderer r in go.GetComponentsInChildren<Renderer>())
+            {
+                if (primo) { b = r.bounds; primo = false; }
+                else b.Encapsulate(r.bounds);
+            }
+            go.transform.position += padre.TransformPoint(centroLocale) - b.center;
+            return go;
+        }
+
+        static readonly Dictionary<string, GameObject> cachePrefab = new Dictionary<string, GameObject>();
+
+        static GameObject CaricaPrefab(string nome)
+        {
+            if (cachePrefab.TryGetValue(nome, out GameObject p) && p != null) return p;
+            foreach (string guid in AssetDatabase.FindAssets(nome + " t:Prefab", new[] { CartellaHivemind }))
+            {
+                string percorso = AssetDatabase.GUIDToAssetPath(guid);
+                if (System.IO.Path.GetFileNameWithoutExtension(percorso) != nome) continue;
+                p = AssetDatabase.LoadAssetAtPath<GameObject>(percorso);
+                cachePrefab[nome] = p;
+                return p;
+            }
+            return null;
         }
 
         /// <summary>

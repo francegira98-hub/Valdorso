@@ -88,9 +88,11 @@ namespace Valdorso.Interazione
                     PannelloLettura.Chiudi();
                     return;
                 }
-                suggerimento.Mostra("Chiudi");
+                suggerimento.Nascondi(); // i tasti li mostra il foglio stesso, in fondo
                 Keyboard k = Keyboard.current;
-                if (k != null && k.eKey.wasPressedThisFrame)
+                if (k != null && k.rKey.wasPressedThisFrame && PannelloLettura.HaAzione)
+                    PannelloLettura.EseguiAzione();
+                else if (k != null && k.eKey.wasPressedThisFrame)
                 {
                     prossimaLocale = Time.timeAsDouble + attesa;
                     PannelloLettura.Chiudi();
