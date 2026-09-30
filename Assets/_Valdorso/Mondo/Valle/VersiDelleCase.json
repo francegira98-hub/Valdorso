@@ -1,0 +1,20 @@
+{
+    "elenco": [
+        {
+            "modello": "PF_PrimitiveHouse02",
+            "gradi": 180.0
+        },
+        {
+            "modello": "SM_Merged_House_04",
+            "gradi": 270.0
+        },
+        {
+            "modello": "SM_House04",
+            "gradi": 90.0
+        },
+        {
+            "modello": "SM_Merged_House_10",
+            "gradi": 0.0
+        }
+    ]
+}
