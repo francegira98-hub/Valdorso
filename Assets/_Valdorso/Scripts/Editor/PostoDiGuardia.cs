@@ -92,8 +92,8 @@ namespace Valdorso.EditorTools
             pezzi += Fuoco(varco, "SM_Brasero_01a", XPalizzata - 2.2f, z1 + 1.2f, 1.1f, 6f);
             if (Posa(varco, "SM_Flag_UV_SM_Flag_UV", XPalizzata - 3f, z1 + 3f, 0f, 0.3f)) pezzi++;
             // Cavalletti di legno davanti al varco, dal lato di Aurelia
-            if (Posa(varco, "SM_WoodTrestles_02a_1", XPalizzata + 4f, ZStrada - 2f, 80f, 0f)) pezzi++;
-            if (Posa(varco, "SM_WoodTrestles_02a_1", XPalizzata + 5.5f, ZStrada + 2.2f, 100f, 0f)) pezzi++;
+            if (Posa(varco, "SM_WoodTrestles_02a_1", XPalizzata + 4f, ZStrada - 2f, 80f, 0f)) { pezzi++; ColliderSemplice(varco); }
+            if (Posa(varco, "SM_WoodTrestles_02a_1", XPalizzata + 5.5f, ZStrada + 2.2f, 100f, 0f)) { pezzi++; ColliderSemplice(varco); }
 
             // ---- La torre di guardia, a nord della strada, dal lato della valle
             var campo = Gruppo(radice, "Accampamento");
@@ -140,7 +140,7 @@ namespace Valdorso.EditorTools
             if (Posa(vita, "SM_WoodChest_01a_1", 1704f, 103.5f, 90f, 0f)) pezzi++;
             // La cucina accanto al fuoco: pentolone, cavalletto con la carne, acqua, pentole
             if (Posa(vita, "SM_Cauldron_UV", 1719.2f, 91.8f, 0f, 0f)) pezzi++;
-            if (Posa(vita, "SM_WoodTrestles_01a", 1721.5f, 88f, 30f, 0f)) pezzi++;
+            if (Posa(vita, "SM_WoodTrestles_01a", 1721.5f, 88f, 30f, 0f)) { pezzi++; ColliderSemplice(vita); }
             if (Posa(vita, "SM_PieceMeat_UV", 1732.2f, 86f, 20f, -0.9f)) pezzi++;      // sul tavolo
             if (Posa(vita, "SM_WoodWaterBucket_UV", 1720.5f, 84.5f, 0f, 0f)) pezzi++;
             if (Posa(vita, "SM_MetalKitPot_02d", 1718.5f, 86.3f, 0f, 0f)) pezzi++;
@@ -174,6 +174,28 @@ namespace Valdorso.EditorTools
         }
 
         // ------------------------------------------------------------------ pezzi
+
+        /// <summary>
+        /// Al pezzo appena posato (l'ultimo figlio del gruppo) toglie i collider del modello, fatti di gambe storte
+        /// e travi sottili che spingevano il personaggio sotto il terreno, e mette una sola scatola piena
+        /// dal suolo alla cima: saltandoci sopra ci si sta in piedi.
+        /// </summary>
+        static void ColliderSemplice(Transform gruppo)
+        {
+            Transform pezzo = gruppo.GetChild(gruppo.childCount - 1);
+            // Si misura il pezzo dritto (senza la sua rotazione), così la scatola lo avvolge giusta
+            Quaternion rotazione = pezzo.rotation;
+            pezzo.rotation = Quaternion.identity;
+            bool ok = Riquadro(pezzo, out Bounds b);
+            Vector3 centro = ok ? pezzo.InverseTransformPoint(b.center) : Vector3.zero;
+            Vector3 dim = ok ? pezzo.InverseTransformVector(b.size) : Vector3.one;
+            pezzo.rotation = rotazione;
+            if (!ok) return;
+            foreach (Collider c in pezzo.GetComponentsInChildren<Collider>(true)) c.enabled = false; // spenti, non cancellati: il pezzo resta un prefab pulito
+            var box = pezzo.gameObject.AddComponent<BoxCollider>();
+            box.center = centro;
+            box.size = new Vector3(Mathf.Abs(dim.x), Mathf.Abs(dim.y), Mathf.Abs(dim.z));
+        }
 
         /// <summary>Una palizzata dritta alla x data, da una riva all'altra del ripiano, con il varco sulla strada e i massi ai lati.</summary>
         static int Palizzata(Transform gruppo, float x)

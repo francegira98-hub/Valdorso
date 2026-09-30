@@ -131,6 +131,12 @@ namespace Valdorso.Interazione
             else CmdInteragisci(bersaglio.netIdentity, bersaglio.ComponentIndex);
         }
 
+        /// <summary>Una scritta in alto sullo schermo (titolo e riga sotto), per chi gioca su questo PC. La usa anche il sigillo del passo.</summary>
+        public void Avviso(string titolo, string riga)
+        {
+            if (isLocalPlayer && suggerimento != null) suggerimento.Avviso(titolo, riga);
+        }
+
         /// <summary>Quattro volte al secondo: se si entra o si esce da un luogo sicuro, lo dice in alto sullo schermo.</summary>
         void ControllaLuogoSicuro()
         {

@@ -171,12 +171,30 @@ namespace Valdorso.Movement
             if (!Physics.Raycast(onTop + Vector3.up * 0.5f, Vector3.down, out RaycastHit stand, 1f,
                     spazio, QueryTriggerInteraction.Ignore)) return false;
             if (!FitsAt(stand.point)) return false;
+            if (!CimaLarga(stand.point)) return false; // su una trave o un palo sottile non si sale: si cadrebbe
 
             mossa = height > altezzaArrampica ? Mossa.Arrampica : Mossa.Sale;
             // Prima si va contro il bordo salendo (mani sul bordo), poi si avanza sulla cima.
             Vector3 contro = front.point - fwd * (controller.radius + 0.05f);
             over = new Vector3(contro.x, stand.point.y + 0.05f, contro.z);
             landing = stand.point;
+            return true;
+        }
+
+        /// <summary>
+        /// La cima è abbastanza larga per starci in piedi? Si tasta il piano in quattro punti intorno ai piedi:
+        /// tutti devono trovare un appoggio alla stessa altezza (cavalletti, travi e pali sottili non vanno).
+        /// </summary>
+        bool CimaLarga(Vector3 piedi)
+        {
+            float r = controller.radius * 0.7f;
+            Vector3[] intorno = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right };
+            foreach (Vector3 d in intorno)
+            {
+                Vector3 da = piedi + d * r + Vector3.up * 0.4f;
+                if (!Physics.Raycast(da, Vector3.down, out RaycastHit h, 0.8f, spazio, QueryTriggerInteraction.Ignore)) return false;
+                if (Mathf.Abs(h.point.y - piedi.y) > 0.2f) return false;
+            }
             return true;
         }
 
@@ -221,12 +239,26 @@ namespace Valdorso.Movement
                 yield return null;
             }
             if (!creature.IsDead) transform.position = landing;
+            // Per sicurezza: mai sotto il terreno all'arrivo
+            float suolo = TerrenoSotto(transform.position);
+            if (transform.position.y < suolo - 0.2f) transform.position = new Vector3(transform.position.x, suolo + 0.05f, transform.position.z);
 
             controller.enabled = true;
             if (dodge != null) dodge.enabled = dodgeWasOn;
             if (melee != null) melee.enabled = meleeWasOn;
             if (mover != null && moverWasOn && !creature.IsDead) mover.enabled = true;
             busy = false;
+        }
+
+        static float TerrenoSotto(Vector3 p)
+        {
+            foreach (Terrain t in Terrain.activeTerrains)
+            {
+                Vector3 pos = t.GetPosition(), dim = t.terrainData.size;
+                if (p.x >= pos.x && p.x <= pos.x + dim.x && p.z >= pos.z && p.z <= pos.z + dim.z)
+                    return pos.y + t.SampleHeight(p);
+            }
+            return float.MinValue;
         }
 
         static float Smooth(float x) => x * x * (3f - 2f * x);

@@ -99,9 +99,19 @@ namespace Valdorso.Interazione
             gruppoAvviso.alpha = 0f;
             gruppoAvviso.blocksRaycasts = false;
 
+            // Un velo scuro morbido dietro l'avviso, per leggerlo anche sul cielo chiaro, sulla neve o davanti al sigillo
+            RectTransform fondoAvviso = UIKit.Box(box, "Fondo", Vector2.zero, new Vector2(900f, 100f));
+            fondoAvviso.anchorMin = fondoAvviso.anchorMax = new Vector2(0.5f, 1f);
+            fondoAvviso.pivot = new Vector2(0.5f, 1f);
+            fondoAvviso.anchoredPosition = new Vector2(0f, 4f);
+            var veloAvviso = fondoAvviso.gameObject.AddComponent<Image>();
+            veloAvviso.color = new Color(0f, 0f, 0f, 0.55f);
+            veloAvviso.raycastTarget = false;
+            fondoAvviso.SetAsFirstSibling();
+
             avvisoTitolo = UIKit.Label(box, "", UIKit.TitleFont, 32f, UIKit.GoldLight,
                 Vector2.zero, new Vector2(900f, 46f), TextAlignmentOptions.Center);
-            avvisoRiga = UIKit.Label(box, "", UIKit.TextFont, 22f, UIKit.TextSoft,
+            avvisoRiga = UIKit.Label(box, "", UIKit.TextFont, 24f, UIKit.Text,
                 new Vector2(0f, -48f), new Vector2(900f, 34f), TextAlignmentOptions.Center);
             avvisoRiga.fontStyle = FontStyles.Italic;
         }
