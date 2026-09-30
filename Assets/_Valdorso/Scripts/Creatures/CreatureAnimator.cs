@@ -17,6 +17,7 @@ namespace Valdorso.Creatures
     /// Femminile (Bool) sceglie la posa da seduti: vero per i corpi femminili di UMA.
     /// Sulla scala a pioli: SuScala (Bool) e VelocitaScala (Float, da -1 a 1: fa andare l'animazione avanti, indietro o ferma),
     /// messi dal menu Valdorso → Animazioni → Aggiungi la scala a pioli.
+    /// Nuoto: InAcqua (Bool) e VelocitaNuoto (Float, 0 fermi a galla, 1 bracciata), dal menu Aggiungi il nuoto.
     /// </summary>
     [RequireComponent(typeof(Creature))]
     public class CreatureAnimator : MonoBehaviour
@@ -33,8 +34,10 @@ namespace Valdorso.Creatures
         static readonly int FemminileHash = Animator.StringToHash("Femminile");
         static readonly int SuScalaHash = Animator.StringToHash("SuScala");
         static readonly int VelocitaScalaHash = Animator.StringToHash("VelocitaScala");
+        static readonly int InAcquaHash = Animator.StringToHash("InAcqua");
+        static readonly int VelocitaNuotoHash = Animator.StringToHash("VelocitaNuoto");
 
-        bool seduto, sdraiato, suScala;
+        bool seduto, sdraiato, suScala, inAcqua;
 
         [SerializeField] Animator animator;
         [Tooltip("Livello a corpo intero: schivata, scavalcata, salita, morte")]
@@ -154,9 +157,23 @@ namespace Valdorso.Creatures
             if (animator != null && HaParametro(VelocitaScalaHash)) animator.SetFloat(VelocitaScalaHash, v);
         }
 
+        /// <summary>In acqua a nuotare o no. La chiama Nuoto su ogni PC.</summary>
+        public void ImpostaNuoto(bool si)
+        {
+            inAcqua = si;
+            ApplicaPosa();
+        }
+
+        /// <summary>0 fermi a galla, 1 bracciata piena.</summary>
+        public void ImpostaVelocitaNuoto(float v)
+        {
+            if (animator != null && HaParametro(VelocitaNuotoHash)) animator.SetFloat(VelocitaNuotoHash, v);
+        }
+
         void ApplicaPosa()
         {
             if (animator == null) return;
+            if (HaParametro(InAcquaHash)) animator.SetBool(InAcquaHash, inAcqua);
             if (HaParametro(SuScalaHash)) animator.SetBool(SuScalaHash, suScala);
             if (HaParametro(SedutoHash)) animator.SetBool(SedutoHash, seduto);
             if (HaParametro(SdraiatoHash)) animator.SetBool(SdraiatoHash, sdraiato);
@@ -194,7 +211,7 @@ namespace Valdorso.Creatures
             animator.ResetTrigger(VaultHash);
             animator.ResetTrigger(ClimbHash);
             if (HaParametro(ClimbHighHash)) animator.ResetTrigger(ClimbHighHash);
-            seduto = sdraiato = suScala = false;
+            seduto = sdraiato = suScala = inAcqua = false;
             ApplicaPosa();
             animator.SetBool(DeadHash, true);
         }
