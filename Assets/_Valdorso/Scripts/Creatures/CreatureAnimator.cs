@@ -15,6 +15,8 @@ namespace Valdorso.Creatures
     /// Per sedersi e sdraiarsi (Postura) servono anche Seduto e Sdraiato (Bool) nel livello Combattimento:
     /// se mancano, il personaggio si mette al posto ma resta in piedi, senza errori.
     /// Femminile (Bool) sceglie la posa da seduti: vero per i corpi femminili di UMA.
+    /// Sulla scala a pioli: SuScala (Bool) e VelocitaScala (Float, da -1 a 1: fa andare l'animazione avanti, indietro o ferma),
+    /// messi dal menu Valdorso → Animazioni → Aggiungi la scala a pioli.
     /// </summary>
     [RequireComponent(typeof(Creature))]
     public class CreatureAnimator : MonoBehaviour
@@ -29,8 +31,10 @@ namespace Valdorso.Creatures
         static readonly int SedutoHash = Animator.StringToHash("Seduto");
         static readonly int SdraiatoHash = Animator.StringToHash("Sdraiato");
         static readonly int FemminileHash = Animator.StringToHash("Femminile");
+        static readonly int SuScalaHash = Animator.StringToHash("SuScala");
+        static readonly int VelocitaScalaHash = Animator.StringToHash("VelocitaScala");
 
-        bool seduto, sdraiato;
+        bool seduto, sdraiato, suScala;
 
         [SerializeField] Animator animator;
         [Tooltip("Livello a corpo intero: schivata, scavalcata, salita, morte")]
@@ -137,9 +141,23 @@ namespace Valdorso.Creatures
             ApplicaPosa();
         }
 
+        /// <summary>Sulla scala a pioli o no. La chiama Postura su ogni PC.</summary>
+        public void ImpostaScala(bool su)
+        {
+            suScala = su;
+            ApplicaPosa();
+        }
+
+        /// <summary>Da -1 (scende) a 1 (sale), 0 = fermi sui pioli.</summary>
+        public void ImpostaVelocitaScala(float v)
+        {
+            if (animator != null && HaParametro(VelocitaScalaHash)) animator.SetFloat(VelocitaScalaHash, v);
+        }
+
         void ApplicaPosa()
         {
             if (animator == null) return;
+            if (HaParametro(SuScalaHash)) animator.SetBool(SuScalaHash, suScala);
             if (HaParametro(SedutoHash)) animator.SetBool(SedutoHash, seduto);
             if (HaParametro(SdraiatoHash)) animator.SetBool(SdraiatoHash, sdraiato);
             if (HaParametro(FemminileHash)) animator.SetBool(FemminileHash, CorpoFemminile());
@@ -176,7 +194,7 @@ namespace Valdorso.Creatures
             animator.ResetTrigger(VaultHash);
             animator.ResetTrigger(ClimbHash);
             if (HaParametro(ClimbHighHash)) animator.ResetTrigger(ClimbHighHash);
-            seduto = sdraiato = false;
+            seduto = sdraiato = suScala = false;
             ApplicaPosa();
             animator.SetBool(DeadHash, true);
         }

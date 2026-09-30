@@ -104,7 +104,7 @@ namespace Valdorso.Interazione
             if (postura != null && postura.Occupato)
             {
                 bersaglio = null;
-                suggerimento.Mostra("Alzati");
+                suggerimento.Mostra(postura.SuScala ? "Lasciati andare" : "Alzati");
                 Keyboard tastiera = Keyboard.current;
                 if (tastiera != null && tastiera.eKey.wasPressedThisFrame && Time.timeAsDouble >= prossimaLocale)
                 {
@@ -159,7 +159,7 @@ namespace Valdorso.Interazione
             foreach (Interagibile o in Interagibile.Tutti)
             {
                 if (o == null) continue;
-                Vector3 p = o.Punto;
+                Vector3 p = o.PuntoPer(petto);
                 float d = Vector3.Distance(petto, p);
                 if (d > o.Distanza) continue;
 
@@ -214,7 +214,7 @@ namespace Valdorso.Interazione
             if (componenti == null || indice >= componenti.Length) return;
             if (!(componenti[indice] is Interagibile oggetto) || !oggetto.isActiveAndEnabled) return;
 
-            if (Vector3.Distance(Petto, oggetto.Punto) > oggetto.Distanza + margineServer) return;
+            if (Vector3.Distance(Petto, oggetto.PuntoPer(Petto)) > oggetto.Distanza + margineServer) return;
             if (!oggetto.PuoInteragire(gameObject)) return;
 
             prossimaServer = adesso + attesa;

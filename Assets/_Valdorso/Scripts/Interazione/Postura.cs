@@ -16,11 +16,13 @@ namespace Valdorso.Interazione
     /// con i passi); arrivato, lo dice al server, che solo allora lo mette seduto o sdraiato per tutti;
     /// mentre la posa arriva, il bacino si appoggia proprio sulla seduta o sul materasso.
     /// Ci si alza con E, muovendosi o saltando: si scende dal lato libero. Morendo o uscendo il posto si libera.
+    /// Scala a pioli: il server la riserva, poi sul PC di chi gioca W sale e S scende; in cima si passa sul piano,
+    /// in fondo si rimettono i piedi a terra; E o Spazio fanno staccare (a metà si cade).
     /// </summary>
     [RequireComponent(typeof(Creature))]
     public class Postura : NetworkBehaviour
     {
-        public enum Posa : byte { InPiedi, Seduto, Sdraiato }
+        public enum Posa : byte { InPiedi, Seduto, Sdraiato, Scala }
 
         static readonly int SpeedHash = Animator.StringToHash("Speed");
         static readonly int MotionSpeedHash = Animator.StringToHash("MotionSpeed");
@@ -43,11 +45,23 @@ namespace Valdorso.Interazione
         [Tooltip("Da sdraiati la telecamera si allontana fino a questa distanza, per vedere bene il personaggio")]
         [SerializeField] float distanzaTelecameraSdraiati = 5.5f;
 
+        [Header("Scala a pioli")]
+        [Tooltip("Velocità lungo la scala (m/s). La usa anche il menu delle animazioni per la velocità dello stato Scala")]
+        [SerializeField] float velocitaScala = 0.9f;
+
+        [Tooltip("Correzione dell'altezza del corpo sulla scala (m), se i piedi non poggiano sui pioli")]
+        [SerializeField] float scartoScala = 0f;
+
+        public float VelocitaScala => velocitaScala;
+
         [SyncVar(hook = nameof(QuandoCambiaPosa))]
         Posa posa;
 
         public Posa Attuale => posa;
         public bool InPiedi => posa == Posa.InPiedi;
+
+        /// <summary>Vero mentre si è sulla scala a pioli (anche prima che il server lo confermi a tutti).</summary>
+        public bool SuScala => posa == Posa.Scala || suScalaLocale;
 
         /// <summary>Vero da quando si va verso un posto a quando ci si è rialzati: niente altre interazioni.</summary>
         public bool Occupato => bloccato || posa != Posa.InPiedi;
@@ -64,12 +78,21 @@ namespace Valdorso.Interazione
         CinemachineThirdPersonFollow telecamera;
         float distanzaNormale = -1f;
 
+        // Scala a pioli, sul PC di chi gioca e (l'animazione) su tutti
+        bool suScalaLocale;
+        bool vuoleStaccarsi;
+        float ultimaYScala;
+        float velocitaAnimScala;
+        float correzioneScala;      // di quanto abbassare il corpo perché il piede più basso poggi sul piolo
+        bool correzioneScalaNota;   // misurata in una salita precedente: si riparte da lì
+
         // Dove stanno le anche rispetto ai piedi in ogni posa, per questo corpo: si misura la prima volta
         readonly Dictionary<Posa, Vector3> ancheNellaPosa = new Dictionary<Posa, Vector3>();
 
         // Solo sul server
         Sedile sedile;
         int posto = -1;
+        Scala scala;
         bool inArrivo;
         double prossimaRichiesta;
 
@@ -105,6 +128,7 @@ namespace Valdorso.Interazione
 
         void Update()
         {
+            AnimaScala();
             if (!isLocalPlayer) return;
 
             // Da sdraiati la telecamera si allontana piano, e torna com'era quando ci si alza
@@ -114,7 +138,7 @@ namespace Valdorso.Interazione
                 telecamera.CameraDistance = Mathf.MoveTowards(telecamera.CameraDistance, voluta, 4f * Time.deltaTime);
             }
 
-            if (!bloccato || input == null) return;
+            if (!bloccato || input == null || suScalaLocale) return;
             // Muoversi o saltare fa alzare, come premere E
             if (input.move.sqrMagnitude > 0.25f || input.jump)
             {
@@ -127,6 +151,7 @@ namespace Valdorso.Interazione
         public void ChiediDiAlzarti()
         {
             if (!isLocalPlayer || !Occupato) return;
+            if (suScalaLocale) { vuoleStaccarsi = true; return; } // sulla scala: E fa staccare
             CmdAlzati();
         }
 
@@ -172,7 +197,7 @@ namespace Valdorso.Interazione
         {
             if (posa == Posa.InPiedi && sedile == null) return;
             Vector3 uscita = sedile != null ? sedile.Uscita(posto) : transform.position;
-            bool eraSeduto = posa != Posa.InPiedi;
+            bool eraSeduto = posa == Posa.Seduto || posa == Posa.Sdraiato;
             LiberaPosto();
             posa = Posa.InPiedi;
             TargetAlzati(uscita, eraSeduto);
@@ -182,6 +207,8 @@ namespace Valdorso.Interazione
         void LiberaPosto()
         {
             if (sedile != null && posto >= 0) sedile.ServerLibera(posto, netId);
+            if (scala != null) scala.ServerLibera(netId);
+            scala = null;
             sedile = null;
             posto = -1;
             inArrivo = false;
@@ -194,6 +221,143 @@ namespace Valdorso.Interazione
             LiberaPosto();
             posa = Posa.InPiedi;
             TargetAlzati(transform.position, false); // si resta dove si è: l'animazione di morte fa il resto
+        }
+
+        // ---------- Scala a pioli ----------
+
+        /// <summary>Riserva la scala e manda il personaggio sui pioli.</summary>
+        [Server]
+        public bool ServerSaliScala(Scala s)
+        {
+            if (posa != Posa.InPiedi || sedile != null || scala != null || creature.IsDead) return false;
+            if (!s.ServerOccupa(netId)) return false;
+            scala = s;
+            posa = Posa.Scala;
+            TargetScala(s);
+            return true;
+        }
+
+        /// <summary>Chi gioca è sceso dalla scala (in cima, in fondo o lasciandosi andare).</summary>
+        [Command]
+        void CmdLasciaScala()
+        {
+            if (posa != Posa.Scala) return;
+            LiberaPosto();
+            posa = Posa.InPiedi;
+        }
+
+        [TargetRpc]
+        void TargetScala(Scala s)
+        {
+            if (s == null) { CmdLasciaScala(); return; }
+            Blocca();
+            suScalaLocale = true;
+            vuoleStaccarsi = false;
+            if (creatureAnimator != null) creatureAnimator.ImpostaScala(true);
+            if (spostamento != null) StopCoroutine(spostamento);
+            spostamento = StartCoroutine(ScalaE(s));
+        }
+
+        /// <summary>Sui pioli: W sale, S scende; in cima si passa sul piano, in fondo si torna a terra.</summary>
+        IEnumerator ScalaE(Scala s)
+        {
+            Animator anim = GetComponent<Animator>();
+            Transform piedeS = anim != null && anim.isHuman ? anim.GetBoneTransform(HumanBodyBones.LeftFoot) : null;
+            Transform piedeD = anim != null && anim.isHuman ? anim.GetBoneTransform(HumanBodyBones.RightFoot) : null;
+            if (!correzioneScalaNota) correzioneScala = 0f;
+
+            float t = s.DallAlto(transform.position) ? s.PiediMassimi : 0f;
+            yield return Sposta(s.PiediA(t) + Vector3.up * (scartoScala + correzioneScala), s.Verso, t > 0f ? 0.6f : 0.35f);
+
+            while (suScalaLocale && !creature.IsDead)
+            {
+                if (input != null && input.jump) { input.jump = false; vuoleStaccarsi = true; }
+                if (vuoleStaccarsi)
+                {
+                    vuoleStaccarsi = false;
+                    IniziaUscitaScala();
+                    if (t < 0.4f) yield return Sposta(s.UscitaBassa, s.Verso, 0.35f);
+                    // ci si lascia andare: il corpo resta dov'era (si toglie l'abbassamento della scala), poi si cade
+                    else yield return Sposta(transform.position + s.Fuori * 0.35f - Vector3.up * correzioneScala, s.Verso, 0.25f);
+                    break;
+                }
+
+                float dir = input != null ? input.move.y : 0f;
+                float passo = Mathf.Abs(dir) > 0.2f ? Mathf.Sign(dir) * velocitaScala * Time.deltaTime : 0f;
+
+                // In cima, salendo ancora: ci si tira su e si passa sul piano
+                if (passo > 0f && t >= s.PiediMassimi - 0.001f && s.UscitaAlta(out Vector3 cima))
+                {
+                    IniziaUscitaScala();
+                    Vector3 qui = transform.position;
+                    yield return Sposta(new Vector3(qui.x, cima.y + 0.05f, qui.z), s.Verso, 0.45f);
+                    yield return Sposta(cima + Vector3.up * 0.02f, s.Verso, 0.4f);
+                    break;
+                }
+                // In fondo, scendendo ancora: piedi a terra
+                if (passo < 0f && t <= 0.001f)
+                {
+                    IniziaUscitaScala();
+                    yield return Sposta(s.UscitaBassa, s.Verso, 0.35f);
+                    break;
+                }
+
+                t = Mathf.Clamp(t + passo, 0f, s.PiediMassimi);
+
+                // La clip di Mixamo tiene il corpo più in alto dei piedi del personaggio: si misura il piede più basso
+                // e si abbassa il corpo piano piano finché poggia sul piolo (vale per ogni corporatura, si ricorda)
+                if (piedeS != null && piedeD != null)
+                {
+                    float piede = Mathf.Min(piedeS.position.y, piedeD.position.y) - transform.position.y;
+                    float voluta = -(piede - 0.08f); // l'osso del piede sta circa 8 cm sopra la suola
+                    correzioneScala = Mathf.Lerp(correzioneScala, Mathf.Clamp(voluta, -1.5f, 0.5f), Time.deltaTime * 2f);
+                    correzioneScalaNota = true;
+                }
+                transform.SetPositionAndRotation(s.PiediA(t) + Vector3.up * (scartoScala + correzioneScala), s.Verso);
+                yield return null;
+            }
+            FineScala();
+        }
+
+        /// <summary>
+        /// Si sta per scendere dalla scala: l'animazione dei pioli lascia il posto a quella in piedi mentre il
+        /// personaggio si sposta, così il corpo (che sulla scala è disegnato più in alto dei piedi) non fa su e giù.
+        /// Anche il server lo sa subito, così gli altri lo vedono scendere nello stesso momento.
+        /// </summary>
+        void IniziaUscitaScala()
+        {
+            if (creatureAnimator != null) creatureAnimator.ImpostaScala(false);
+            CmdLasciaScala();
+        }
+
+        void FineScala()
+        {
+            if (!suScalaLocale) return;
+            suScalaLocale = false;
+            if (creatureAnimator != null) creatureAnimator.ImpostaScala(false);
+            Sblocca();
+            CmdLasciaScala();
+        }
+
+        /// <summary>
+        /// Su tutti i PC: la velocità dell'animazione dei pioli segue quanto il personaggio sale o scende
+        /// (avanti salendo, all'indietro scendendo, ferma quando si sta fermi).
+        /// </summary>
+        void AnimaScala()
+        {
+            if (creatureAnimator == null) return;
+            float y = transform.position.y;
+            if (!SuScala)
+            {
+                ultimaYScala = y;
+                if (velocitaAnimScala != 0f) { velocitaAnimScala = 0f; creatureAnimator.ImpostaVelocitaScala(0f); }
+                return;
+            }
+            float dt = Mathf.Max(Time.deltaTime, 0.0001f);
+            float voluta = Mathf.Clamp((y - ultimaYScala) / dt / Mathf.Max(0.1f, velocitaScala), -1f, 1f);
+            ultimaYScala = y;
+            velocitaAnimScala = Mathf.MoveTowards(velocitaAnimScala, voluta, 8f * dt);
+            creatureAnimator.ImpostaVelocitaScala(velocitaAnimScala);
         }
 
         // ---------- PC di chi gioca ----------
@@ -303,6 +467,11 @@ namespace Valdorso.Interazione
 
         IEnumerator AlzatiE(Vector3 uscita, bool eraSeduto)
         {
+            if (suScalaLocale)
+            {
+                suScalaLocale = false;
+                if (creatureAnimator != null) creatureAnimator.ImpostaScala(false);
+            }
             Animator anim = GetComponent<Animator>();
             if (anim != null) anim.SetFloat(SpeedHash, 0f);
             if (!creature.IsDead && eraSeduto) yield return Sposta(uscita, transform.rotation, durataAlzarsi);
@@ -355,8 +524,11 @@ namespace Valdorso.Interazione
 
         void QuandoCambiaPosa(Posa prima, Posa adesso)
         {
-            if (creatureAnimator != null)
-                creatureAnimator.ImpostaPosa(adesso == Posa.Seduto, adesso == Posa.Sdraiato);
+            if (creatureAnimator == null) return;
+            creatureAnimator.ImpostaPosa(adesso == Posa.Seduto, adesso == Posa.Sdraiato);
+            // Chi gioca decide da sé quando scende dalla scala: il ritardo del server non lo rimette sui pioli
+            if (!(isLocalPlayer && adesso == Posa.Scala && !suScalaLocale))
+                creatureAnimator.ImpostaScala(adesso == Posa.Scala);
         }
     }
 }

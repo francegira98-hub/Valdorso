@@ -14,7 +14,8 @@ namespace Valdorso.EditorTools
     /// - porte: le ante SM_DoorA diventano Porta (chiusa = 90° prima di come le posa il costruttore, cioè aperte);
     /// - sedute: panche, sedie e letti diventano Sedile, con le misure della tabella qui sotto;
     /// - luoghi sicuri: una scatola invisibile SafeZone intorno alla locanda;
-    /// - arredi: i mobili dentro gli edifici vanno sul livello "Arredi" (lo crea se manca), che "scavalca e sali" ignora.
+    /// - arredi: i mobili dentro gli edifici vanno sul livello "Arredi" (lo crea se manca), che "scavalca e sali" ignora;
+    /// - scale a pioli: SM_ladder diventano Scala, con piede, cima e lato da cui si sale misurati sul modello.
     /// Si può rilanciare quando si vuole: rimette le impostazioni, così una correzione fatta qui vale per tutti i pezzi uguali.
     /// Lo chiama anche il costruttore del villaggio, alla fine.
     /// </summary>
@@ -111,7 +112,8 @@ namespace Valdorso.EditorTools
             int bacheche = PreparaBacheche(villaggio);
             int finestre = PreparaImposte(villaggio);
             int arredi = PreparaArredi(villaggio);
-            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri, {bacheche} bacheche, {finestre} finestre con le imposte, {arredi} arredi.";
+            int scale = PreparaScale(villaggio);
+            return $"{porte} porte, {posti} sedute, {luoghi} luoghi sicuri, {bacheche} bacheche, {finestre} finestre con le imposte, {arredi} arredi, {scale} scale a pioli.";
         }
 
         static void PreparaPorta(Transform t)
@@ -781,6 +783,165 @@ namespace Valdorso.EditorTools
                 return i;
             }
             return -1;
+        }
+
+        // ---------------------------------------------------------------- Scale a pioli
+
+        const string PezzoScala = "SM_ladder";
+
+        /// <summary>Ogni SM_ladder del villaggio diventa una Scala, con le misure prese dal modello.</summary>
+        static int PreparaScale(Transform villaggio)
+        {
+            Physics.SyncTransforms();
+            int n = 0;
+            foreach (Transform t in villaggio.GetComponentsInChildren<Transform>(true))
+            {
+                if (!t.name.StartsWith(PezzoScala)) continue;
+                if (PrefabUtility.IsPartOfPrefabInstance(t.gameObject) && !PrefabUtility.IsOutermostPrefabInstanceRoot(t.gameObject))
+                    continue;
+                if (!MisuraScala(t, out Vector3 basso, out Vector3 alto, out Vector3 fuori, out string come))
+                {
+                    Debug.LogWarning("[Valdorso] Scala " + t.name + ": non riesco a leggere il modello.", t);
+                    continue;
+                }
+
+                GameObject go = t.gameObject;
+                if (go.GetComponent<NetworkIdentity>() == null) Undo.AddComponent<NetworkIdentity>(go);
+                Scala s = go.GetComponent<Scala>();
+                if (s == null) s = Undo.AddComponent<Scala>(go);
+                var so = new SerializedObject(s);
+                so.FindProperty("nome").stringValue = "la scala";
+                so.FindProperty("bassoLocale").vector3Value = t.InverseTransformPoint(basso);
+                so.FindProperty("altoLocale").vector3Value = t.InverseTransformPoint(alto);
+                so.FindProperty("fuoriLocale").vector3Value = t.InverseTransformDirection(fuori);
+                so.ApplyModifiedPropertiesWithoutUndo();
+
+                Vector3 asse = alto - basso;
+                float inclinazione = Vector3.Angle(asse, Vector3.up);
+                string casa = t.parent != null ? t.parent.name : "";
+                Debug.Log($"[Valdorso] Scala {casa}/{t.name}: lunga {asse.magnitude:0.00} m, " +
+                          $"inclinata {inclinazione:0}°, piede a {basso.y:0.00} m, cima a {alto.y:0.00} m, " +
+                          $"si sale dal lato ({fuori.x:0.0}, {fuori.z:0.0}), {come}.", t);
+                n++;
+            }
+            return n;
+        }
+
+        /// <summary>
+        /// "Tasta" il modello della scala: il piede e la cima sono il centro dei vertici più bassi e più alti;
+        /// i montanti stanno lungo il lato largo, quindi si sale perpendicolarmente a quello.
+        /// Se la scala è appoggiata inclinata si sale dal lato opposto a dove pende la cima; se è dritta,
+        /// dal lato con più spazio libero.
+        /// </summary>
+        static bool MisuraScala(Transform t, out Vector3 basso, out Vector3 alto, out Vector3 fuori, out string come)
+        {
+            basso = alto = fuori = Vector3.zero;
+            come = "";
+            var punti = new List<Vector3>();
+            MeshFilter[] filtri = t.GetComponentsInChildren<MeshFilter>(true);
+            bool conLod = false;
+            foreach (MeshFilter f in filtri) if (f.name.Contains("LOD")) conLod = true;
+            foreach (MeshFilter f in filtri)
+            {
+                if (f.sharedMesh == null) continue;
+                if (conLod && !f.name.Contains("LOD0")) continue;
+                Matrix4x4 m = f.transform.localToWorldMatrix;
+                foreach (Vector3 v in f.sharedMesh.vertices) punti.Add(m.MultiplyPoint3x4(v));
+            }
+            if (punti.Count < 8) return false;
+
+            float yMin = float.MaxValue, yMax = float.MinValue;
+            foreach (Vector3 p in punti) { yMin = Mathf.Min(yMin, p.y); yMax = Mathf.Max(yMax, p.y); }
+            float h = yMax - yMin;
+            if (h < 1f) return false;
+
+            Vector3 sb = Vector3.zero, sa = Vector3.zero;
+            int nb = 0, na = 0;
+            float xMinB = float.MaxValue, xMaxB = float.MinValue, zMinB = float.MaxValue, zMaxB = float.MinValue;
+            foreach (Vector3 p in punti)
+            {
+                if (p.y < yMin + 0.15f * h)
+                {
+                    sb += p; nb++;
+                    Vector3 l = t.InverseTransformPoint(p);
+                    xMinB = Mathf.Min(xMinB, l.x); xMaxB = Mathf.Max(xMaxB, l.x);
+                    zMinB = Mathf.Min(zMinB, l.z); zMaxB = Mathf.Max(zMaxB, l.z);
+                }
+                else if (p.y > yMax - 0.15f * h) { sa += p; na++; }
+            }
+            if (nb == 0 || na == 0) return false;
+            basso = sb / nb;
+            alto = sa / na;
+            basso.y = yMin;
+            alto.y = yMax;
+
+            // Il lato largo (tra i due montanti) e la perpendicolare orizzontale
+            Vector3 largo = (xMaxB - xMinB) >= (zMaxB - zMinB) ? t.right : t.forward;
+            largo.y = 0f;
+            fuori = Vector3.Cross(Vector3.up, largo.normalized).normalized;
+
+            // Prima di tutto: da quale parte c'è un pavimento in cima (il soppalco)? Si sale dall'altra parte.
+            bool pavimentoDavanti = PavimentoInCima(t, alto, fuori), pavimentoDietro = PavimentoInCima(t, alto, -fuori);
+            if (pavimentoDavanti != pavimentoDietro)
+            {
+                if (pavimentoDavanti) fuori = -fuori;
+                come = "in cima porta a un pavimento";
+                return true;
+            }
+
+            Vector3 pende = alto - basso;
+            pende.y = 0f;
+            if (pende.magnitude > 0.1f)
+            {
+                if (Vector3.Dot(fuori, pende) > 0f) fuori = -fuori; // la cima pende verso il muro: si sale dall'altra parte
+                come = "appoggiata inclinata";
+            }
+            else
+            {
+                Vector3 mezzo = (basso + alto) * 0.5f;
+                float davanti = SpazioLibero(t, mezzo, fuori), dietro = SpazioLibero(t, mezzo, -fuori);
+                if (dietro > davanti) fuori = -fuori;
+                come = $"dritta, spazio libero {Mathf.Max(davanti, dietro):0.0} m contro {Mathf.Min(davanti, dietro):0.0} m";
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Vero se da quella parte, sotto la cima, c'è un pavimento vero su cui scendere (il soppalco):
+        /// in piano, almeno 20 cm sotto la cima della scala (che sporge sopra il pavimento), largo
+        /// (lo si trova a 0,5, 0,9 e 1,3 m dalla scala) e con spazio sopra per stare in piedi.
+        /// Così le travi del tetto e il parapetto non vengono scambiati per un pavimento.
+        /// </summary>
+        static bool PavimentoInCima(Transform proprio, Vector3 alto, Vector3 dir)
+        {
+            foreach (float d in new[] { 0.5f, 0.9f, 1.3f })
+            {
+                Vector3 da = alto + dir * d + Vector3.up * 0.5f;
+                bool trovato = false;
+                foreach (RaycastHit h in Physics.RaycastAll(da, Vector3.down, 2.5f, ~0, QueryTriggerInteraction.Ignore))
+                {
+                    if (h.collider.transform.IsChildOf(proprio)) continue;
+                    if (h.normal.y < 0.7f) continue;
+                    if (h.point.y < alto.y - 1.8f || h.point.y > alto.y - 0.2f) continue;
+                    if (Physics.Raycast(h.point + Vector3.up * 0.1f, Vector3.up, 1.6f, ~0, QueryTriggerInteraction.Ignore)) continue;
+                    trovato = true;
+                    break;
+                }
+                if (!trovato) return false;
+            }
+            return true;
+        }
+
+        /// <summary>Quanti metri liberi (fino a 1,5) ci sono da un punto in una direzione, senza contare l'oggetto stesso.</summary>
+        static float SpazioLibero(Transform proprio, Vector3 da, Vector3 dir)
+        {
+            float libero = 1.5f;
+            foreach (RaycastHit h in Physics.RaycastAll(da, dir, 1.5f, ~0, QueryTriggerInteraction.Ignore))
+            {
+                if (h.collider.transform.IsChildOf(proprio)) continue;
+                libero = Mathf.Min(libero, h.distance);
+            }
+            return libero;
         }
     }
 }

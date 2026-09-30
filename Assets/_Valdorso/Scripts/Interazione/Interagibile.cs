@@ -38,6 +38,12 @@ namespace Valdorso.Interazione
         /// <summary>Il punto del mondo dove sta l'oggetto per chi lo guarda.</summary>
         public virtual Vector3 Punto => punto != null ? punto.position : transform.TransformPoint(centroLocale);
 
+        /// <summary>
+        /// Il punto da guardare per chi ha il petto in 'petto'. Di solito è Punto; gli oggetti lunghi
+        /// (una scala a pioli) danno il loro punto più vicino, così si prendono da più parti.
+        /// </summary>
+        public virtual Vector3 PuntoPer(Vector3 petto) => Punto;
+
         protected virtual void Awake()
         {
             // Il centro si misura una volta sola: dal collider se c'è, altrimenti dalle mesh visibili.
