@@ -7,7 +7,7 @@ namespace Valdorso.DevTools
     /// Misura l'ingresso nella valle dopo la scelta del personaggio, per capire dove va il tempo:
     /// quando il personaggio UMA è costruito, quanto dura il primo fotogramma della valle
     /// e quanti fotogrammi lenti (sopra 50 ms) ci sono nei primi 5 secondi. Scrive tutto in Console e poi sparisce.
-    /// Strumento di prova: si toglie quando l'ingresso è ottimizzato.
+    /// Strumento di prova: funziona solo nell'editor e nelle build di sviluppo (Development Build).
     /// </summary>
     public class MisuraIngresso : MonoBehaviour
     {
@@ -21,6 +21,8 @@ namespace Valdorso.DevTools
 
         public static void Avvia(double millisecondiGiaPassati)
         {
+            // Solo nell'editor e nelle build di sviluppo: nel gioco vero non misura e non scrive niente
+            if (!Debug.isDebugBuild) return;
             var go = new GameObject("Misura ingresso");
             DontDestroyOnLoad(go);
             go.AddComponent<MisuraIngresso>().giaPassati = millisecondiGiaPassati;
